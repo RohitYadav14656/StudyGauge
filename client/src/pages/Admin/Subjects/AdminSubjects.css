@@ -1,0 +1,92 @@
+.admin-subjects-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-header-row h2 {
+  margin: 0 0 0.5rem 0;
+  color: #f1f5f9;
+  font-size: 2rem;
+}
+
+.admin-header-row p {
+  color: #94a3b8;
+  margin: 0;
+}
+
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #1e293b;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #334155;
+}
+
+.filter-bar label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.filter-bar select {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #f1f5f9;
+  outline: none;
+  min-width: 200px;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-badge.active {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10b981;
+}
+
+.status-badge.inactive {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+  width: 1.25rem;
+  height: 1.25rem;
+  cursor: pointer;
+}
+
+.form-group-checkbox label {
+  color: #f1f5f9;
+  cursor: pointer;
+  margin-bottom: 0;
+}

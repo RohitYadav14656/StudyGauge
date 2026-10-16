@@ -1,0 +1,159 @@
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-sidebar {
+  width: 250px;
+  background-color: #1e293b;
+  border-right: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-logo {
+  padding: 1.5rem;
+  border-bottom: 1px solid #334155;
+}
+
+.admin-logo h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #f1f5f9;
+}
+
+.admin-logo span {
+  color: #38bdf8;
+}
+
+.admin-nav {
+  flex: 1;
+  padding: 1rem 0;
+}
+
+.admin-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-nav li {
+  margin: 0.25rem 1rem;
+}
+
+.admin-nav a {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #94a3b8;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.admin-nav a:hover {
+  background-color: rgba(56, 189, 248, 0.1);
+  color: #f1f5f9;
+}
+
+.admin-nav a.active {
+  background-color: #38bdf8;
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-header {
+  height: 70px;
+  background-color: #1e293b;
+  border-bottom: 1px solid #334155;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.admin-header-title h3 {
+  margin: 0;
+  color: #f1f5f9;
+}
+
+.admin-header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.btn-logout,
+.btn-portal {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-logout {
+  background-color: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.btn-logout:hover {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btn-portal {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+.btn-portal:hover {
+  background-color: #0284c7;
+  color: white;
+}
+
+.admin-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+  
+  .admin-sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #334155;
+  }
+  
+  .admin-nav {
+    display: flex;
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
+  
+  .admin-nav ul {
+    display: flex;
+  }
+  
+  .admin-nav li {
+    margin: 0 0.25rem;
+  }
+  
+  .admin-nav a {
+    white-space: nowrap;
+  }
+}

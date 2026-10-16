@@ -1,0 +1,154 @@
+.admin-exams-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.admin-exams-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-exams-header h2 {
+  margin: 0 0 0.5rem 0;
+  color: #f1f5f9;
+  font-size: 2rem;
+}
+
+.admin-exams-header p {
+  color: #94a3b8;
+  margin: 0;
+}
+
+.admin-table-container {
+  background: #1e293b;
+  border-radius: 1rem;
+  border: 1px solid #334155;
+  overflow: hidden;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  border-bottom: 1px solid #334155;
+}
+
+.admin-table th {
+  background: rgba(15, 23, 42, 0.5);
+  color: #94a3b8;
+  font-weight: 600;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.admin-table td {
+  color: #f1f5f9;
+}
+
+.admin-table tbody tr:hover {
+  background: rgba(56, 189, 248, 0.05);
+}
+
+.truncate-text {
+  max-width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.exam-badge {
+  background: rgba(56, 189, 248, 0.1);
+  color: #38bdf8;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.btn-edit {
+  background: transparent;
+  color: #818cf8;
+  border: 1px solid #818cf8;
+  padding: 0.25rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-edit:hover {
+  background: #818cf8;
+  color: white;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 1rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.modal-content h3 {
+  margin: 0 0 1.5rem 0;
+  color: #f1f5f9;
+  font-size: 1.5rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.btn-cancel,
+.btn-save {
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #94a3b8;
+}
+
+.btn-cancel:hover {
+  color: #f1f5f9;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  color: white;
+}
+
+.btn-save:hover {
+  opacity: 0.9;
+}
