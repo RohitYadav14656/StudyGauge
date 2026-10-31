@@ -103,7 +103,7 @@ const AdminSubjects: React.FC = () => {
         await createSubject(formData);
       }
       handleCloseModal();
-      fetchData(); // Refresh list
+      fetchData();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to save subject');
     }

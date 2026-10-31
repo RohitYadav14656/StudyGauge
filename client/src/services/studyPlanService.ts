@@ -20,8 +20,8 @@ export interface StudyPlanItemData {
   status: 'planned' | 'in_progress' | 'completed' | 'partially_completed' | 'missed' | 'rescheduled';
   completion: number;
   notes?: string;
-  topicId_data?: any; // To hold populated topic data
-  subjectId_data?: any; // To hold populated subject data
+  topicId_data?: any;
+  subjectId_data?: any;
 }
 
 export interface StudyPlanData {
@@ -76,6 +76,16 @@ export const studyPlanService = {
 
   deletePlanItem: async (itemId: string) => {
     const res = await axios.delete(`/api/study-plans/items/${itemId}`, getHeaders());
+    return res.data;
+  },
+
+  analyzeAdaptation: async (planId: string) => {
+    const res = await axios.get(`/api/study-plans/${planId}/adapt/analysis`, getHeaders());
+    return res.data;
+  },
+
+  adaptPlan: async (planId: string, options?: { maxDailyHours?: number; prioritizeWeakTopics?: boolean }) => {
+    const res = await axios.post(`/api/study-plans/${planId}/adapt`, options || {}, getHeaders());
     return res.data;
   }
 };

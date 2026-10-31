@@ -23,7 +23,7 @@
 
 .admin-table-container {
   background: #1e293b;
-  border-radius: 1rem;
+  border-radius: 12px;
   border: 1px solid #334155;
   overflow: hidden;
 }
@@ -68,7 +68,7 @@
   background: rgba(56, 189, 248, 0.1);
   color: #38bdf8;
   padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
+  border-radius: 12px;
   font-size: 0.75rem;
   font-weight: 500;
 }
@@ -80,7 +80,7 @@
   padding: 0.25rem 1rem;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: none;
 }
 
 .btn-edit:hover {
@@ -88,7 +88,6 @@
   color: white;
 }
 
-/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -105,11 +104,11 @@
 .modal-content {
   background: #1e293b;
   border: 1px solid #334155;
-  border-radius: 1rem;
+  border-radius: 12px;
   padding: 2rem;
   width: 100%;
   max-width: 500px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  box-shadow: none;
 }
 
 .modal-content h3 {

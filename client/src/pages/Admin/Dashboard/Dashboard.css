@@ -24,17 +24,15 @@
 .stat-card {
   background: #1e293b;
   border: 1px solid #334155;
-  border-radius: 1rem;
+  border-radius: 12px;
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: none;
 }
 
 .stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
   border-color: #475569;
 }
 

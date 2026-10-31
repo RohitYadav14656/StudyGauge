@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   notificationService,
   NotificationItem,
   NotificationType,
 } from '../../services/notificationService';
-import { NotificationBell } from '../../components/NotificationBell/NotificationBell';
 import './Notifications.css';
 
 const TYPE_CONFIG: Record<
@@ -31,12 +30,10 @@ const NotificationsPage: React.FC = () => {
   const [total, setTotal] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
 
-  // Filters
   const [statusFilter, setStatusFilter] = useState<'all' | 'unread' | 'read'>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Test Modal State
   const [showTestModal, setShowTestModal] = useState(false);
   const [testForm, setTestForm] = useState({
     title: 'Custom Test Notification',
@@ -144,29 +141,12 @@ const NotificationsPage: React.FC = () => {
 
   return (
     <div className="notifications-page-container">
-      {/* Navigation Bar */}
-      <nav className="page-navbar">
-        <div className="nav-brand">
-          <Link to="/" className="brand-logo">StudyGauge</Link>
-          <span className="brand-divider">/</span>
-          <span className="page-title-badge">Notifications Center</span>
-        </div>
-
-        <div className="nav-actions">
-          <Link to="/planner" className="nav-link">Planner</Link>
-          <Link to="/study-tracker" className="nav-link">Tracker</Link>
-          <Link to="/goals" className="nav-link">Goals</Link>
-          <NotificationBell />
-        </div>
-      </nav>
-
-      {/* Hero Header */}
       <header className="page-hero">
         <div className="hero-content">
-          <h1>In-App Notifications</h1>
+          <h1>Notifications</h1>
           <p>
-            Stay updated with your automated study reminders, missed plan warnings, goal achievements,
-            upcoming exam deadlines, and planner rebalances.
+            Stay updated with study reminders, missed plan notices, goal milestones,
+            upcoming exam deadlines, and planner adjustments.
           </p>
         </div>
         <div className="hero-cta-buttons">
@@ -174,12 +154,11 @@ const NotificationsPage: React.FC = () => {
             {syncing ? 'Syncing...' : '🔄 Sync Triggers'}
           </button>
           <button className="btn-secondary" onClick={() => setShowTestModal(true)}>
-            ➕ Test In-App Notification
+            ➕ Test Notification
           </button>
         </div>
       </header>
 
-      {/* Summary Cards */}
       <section className="stats-grid">
         <div className="stat-card">
           <div className="stat-icon">🔔</div>
@@ -209,12 +188,11 @@ const NotificationsPage: React.FC = () => {
           <div className="stat-icon">🛡️</div>
           <div className="stat-info">
             <span className="stat-value">Active</span>
-            <span className="stat-label">Deduplication Engine</span>
+            <span className="stat-label">Smart Filtering</span>
           </div>
         </div>
       </section>
 
-      {/* Filter and Control Bar */}
       <section className="control-bar">
         <div className="search-box">
           <span className="search-icon">🔍</span>
@@ -270,7 +248,6 @@ const NotificationsPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Main Notifications List */}
       <main className="notifications-list-section">
         {loading ? (
           <div className="loading-state">Loading your notifications...</div>
@@ -353,7 +330,6 @@ const NotificationsPage: React.FC = () => {
           </div>
         )}
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <div className="pagination-bar">
             <button
@@ -377,7 +353,6 @@ const NotificationsPage: React.FC = () => {
         )}
       </main>
 
-      {/* Test Modal */}
       {showTestModal && (
         <div className="modal-overlay">
           <div className="modal-card">

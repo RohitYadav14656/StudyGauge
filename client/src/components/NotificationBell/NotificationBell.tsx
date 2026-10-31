@@ -32,15 +32,19 @@ export const NotificationBell: React.FC = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const fetchUnreadCount = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
       const count = await notificationService.getUnreadCount();
       setUnreadCount(count);
     } catch {
-      // Ignore background errors
+
     }
   };
 
   const fetchNotifications = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
       setLoading(true);
       const isReadParam = activeTab === 'unread' ? false : undefined;
@@ -59,6 +63,8 @@ export const NotificationBell: React.FC = () => {
   };
 
   const handleSync = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     try {
       setSyncing(true);
       const data = await notificationService.syncNotifications();
@@ -72,8 +78,13 @@ export const NotificationBell: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!localStorage.getItem('token')) return;
     fetchUnreadCount();
-    const interval = setInterval(fetchUnreadCount, 30000); // 30s poll
+    const interval = setInterval(() => {
+      if (localStorage.getItem('token')) {
+        fetchUnreadCount();
+      }
+    }, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -83,7 +94,6 @@ export const NotificationBell: React.FC = () => {
     }
   }, [isOpen, activeTab, selectedType]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -195,7 +205,7 @@ export const NotificationBell: React.FC = () => {
 
       {isOpen && (
         <div className="notification-popover">
-          {/* Header */}
+          
           <div className="popover-header">
             <div className="header-left">
               <h3>Notifications</h3>
@@ -219,7 +229,6 @@ export const NotificationBell: React.FC = () => {
             </div>
           </div>
 
-          {/* Filter Bar */}
           <div className="popover-filters">
             <div className="popover-tabs">
               <button
@@ -251,7 +260,6 @@ export const NotificationBell: React.FC = () => {
             </select>
           </div>
 
-          {/* List Content */}
           <div className="popover-body">
             {loading ? (
               <div className="popover-state-msg">Loading notifications...</div>
@@ -310,7 +318,6 @@ export const NotificationBell: React.FC = () => {
             )}
           </div>
 
-          {/* Footer */}
           <div className="popover-footer">
             <button
               className="view-all-btn"

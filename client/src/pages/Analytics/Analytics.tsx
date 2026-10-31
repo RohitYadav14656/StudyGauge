@@ -19,42 +19,37 @@ import { analyticsService, AnalyticsFilterParams } from '../../services/analytic
 import { getExams } from '../../services/examService';
 import { getSubjects } from '../../services/syllabusService';
 
-// Color Palette for Recharts and Badges
 const COLORS = {
-  primary: '#3b82f6',
-  secondary: '#8b5cf6',
-  emerald: '#10b981',
-  amber: '#f59e0b',
-  rose: '#ef4444',
-  slate: '#64748b',
-  indigo: '#6366f1',
+  primary: '#4F46E5',
+  secondary: '#111827',
+  emerald: '#0D9488',
+  amber: '#F59E0B',
+  rose: '#EF4444',
+  slate: '#64748B',
+  indigo: '#4F46E5',
 };
 
-const PIE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'];
+const PIE_COLORS = ['#4F46E5', '#0D9488', '#F59E0B', '#111827', '#64748B', '#818CF8'];
 
 const Analytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'topics' | 'study' | 'tests' | 'subjects'>('overview');
 
-  // Filters state
   const [dateRange, setDateRange] = useState<string>('30d');
   const [selectedExamId, setSelectedExamId] = useState<string>('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
   const [topicFilter, setTopicFilter] = useState<'ALL' | 'WEAK' | 'MODERATE' | 'STRONG' | 'INSUFFICIENT'>('ALL');
   const [showFormulaModal, setShowFormulaModal] = useState<boolean>(false);
 
-  // Dropdown options
   const [examsList, setExamsList] = useState<any[]>([]);
   const [subjectsList, setSubjectsList] = useState<any[]>([]);
 
-  // Analytics Data
   const [overviewData, setOverviewData] = useState<any>(null);
   const [subjectsData, setSubjectsData] = useState<any>(null);
   const [topicsData, setTopicsData] = useState<any>(null);
   const [testsData, setTestsData] = useState<any>(null);
   const [studyData, setStudyData] = useState<any>(null);
 
-  // Initial Load: Fetch Exams & Subjects
   useEffect(() => {
     const fetchOptions = async () => {
       try {
@@ -75,7 +70,6 @@ const Analytics: React.FC = () => {
     fetchOptions();
   }, []);
 
-  // Fetch Analytics when filters change
   useEffect(() => {
     loadAnalytics();
   }, [dateRange, selectedExamId, selectedSubjectId]);
@@ -116,7 +110,6 @@ const Analytics: React.FC = () => {
     setTopicFilter('ALL');
   };
 
-  // Filtered Topics list for table
   const filteredTopics = useMemo(() => {
     if (!topicsData?.topics) return [];
     if (topicFilter === 'ALL') return topicsData.topics;
@@ -124,7 +117,6 @@ const Analytics: React.FC = () => {
     return topicsData.topics.filter((t: any) => t.classification === topicFilter);
   }, [topicsData, topicFilter]);
 
-  // Downsample or smooth trend data if array is large
   const scoreTrendChartData = useMemo(() => {
     if (!testsData?.scoreTrends) return [];
     return testsData.scoreTrends.map((t: any) => ({
@@ -166,41 +158,39 @@ const Analytics: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
-        {/* TOP HEADER */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+        
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-xl border border-slate-200 -xs">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Analytics Dashboard</h1>
-              <span className="px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-full">
-                Deterministic Engine Active
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">Analytics & Insights</h1>
+              <span className="px-3 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl">
+                Performance Analytics
               </span>
             </div>
             <p className="text-slate-500 text-sm mt-1">
-              Real-time insights, performance trends, and deterministic weak-topic classification.
+              Review study hours, test score curves, subject accuracy, and prioritized topics.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <button
               onClick={() => setShowFormulaModal(true)}
-              className="px-4 py-2 bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs md:text-sm font-semibold hover:bg-slate-200 transition-all flex items-center gap-2"
+              className="px-4 py-2 bg-slate-100 border border-slate-200 text-slate-700 rounded-xl text-xs md:text-sm font-semibold hover:bg-slate-200 flex items-center gap-2"
             >
-              <span>📐 Algorithm Formula</span>
+              <span>📐 Scoring Method</span>
             </button>
             <button
               onClick={loadAnalytics}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs md:text-sm font-semibold transition-all shadow-md flex items-center gap-2"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs md:text-sm font-semibold flex items-center gap-2"
             >
               <span>🔄 Refresh</span>
             </button>
           </div>
         </div>
 
-        {/* GLOBAL FILTER BAR */}
-        <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-4">
+        <div className="bg-white p-4 rounded-xl border border-slate-200 -xs flex flex-wrap items-center justify-between gap-4">
           <div className="flex flex-wrap items-center gap-3 text-xs md:text-sm">
             <span className="font-bold text-slate-500 uppercase tracking-wider text-xs">Filters:</span>
 
-            {/* Date Range Selector */}
             <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
               {[
                 { id: '7d', label: '7 Days' },
@@ -212,9 +202,9 @@ const Analytics: React.FC = () => {
                 <button
                   key={range.id}
                   onClick={() => setDateRange(range.id)}
-                  className={`px-3 py-1.5 font-semibold rounded-lg transition-all ${
+                  className={`px-3 py-1.5 font-semibold rounded-lg  ${
                     dateRange === range.id
-                      ? 'bg-white text-blue-600 shadow-xs'
+                      ? 'bg-white text-blue-600 -xs'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -223,7 +213,6 @@ const Analytics: React.FC = () => {
               ))}
             </div>
 
-            {/* Exam Selector */}
             <select
               value={selectedExamId}
               onChange={(e) => setSelectedExamId(e.target.value)}
@@ -237,7 +226,6 @@ const Analytics: React.FC = () => {
               ))}
             </select>
 
-            {/* Subject Selector */}
             <select
               value={selectedSubjectId}
               onChange={(e) => setSelectedSubjectId(e.target.value)}
@@ -262,21 +250,20 @@ const Analytics: React.FC = () => {
           )}
         </div>
 
-        {/* TAB NAVIGATION */}
         <div className="flex gap-2 border-b border-slate-200 pb-2 overflow-x-auto">
           {[
             { id: 'overview', label: '📊 Overview' },
-            { id: 'topics', label: '🎯 Weak Topics Engine' },
+            { id: 'topics', label: '🎯 Focus Topics' },
             { id: 'study', label: '⏱ Study Hours' },
-            { id: 'tests', label: '📝 Score & Accuracy Trends' },
-            { id: 'subjects', label: '📚 Subject Performance' },
+            { id: 'tests', label: '📝 Score & Accuracy' },
+            { id: 'subjects', label: '📚 Subject Breakdown' },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl transition-all whitespace-nowrap ${
+              className={`px-4 py-2.5 text-xs md:text-sm font-semibold rounded-xl whitespace-nowrap ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white shadow-md'
+                  ? 'bg-indigo-600 text-white'
                   : 'text-slate-600 bg-white hover:bg-slate-100 border border-slate-200'
               }`}
             >
@@ -285,20 +272,19 @@ const Analytics: React.FC = () => {
           ))}
         </div>
 
-        {/* CONTENT LOADING */}
         {loading ? (
           <div className="py-24 text-center text-slate-500 flex flex-col justify-center items-center gap-3">
-            <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
-            <p className="text-sm font-medium">Running deterministic analytics aggregation pipelines...</p>
+            <div className="w-8 h-8 border-4 border-indigo-200 border-t-indigo-600 rounded-xl"></div>
+            <p className="text-sm font-medium">Loading analytics data...</p>
           </div>
         ) : (
           <div>
-            {/* OVERVIEW TAB */}
+            
             {activeTab === 'overview' && overviewData && (
               <div className="space-y-6">
-                {/* Metric Summary Cards */}
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Daily Study</span>
                     <div className="text-2xl font-extrabold text-slate-900 mt-1">
                       {overviewData.studyHours?.todayHours || 0} hrs
@@ -306,7 +292,7 @@ const Analytics: React.FC = () => {
                     <p className="text-xs text-slate-500 mt-1">Weekly: {overviewData.studyHours?.weeklyHours || 0} hrs</p>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Consistency</span>
                     <div className="text-2xl font-extrabold text-blue-600 mt-1">
                       {overviewData.consistency?.consistencyPercentage || 0}%
@@ -314,7 +300,7 @@ const Analytics: React.FC = () => {
                     <p className="text-xs text-slate-500 mt-1">Streak: {overviewData.consistency?.currentStreakDays || 0} days</p>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">PYQ Accuracy</span>
                     <div className="text-2xl font-extrabold text-emerald-600 mt-1">
                       {overviewData.pyqAccuracy?.accuracy || 0}%
@@ -322,7 +308,7 @@ const Analytics: React.FC = () => {
                     <p className="text-xs text-slate-500 mt-1">{overviewData.pyqAccuracy?.totalAttempted || 0} attempted</p>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Mock Score Avg</span>
                     <div className="text-2xl font-extrabold text-amber-500 mt-1">
                       {overviewData.mockTestPerformance?.avgScorePercentage || 0}%
@@ -330,7 +316,7 @@ const Analytics: React.FC = () => {
                     <p className="text-xs text-slate-500 mt-1">{overviewData.mockTestPerformance?.totalCompleted || 0} tests taken</p>
                   </div>
 
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Weak Topics</span>
                     <div className="text-2xl font-extrabold text-rose-600 mt-1">
                       {overviewData.weakTopicsSummary?.weakTopics || 0}
@@ -339,18 +325,17 @@ const Analytics: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Syllabus Completion & Weak Topic Warning */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-4">
+                  <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 -xs space-y-4">
                     <div className="flex justify-between items-center">
                       <h3 className="text-base font-bold text-slate-900">Syllabus Progress</h3>
                       <span className="font-extrabold text-blue-600 text-lg">
                         {overviewData.syllabusCompletion?.completionPercentage || 0}%
                       </span>
                     </div>
-                    <div className="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                    <div className="w-full bg-slate-100 h-4 rounded-xl overflow-hidden">
                       <div
-                        className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-full transition-all duration-500"
+                        className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-xl  "
                         style={{ width: `${overviewData.syllabusCompletion?.completionPercentage || 0}%` }}
                       ></div>
                     </div>
@@ -370,15 +355,14 @@ const Analytics: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Quick Weak Topics Card */}
-                  <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-xs flex flex-col justify-between">
+                  <div className="bg-slate-900 text-white p-6 rounded-xl -xs flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-xs font-bold text-rose-400 uppercase tracking-wider">
                         <span>⚠️ Action Required</span>
                       </div>
-                      <h4 className="text-lg font-bold mt-2">Weak Topic Engine Summary</h4>
+                      <h4 className="text-lg font-bold mt-2">Focus Topics Summary</h4>
                       <p className="text-slate-400 text-xs mt-1">
-                        Detected {overviewData.weakTopicsSummary?.weakTopics || 0} topics requiring urgent practice & revision.
+                        Found {overviewData.weakTopicsSummary?.weakTopics || 0} topics requiring timely practice & revision.
                       </p>
                     </div>
                     <div className="mt-4 pt-4 border-t border-slate-800 flex items-center justify-between">
@@ -387,7 +371,7 @@ const Analytics: React.FC = () => {
                       </span>
                       <button
                         onClick={() => setActiveTab('topics')}
-                        className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg transition-all"
+                        className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-lg"
                       >
                         Inspect Topics →
                       </button>
@@ -395,8 +379,7 @@ const Analytics: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Score Trend Preview Chart */}
-                <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                <div className="bg-white p-6 rounded-xl border border-slate-200 -xs">
                   <h3 className="text-base font-bold text-slate-900 mb-4">Mock Test Score Trend (% Marks)</h3>
                   {scoreTrendChartData.length === 0 ? (
                     <div className="py-12 text-center text-slate-400 text-sm">
@@ -421,11 +404,10 @@ const Analytics: React.FC = () => {
               </div>
             )}
 
-            {/* WEAK-TOPIC DETECTION ENGINE TAB */}
             {activeTab === 'topics' && topicsData && (
               <div className="space-y-6">
-                {/* Topic Engine Category Filter Pills */}
-                <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+                
+                <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 -xs">
                   <div className="flex items-center gap-2">
                     {[
                       { id: 'ALL', label: `All (${topicsData.summary?.totalTopics || 0})` },
@@ -437,9 +419,9 @@ const Analytics: React.FC = () => {
                       <button
                         key={btn.id}
                         onClick={() => setTopicFilter(btn.id as any)}
-                        className={`px-3 py-1.5 text-xs font-bold rounded-xl transition-all ${
+                        className={`px-3 py-1.5 text-xs font-bold rounded-xl  ${
                           topicFilter === btn.id
-                            ? 'bg-slate-900 text-white shadow-xs'
+                            ? 'bg-slate-900 text-white -xs'
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
@@ -449,12 +431,11 @@ const Analytics: React.FC = () => {
                   </div>
 
                   <span className="text-xs text-slate-500 italic">
-                    Deterministic mastery score evaluated across practice accuracy, recency & syllabus status.
+                    Mastery score evaluated across practice accuracy, recency & syllabus status.
                   </span>
                 </div>
 
-                {/* Topics Table */}
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                <div className="bg-white rounded-xl border border-slate-200 -xs overflow-hidden">
                   {filteredTopics.length === 0 ? (
                     <div className="py-16 text-center text-slate-400 space-y-2">
                       <p className="text-lg font-semibold text-slate-700">No Topics Found</p>
@@ -486,7 +467,7 @@ const Analytics: React.FC = () => {
                             const isStrong = topic.classification === 'STRONG';
 
                             return (
-                              <tr key={topic.topicId} className="hover:bg-slate-50/80 transition-all">
+                              <tr key={topic.topicId} className="hover:bg-slate-50/80 ">
                                 <td className="py-3.5 px-4 font-semibold text-slate-900">
                                   <div>{topic.topicName}</div>
                                   <div className="text-xs font-normal text-slate-400">{topic.subjectName}</div>
@@ -494,7 +475,7 @@ const Analytics: React.FC = () => {
 
                                 <td className="py-3.5 px-4 text-center">
                                   <span
-                                    className={`px-2.5 py-1 text-xs font-extrabold rounded-full ${
+                                    className={`px-2.5 py-1 text-xs font-extrabold rounded-xl ${
                                       isStrong
                                         ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                                         : isModerate
@@ -508,9 +489,9 @@ const Analytics: React.FC = () => {
 
                                 <td className="py-3.5 px-4 text-center">
                                   <div className="font-extrabold text-slate-800">{topic.masteryScore}%</div>
-                                  <div className="w-16 bg-slate-100 h-1.5 mx-auto rounded-full mt-1 overflow-hidden">
+                                  <div className="w-16 bg-slate-100 h-1.5 mx-auto rounded-xl mt-1 overflow-hidden">
                                     <div
-                                      className={`h-full rounded-full ${
+                                      className={`h-full rounded-xl ${
                                         isStrong ? 'bg-emerald-500' : isModerate ? 'bg-amber-500' : 'bg-rose-500'
                                       }`}
                                       style={{ width: `${Math.min(100, topic.masteryScore)}%` }}
@@ -558,23 +539,22 @@ const Analytics: React.FC = () => {
               </div>
             )}
 
-            {/* STUDY HOURS TAB */}
             {activeTab === 'study' && studyData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Daily Average</span>
                     <div className="text-2xl font-extrabold text-slate-900 mt-1">
                       {studyData.hours?.todayHours || studyData.hours?.dailyHours || 0} hrs
                     </div>
                   </div>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Weekly Total</span>
                     <div className="text-2xl font-extrabold text-blue-600 mt-1">
                       {studyData.hours?.weeklyHours || 0} hrs
                     </div>
                   </div>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Monthly Total</span>
                     <div className="text-2xl font-extrabold text-indigo-600 mt-1">
                       {studyData.hours?.monthlyHours || 0} hrs
@@ -583,7 +563,7 @@ const Analytics: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 -xs">
                     <h3 className="text-base font-bold text-slate-900 mb-4">Daily Study Hours Trend</h3>
                     {dailyStudyChartData.length === 0 ? (
                       <div className="py-16 text-center text-slate-400 text-sm">
@@ -619,7 +599,7 @@ const Analytics: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 -xs">
                     <h3 className="text-base font-bold text-slate-900 mb-4">Study Category Breakdown</h3>
                     {!studyData.typeDistribution || studyData.typeDistribution.length === 0 ? (
                       <div className="py-16 text-center text-slate-400 text-xs">
@@ -652,29 +632,28 @@ const Analytics: React.FC = () => {
               </div>
             )}
 
-            {/* TEST & ACCURACY TRENDS TAB */}
             {activeTab === 'tests' && testsData && (
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Total Mocks</span>
                     <div className="text-2xl font-extrabold text-slate-900 mt-1">
                       {testsData.performance?.totalCompleted || testsData.mockTest?.summary?.totalTests || 0}
                     </div>
                   </div>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Average Mock Score</span>
                     <div className="text-2xl font-extrabold text-blue-600 mt-1">
                       {testsData.performance?.avgScorePercentage || testsData.mockTest?.summary?.avgPercentage || 0}%
                     </div>
                   </div>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Best Mock Score</span>
                     <div className="text-2xl font-extrabold text-emerald-600 mt-1">
                       {testsData.performance?.bestScorePercentage || testsData.mockTest?.summary?.bestScore || 0}%
                     </div>
                   </div>
-                  <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">PYQ Accuracy</span>
                     <div className="text-2xl font-extrabold text-indigo-600 mt-1">
                       {testsData.pyqAccuracy?.accuracy || 0}%
@@ -683,8 +662,8 @@ const Analytics: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Mock Score Trend Chart */}
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 -xs">
                     <h3 className="text-base font-bold text-slate-900 mb-4">Mock Test Score Trend</h3>
                     {scoreTrendChartData.length === 0 ? (
                       <div className="py-16 text-center text-slate-400 text-sm">
@@ -707,8 +686,7 @@ const Analytics: React.FC = () => {
                     )}
                   </div>
 
-                  {/* PYQ Accuracy Trend Chart */}
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 -xs">
                     <h3 className="text-base font-bold text-slate-900 mb-4">PYQ Accuracy Trend (% Correct)</h3>
                     {accuracyTrendChartData.length === 0 ? (
                       <div className="py-16 text-center text-slate-400 text-sm">
@@ -732,9 +710,8 @@ const Analytics: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Difficulty Breakdown */}
                 {pyqDifficultyChartData.length > 0 && (
-                  <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
+                  <div className="bg-white p-6 rounded-xl border border-slate-200 -xs">
                     <h3 className="text-base font-bold text-slate-900 mb-4">PYQ Accuracy by Question Difficulty</h3>
                     <div className="h-56 w-full">
                       <ResponsiveContainer width="100%" height="100%">
@@ -752,9 +729,8 @@ const Analytics: React.FC = () => {
               </div>
             )}
 
-            {/* SUBJECT PERFORMANCE TAB */}
             {activeTab === 'subjects' && subjectsData && (
-              <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs space-y-6">
+              <div className="bg-white p-6 rounded-xl border border-slate-200 -xs space-y-6">
                 <h3 className="text-base font-bold text-slate-900">Subject Accuracy Breakdown</h3>
 
                 {!subjectsData.subjects || subjectsData.subjects.length === 0 ? (
@@ -806,12 +782,11 @@ const Analytics: React.FC = () => {
           </div>
         )}
 
-        {/* ALGORITHM FORMULA MODAL */}
         {showFormulaModal && (
           <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-            <div className="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="bg-white rounded-xl max-w-2xl w-full p-6  border border-slate-200 space-y-4 max-h-[90vh] overflow-y-auto">
               <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 className="text-lg font-bold text-slate-900">Deterministic Weak-Topic Formula</h3>
+                <h3 className="text-lg font-bold text-slate-900">Topic Mastery Scoring</h3>
                 <button
                   onClick={() => setShowFormulaModal(false)}
                   className="text-slate-400 hover:text-slate-700 text-xl font-bold"
@@ -821,11 +796,11 @@ const Analytics: React.FC = () => {
               </div>
 
               <div className="space-y-3 text-xs md:text-sm text-slate-700 leading-relaxed">
-                <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-blue-900 font-medium">
-                  <strong>Zero LLM Dependency:</strong> Topic mastery score ($S_{'{topic}'}$) is computed 100% deterministically using the formula below.
+                <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-indigo-900 font-medium">
+                  <strong>Mastery Calculation:</strong> Topic mastery score is computed based on practice accuracy, recency, syllabus progress, and revision schedules.
                 </div>
 
-                <div className="p-4 bg-slate-900 text-slate-100 rounded-2xl font-mono text-xs space-y-1">
+                <div className="p-4 bg-slate-900 text-slate-100 rounded-xl font-mono text-xs space-y-1">
                   <p className="text-emerald-400 font-bold">S_topic = min(100, max(0, A_weighted * M_syl + P_rev))</p>
                   <p className="text-slate-400 mt-2">1. Practice Accuracy (A_combined): 50% PYQ + 50% Mock</p>
                   <p className="text-slate-400">2. Recency Weighting (A_weighted): 60% (Last 30 Days) + 40% (Overall)</p>
@@ -853,7 +828,7 @@ const Analytics: React.FC = () => {
               <div className="pt-2 flex justify-end">
                 <button
                   onClick={() => setShowFormulaModal(false)}
-                  className="px-5 py-2 bg-slate-900 text-white rounded-xl font-semibold text-xs hover:bg-slate-800 transition-all"
+                  className="px-5 py-2 bg-slate-900 text-white rounded-xl font-semibold text-xs hover:bg-slate-800 "
                 >
                   Close Formula
                 </button>

@@ -83,7 +83,6 @@ const Profile: React.FC = () => {
     setError(null);
     setSuccess(null);
 
-    // Validation
     if (profile.availableDailyHours < 0 || profile.availableDailyHours > 24) {
       setError('Available daily hours must be between 0 and 24.');
       setSubmitting(false);
@@ -109,8 +108,7 @@ const Profile: React.FC = () => {
         targetInformation: res.data.targetInformation || '',
       });
       setSuccess('Profile updated successfully!');
-      
-      // Auto dismiss success message
+
       setTimeout(() => setSuccess(null), 3000);
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to update profile.');
@@ -232,7 +230,6 @@ const Profile: React.FC = () => {
           </div>
         </form>
 
-        {/* Quick Feature Navigation */}
         <div className="profile-quick-nav">
           <h3>Explore Platform Features</h3>
           <p>Directly jump to any feature from here:</p>

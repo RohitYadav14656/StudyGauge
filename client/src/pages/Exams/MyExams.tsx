@@ -104,7 +104,7 @@ const MyExams: React.FC = () => {
   return (
     <div className="my-exams-container">
       <div className="my-exams-content">
-        {/* Header */}
+        
         <div className="my-exams-header">
           <span className="header-badge">🎯 EXAM TARGET MANAGER</span>
           <h1>My Target Competitive Exams</h1>
@@ -121,7 +121,6 @@ const MyExams: React.FC = () => {
           </div>
         )}
 
-        {/* Exams Grid */}
         {loading ? (
           <div style={{ textAlign: 'center', padding: '5rem 0', color: '#94a3b8' }}>
             <div style={{ width: '32px', height: '32px', border: '3px solid #38bdf8', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 1rem', animation: 'spin 1s linear infinite' }}></div>
@@ -202,7 +201,6 @@ const MyExams: React.FC = () => {
           </div>
         )}
 
-        {/* Floating/Sticky Save Action Bar */}
         {selectedExamIds.size > 0 && (
           <div className="sticky-save-bar">
             <div className="save-bar-info">

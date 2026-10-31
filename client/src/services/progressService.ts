@@ -5,7 +5,7 @@ export const getUserTopicProgress = async (examId: string) => {
   const response = await axios.get(`/api/users/exams/${examId}/progress`, {
     headers: { Authorization: `Bearer ${token}` }
   });
-  return response.data; // Returns a map { topicId: status }
+  return response.data;
 };
 
 export const updateUserTopicProgress = async (examId: string, topicId: string, status: string) => {

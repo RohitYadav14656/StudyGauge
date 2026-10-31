@@ -7,7 +7,7 @@ export interface PlanItemType {
   subject: string;
   priority: PlanPriority;
   status: PlanStatus;
-  plannedDuration: number; // in minutes
-  actualDuration: number; // in minutes
-  date: string; // ISO date string for grouping
+  plannedDuration: number;
+  actualDuration: number;
+  date: string;
 }

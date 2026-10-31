@@ -7,8 +7,6 @@ import {
 } from '../../services/activityTimelineService';
 import './ActivityTimeline.css';
 
-// ─── Constants ─────────────────────────────────────────────
-
 const TYPE_CONFIG: Record<
   ActivityType,
   { icon: string; label: string; color: string }
@@ -31,8 +29,6 @@ const DATE_PRESETS = [
 ];
 
 const ITEMS_PER_PAGE = 20;
-
-// ─── Helpers ───────────────────────────────────────────────
 
 const subtractDays = (days: number): string => {
   const d = new Date();
@@ -80,10 +76,8 @@ const groupByDay = (activities: TimelineActivity[]): Map<string, TimelineActivit
   return groups;
 };
 
-// ─── Component ─────────────────────────────────────────────
-
 const ActivityTimeline: React.FC = () => {
-  // State
+
   const [activities, setActivities] = useState<TimelineActivity[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -91,13 +85,10 @@ const ActivityTimeline: React.FC = () => {
   const [page, setPage] = useState(1);
   const [_totalCount, setTotalCount] = useState(0);
 
-  // Filters
   const [datePreset, setDatePreset] = useState('30d');
   const [customStartDate, setCustomStartDate] = useState('');
   const [customEndDate, setCustomEndDate] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<Set<ActivityType>>(new Set(ALL_TYPES));
-
-  // ─── Compute effective date range ────────────────────────
 
   const effectiveDates = useMemo(() => {
     if (datePreset === 'custom') {
@@ -109,8 +100,6 @@ const ActivityTimeline: React.FC = () => {
     const days = parseInt(datePreset, 10);
     return { startDate: subtractDays(days), endDate: undefined };
   }, [datePreset, customStartDate, customEndDate]);
-
-  // ─── Fetch activities ────────────────────────────────────
 
   const fetchActivities = useCallback(
     async (pageNum: number, append: boolean = false) => {
@@ -128,7 +117,6 @@ const ActivityTimeline: React.FC = () => {
           ...(effectiveDates.endDate ? { endDate: effectiveDates.endDate } : {}),
         };
 
-        // Only send types filter if not all selected
         if (selectedTypes.size < ALL_TYPES.length && selectedTypes.size > 0) {
           params.types = Array.from(selectedTypes).join(',');
         }
@@ -154,12 +142,9 @@ const ActivityTimeline: React.FC = () => {
     [effectiveDates, selectedTypes]
   );
 
-  // Re-fetch when filters change
   useEffect(() => {
     fetchActivities(1, false);
   }, [fetchActivities]);
-
-  // ─── Event handlers ──────────────────────────────────────
 
   const handleLoadMore = () => {
     if (!loadingMore && hasMore) {
@@ -175,7 +160,7 @@ const ActivityTimeline: React.FC = () => {
     setSelectedTypes((prev) => {
       const next = new Set(prev);
       if (next.has(type)) {
-        // Don't allow deselecting all
+
         if (next.size === 1) return prev;
         next.delete(type);
       } else {
@@ -196,11 +181,8 @@ const ActivityTimeline: React.FC = () => {
     datePreset !== '30d' ||
     selectedTypes.size < ALL_TYPES.length;
 
-  // ─── Grouped data ────────────────────────────────────────
-
   const groupedActivities = useMemo(() => groupByDay(activities), [activities]);
 
-  // Summary stats
   const stats = useMemo(() => {
     const totalDuration = activities.reduce((sum, a) => sum + (a.durationMinutes || 0), 0);
     const typeCounts: Partial<Record<ActivityType, number>> = {};
@@ -209,8 +191,6 @@ const ActivityTimeline: React.FC = () => {
     }
     return { totalActivities: activities.length, totalDuration, typeCounts, daysCount: groupedActivities.size };
   }, [activities, groupedActivities]);
-
-  // ─── Render helpers ──────────────────────────────────────
 
   const renderMetaChips = (activity: TimelineActivity) => {
     const chips: React.ReactNode[] = [];
@@ -284,8 +264,6 @@ const ActivityTimeline: React.FC = () => {
     return chips;
   };
 
-  // ─── Skeleton loader ─────────────────────────────────────
-
   const renderSkeletons = () => (
     <>
       {[1, 2, 3, 4, 5].map((i) => (
@@ -298,12 +276,10 @@ const ActivityTimeline: React.FC = () => {
     </>
   );
 
-  // ─── Render ──────────────────────────────────────────────
-
   return (
     <div className="activity-timeline-page">
       <div className="timeline-container">
-        {/* Header */}
+        
         <div className="timeline-header">
           <div className="timeline-header-left">
             <h1>Activity Timeline</h1>
@@ -319,9 +295,8 @@ const ActivityTimeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Filters */}
         <div className="timeline-filters">
-          {/* Date row */}
+          
           <div className="timeline-filters-row">
             <span className="filter-label">📅 Date</span>
             <div className="date-preset-group">
@@ -356,7 +331,6 @@ const ActivityTimeline: React.FC = () => {
             )}
           </div>
 
-          {/* Type row */}
           <div className="timeline-filters-row">
             <span className="filter-label">🏷️ Type</span>
             {ALL_TYPES.map((type) => {
@@ -384,7 +358,6 @@ const ActivityTimeline: React.FC = () => {
           </div>
         </div>
 
-        {/* Summary Stats */}
         {!loading && activities.length > 0 && (
           <div className="timeline-stats">
             <div className="timeline-stat-card">
@@ -419,7 +392,6 @@ const ActivityTimeline: React.FC = () => {
           </div>
         )}
 
-        {/* Timeline Feed */}
         {loading ? (
           <div className="timeline-feed">
             {renderSkeletons()}
@@ -438,7 +410,7 @@ const ActivityTimeline: React.FC = () => {
           <div className="timeline-feed">
             {Array.from(groupedActivities.entries()).map(([dayKey, dayActivities]) => (
               <div key={dayKey} className="timeline-day-group">
-                {/* Day label */}
+                
                 <div className="timeline-day-label">
                   <span className="timeline-day-label-dot" />
                   {formatDayLabel(dayKey)}
@@ -447,7 +419,6 @@ const ActivityTimeline: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Activity cards for this day */}
                 {dayActivities.map((activity, idx) => {
                   const config = TYPE_CONFIG[activity.type];
                   return (
@@ -480,7 +451,6 @@ const ActivityTimeline: React.FC = () => {
               </div>
             ))}
 
-            {/* Load More / End marker */}
             <div className="timeline-load-more">
               {hasMore ? (
                 <button

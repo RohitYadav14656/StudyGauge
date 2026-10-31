@@ -10,7 +10,6 @@ const StudyTracker = () => {
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Filters
   const [filterType, setFilterType] = useState('');
   const [filterDate, setFilterDate] = useState('');
 
@@ -19,7 +18,7 @@ const StudyTracker = () => {
     startTime: new Date().toISOString().slice(0, 16),
     studyType: 'Lecture',
     durationMinutes: 0,
-    notes: ''
+    notes: '',
   });
 
   const fetchSessions = async () => {
@@ -50,7 +49,7 @@ const StudyTracker = () => {
     let monthlyTime = 0;
     const studyDates = new Set<string>();
 
-    sessions.forEach(session => {
+    sessions.forEach((session) => {
       const sessionDateStr = new Date(session.date).toISOString().split('T')[0];
       const sessionDate = new Date(sessionDateStr);
       const duration = session.durationMinutes || 0;
@@ -62,7 +61,6 @@ const StudyTracker = () => {
       if (sessionDate >= monthAgo) monthlyTime += duration;
     });
 
-    // Calculate Streak
     let streak = 0;
     let checkDate = new Date();
     while (true) {
@@ -71,8 +69,8 @@ const StudyTracker = () => {
         streak++;
         checkDate.setDate(checkDate.getDate() - 1);
       } else {
-        // If today is not studied yet, but yesterday was, it might still be a streak of yesterday
-        if (streak === 0 && dateStr === todayStr) {
+
+        if (streak === 0 && checkDate.toDateString() === new Date().toDateString()) {
           checkDate.setDate(checkDate.getDate() - 1);
           continue;
         }
@@ -84,9 +82,9 @@ const StudyTracker = () => {
   }, [sessions]);
 
   const filteredSessions = useMemo(() => {
-    return sessions.filter(session => {
-      const dateStr = new Date(session.date).toISOString().split('T')[0];
-      if (filterType && session.studyType !== filterType) return false;
+    return sessions.filter((s) => {
+      if (filterType && s.studyType !== filterType) return false;
+      const dateStr = new Date(s.date).toISOString().split('T')[0];
       if (filterDate && dateStr !== filterDate) return false;
       return true;
     });
@@ -101,7 +99,7 @@ const StudyTracker = () => {
         endTime: session.endTime ? new Date(session.endTime).toISOString().slice(0, 16) : '',
         durationMinutes: session.durationMinutes || 0,
         studyType: session.studyType,
-        notes: session.notes || ''
+        notes: session.notes || '',
       });
     } else {
       setEditingId(null);
@@ -110,7 +108,7 @@ const StudyTracker = () => {
         startTime: new Date().toISOString().slice(0, 16),
         studyType: 'Lecture',
         durationMinutes: 0,
-        notes: ''
+        notes: '',
       });
     }
     setIsModalOpen(true);
@@ -150,188 +148,213 @@ const StudyTracker = () => {
     return `${h}h ${m}m`;
   };
 
+  const getStudyTypeBadge = (type: string) => {
+    switch (type) {
+      case 'Lecture':
+        return 'sg-badge-indigo';
+      case 'Reading':
+        return 'sg-badge-teal';
+      case 'Practice':
+      case 'PYQ':
+        return 'sg-badge-amber';
+      case 'Mock Test':
+        return 'sg-badge-red';
+      case 'Revision':
+        return 'bg-purple-50 text-purple-700 border border-purple-200';
+      default:
+        return 'bg-slate-50 text-slate-700 border border-slate-200';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950/40 text-slate-100 p-4 sm:p-6 md:p-8">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80 backdrop-blur-xl shadow-xl">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">
-              Study Tracker
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">Monitor your daily study hours, streaks, and learning habits.</p>
+    <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
+      
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-xl border border-slate-200 ">
+        <div>
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 text-indigo-600 rounded-xl text-xs font-semibold mb-2">
+            <span>⏱️</span> Study Tracker
           </div>
-          <button 
-            onClick={() => handleOpenModal()}
-            className="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transition-all active:scale-95 flex items-center justify-center gap-2"
-          >
-            <span>+</span> Add Session
-          </button>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            Study Session Tracker
+          </h1>
+          <p className="text-slate-500 text-sm mt-1">
+            Monitor your daily study hours, streaks, and subject focus blocks.
+          </p>
         </div>
 
-        {/* Study Timer Component */}
-        <StudyTimer onSessionSaved={fetchSessions} />
+        <button onClick={() => handleOpenModal()} className="sg-btn-primary text-sm ">
+          <span>+</span> Manual Entry
+        </button>
+      </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-slate-900/60 p-5 rounded-2xl shadow-xl border border-slate-800/80 backdrop-blur-xl flex flex-col items-center text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Today</span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-blue-400">{formatDuration(stats.todayTime)}</span>
-          </div>
-          <div className="bg-slate-900/60 p-5 rounded-2xl shadow-xl border border-slate-800/80 backdrop-blur-xl flex flex-col items-center text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">This Week</span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-indigo-400">{formatDuration(stats.weeklyTime)}</span>
-          </div>
-          <div className="bg-slate-900/60 p-5 rounded-2xl shadow-xl border border-slate-800/80 backdrop-blur-xl flex flex-col items-center text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">This Month</span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-cyan-400">{formatDuration(stats.monthlyTime)}</span>
-          </div>
-          <div className="bg-slate-900/60 p-5 rounded-2xl shadow-xl border border-slate-800/80 backdrop-blur-xl flex flex-col items-center text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">Streak</span>
-            <span className="text-2xl sm:text-3xl font-extrabold flex items-center text-amber-400">
-              {stats.streak} <span className="text-lg ml-1">🔥</span>
-            </span>
-          </div>
+      {error && (
+        <div className="p-4 bg-red-50 text-red-700 border border-red-200 rounded-xl text-sm">
+          {error}
+        </div>
+      )}
+
+      <StudyTimer onSessionSaved={fetchSessions} />
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-white p-5 rounded-xl  border border-slate-200 flex flex-col items-center text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Today</span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-indigo-600">
+            {formatDuration(stats.todayTime)}
+          </span>
+          <span className="text-xs text-slate-400 mt-1">Logged today</span>
         </div>
 
-        {/* Filters & History */}
-        <div className="bg-slate-900/60 rounded-2xl shadow-xl border border-slate-800/80 backdrop-blur-xl overflow-hidden">
-          <div className="p-5 border-b border-slate-800/80 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-900/80">
-            <h2 className="text-lg font-bold text-slate-100">Study History</h2>
-            <div className="flex flex-wrap gap-3 w-full sm:w-auto">
-              <input 
-                type="date" 
-                value={filterDate}
-                onChange={(e) => setFilterDate(e.target.value)}
-                className="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:border-blue-500 outline-none"
-              />
-              <select 
-                value={filterType} 
-                onChange={(e) => setFilterType(e.target.value)}
-                className="px-3 py-2 bg-slate-950/80 border border-slate-800 rounded-xl text-xs sm:text-sm text-slate-200 focus:border-blue-500 outline-none"
-              >
-                <option value="">All Types</option>
-                <option value="Lecture">Lecture</option>
-                <option value="Reading">Reading</option>
-                <option value="Practice">Practice</option>
-                <option value="PYQ">PYQ</option>
-                <option value="Mock Test">Mock Test</option>
-                <option value="Revision">Revision</option>
-              </select>
-            </div>
-          </div>
+        <div className="bg-white p-5 rounded-xl  border border-slate-200 flex flex-col items-center text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Last 7 Days</span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-teal-600">
+            {formatDuration(stats.weeklyTime)}
+          </span>
+          <span className="text-xs text-slate-400 mt-1">Weekly total</span>
+        </div>
 
-          <div className="p-0">
-            {loading ? (
-              <div className="p-10 text-center text-slate-400">Loading sessions...</div>
-            ) : error ? (
-              <div className="p-10 text-center text-rose-400 bg-rose-950/30 border border-rose-800/50 m-5 rounded-xl">{error}</div>
-            ) : filteredSessions.length === 0 ? (
-              <div className="p-16 text-center flex flex-col items-center">
-                <div className="w-16 h-16 bg-slate-800/60 rounded-2xl flex items-center justify-center mb-4 text-2xl border border-slate-700/50">📚</div>
-                <h3 className="text-slate-200 font-semibold text-lg">No sessions recorded</h3>
-                <p className="text-slate-400 text-sm mt-1">Add a study session to track your history.</p>
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[600px]">
-                  <thead>
-                    <tr className="bg-slate-950/50 text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-800/80">
-                      <th className="p-4">Date</th>
-                      <th className="p-4">Type</th>
-                      <th className="p-4">Duration</th>
-                      <th className="p-4">Notes</th>
-                      <th className="p-4 text-right">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-800/60">
-                    {filteredSessions.map((s) => (
-                      <tr key={s._id} className="hover:bg-slate-800/30 transition-colors">
-                        <td className="p-4 text-sm">
-                          <div className="font-semibold text-slate-200">{new Date(s.date).toLocaleDateString()}</div>
-                          <div className="text-xs text-slate-400">
-                            {new Date(s.startTime).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                          </div>
-                        </td>
-                        <td className="p-4">
-                          <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                            {s.studyType}
-                          </span>
-                        </td>
-                        <td className="p-4 font-semibold text-slate-300 text-sm">
-                          {formatDuration(s.durationMinutes || 0)}
-                        </td>
-                        <td className="p-4 text-xs text-slate-400 max-w-xs truncate">
-                          {s.notes || '-'}
-                        </td>
-                        <td className="p-4 text-right whitespace-nowrap">
-                          <button onClick={() => handleOpenModal(s)} className="text-blue-400 hover:text-blue-300 text-xs font-semibold mr-3">Edit</button>
-                          <button onClick={() => handleDelete(s._id!)} className="text-rose-400 hover:text-rose-300 text-xs font-semibold">Delete</button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+        <div className="bg-white p-5 rounded-xl  border border-slate-200 flex flex-col items-center text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Last 30 Days</span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+            {formatDuration(stats.monthlyTime)}
+          </span>
+          <span className="text-xs text-slate-400 mt-1">Monthly velocity</span>
+        </div>
+
+        <div className="bg-white p-5 rounded-xl  border border-slate-200 flex flex-col items-center text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-1">Study Streak</span>
+          <span className="text-2xl sm:text-3xl font-extrabold text-amber-500">
+            {stats.streak} <span className="text-base font-semibold">days</span>
+          </span>
+          <span className="text-xs text-slate-400 mt-1">🔥 Current run</span>
         </div>
       </div>
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md">
-          <div className="bg-slate-900 rounded-2xl w-full max-w-md border border-slate-800 shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-950/50">
-              <h3 className="text-lg font-bold text-slate-100">{editingId ? 'Edit Session' : 'Add Study Session'}</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-200 rounded-lg p-1 hover:bg-slate-800">
-                ✕
+      <div className="bg-white rounded-xl  border border-slate-200 p-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h3 className="text-lg font-bold text-slate-900">Logged Study Sessions</h3>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <select
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="px-3 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-indigo-600"
+            >
+              <option value="">All Types</option>
+              <option value="Lecture">Lecture</option>
+              <option value="Reading">Reading</option>
+              <option value="Practice">Practice</option>
+              <option value="PYQ">PYQ</option>
+              <option value="Mock Test">Mock Test</option>
+              <option value="Revision">Revision</option>
+            </select>
+
+            <input
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="px-3 py-1.5 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 outline-none focus:border-indigo-600"
+            />
+
+            {(filterType || filterDate) && (
+              <button
+                onClick={() => {
+                  setFilterType('');
+                  setFilterDate('');
+                }}
+                className="text-xs text-indigo-600 font-bold hover:underline"
+              >
+                Clear
               </button>
-            </div>
-            
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            )}
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="py-12 text-center text-slate-400">Loading session history...</div>
+        ) : filteredSessions.length === 0 ? (
+          <div className="py-12 text-center text-slate-400">
+            No sessions match the selected criteria.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-slate-100 text-xs font-bold uppercase tracking-wider text-slate-400">
+                  <th className="py-3 px-4">Date</th>
+                  <th className="py-3 px-4">Category</th>
+                  <th className="py-3 px-4">Duration</th>
+                  <th className="py-3 px-4">Notes</th>
+                  <th className="py-3 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredSessions.map((session) => (
+                  <tr key={session._id} className="hover:bg-slate-50/50 ">
+                    <td className="py-3 px-4 font-semibold text-slate-900">
+                      {new Date(session.date).toLocaleDateString()}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className={`sg-badge ${getStudyTypeBadge(session.studyType)}`}>
+                        {session.studyType}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-bold text-slate-900">
+                      {session.durationMinutes} mins
+                    </td>
+                    <td className="py-3 px-4 text-slate-500 max-w-xs truncate">
+                      {session.notes || '—'}
+                    </td>
+                    <td className="py-3 px-4 text-right space-x-2">
+                      <button
+                        onClick={() => handleOpenModal(session)}
+                        className="text-xs font-bold text-indigo-600 hover:underline"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(session._id!)}
+                        className="text-xs font-bold text-red-600 hover:underline"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/50 backdrop-blur-sm">
+          <div className="bg-white rounded-xl w-full max-w-md border border-slate-200  p-6">
+            <h3 className="text-lg font-bold text-slate-900 mb-4">
+              {editingId ? 'Edit Study Session' : 'Log Manual Study Session'}
+            </h3>
+
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Date</label>
-                <input 
-                  type="date" 
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Date
+                </label>
+                <input
+                  type="date"
                   required
                   value={formData.date}
-                  onChange={e => setFormData({...formData, date: e.target.value})}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:border-blue-500 outline-none text-sm"
+                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-900 outline-none focus:border-indigo-600"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Start Time</label>
-                  <input 
-                    type="datetime-local" 
-                    required
-                    value={formData.startTime}
-                    onChange={e => setFormData({...formData, startTime: e.target.value})}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:border-blue-500 outline-none text-xs"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Duration (mins)</label>
-                  <input 
-                    type="number" 
-                    min="0"
-                    required
-                    value={formData.durationMinutes}
-                    onChange={e => setFormData({...formData, durationMinutes: parseInt(e.target.value) || 0})}
-                    className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:border-blue-500 outline-none text-sm"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Study Type</label>
-                <select 
-                  required
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Category
+                </label>
+                <select
                   value={formData.studyType}
-                  onChange={e => setFormData({...formData, studyType: e.target.value as any})}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:border-blue-500 outline-none text-sm"
+                  onChange={(e) => setFormData({ ...formData, studyType: e.target.value as any })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-900 outline-none focus:border-indigo-600"
                 >
                   <option value="Lecture">Lecture</option>
                   <option value="Reading">Reading</option>
@@ -343,28 +366,45 @@ const StudyTracker = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Notes</label>
-                <textarea 
-                  rows={3}
-                  value={formData.notes || ''}
-                  onChange={e => setFormData({...formData, notes: e.target.value})}
-                  className="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:border-blue-500 outline-none text-sm resize-none"
-                  placeholder="What did you study?"
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Duration (Minutes)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  required
+                  value={formData.durationMinutes}
+                  onChange={(e) =>
+                    setFormData({ ...formData, durationMinutes: Number(e.target.value) })
+                  }
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-900 outline-none focus:border-indigo-600"
                 />
               </div>
 
-              <div className="pt-4 flex gap-3">
-                <button 
-                  type="button" 
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  value={formData.notes}
+                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                  rows={2}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-900 outline-none focus:border-indigo-600"
+                />
+              </div>
+
+              <div className="flex justify-end gap-2 pt-2">
+                <button
+                  type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-2.5 bg-slate-800 border border-slate-700 text-slate-300 rounded-xl hover:bg-slate-700 font-semibold text-sm transition-colors"
+                  className="sg-btn-secondary text-xs py-2 px-4"
                 >
                   Cancel
                 </button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={submitting}
-                  className="flex-1 px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-500 font-semibold text-sm transition-colors disabled:opacity-50 flex items-center justify-center shadow-lg shadow-blue-500/20"
+                  className="sg-btn-primary text-xs py-2 px-5 disabled:opacity-50"
                 >
                   {submitting ? 'Saving...' : 'Save Session'}
                 </button>

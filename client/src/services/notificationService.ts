@@ -53,6 +53,8 @@ const getHeaders = () => {
 
 export const notificationService = {
   getNotifications: async (params: NotificationQueryParams = {}): Promise<NotificationListResponse> => {
+    const token = localStorage.getItem('token');
+    if (!token) return { notifications: [], total: 0, page: 1, totalPages: 1, unreadCount: 0 };
     const res = await axios.get('/api/notifications', {
       params,
       ...getHeaders(),
@@ -61,10 +63,12 @@ export const notificationService = {
   },
 
   getUnreadCount: async (): Promise<number> => {
+    const token = localStorage.getItem('token');
+    if (!token) return 0;
     const res = await axios.get('/api/notifications/unread-count', {
       ...getHeaders(),
     });
-    return res.data.data.unreadCount;
+    return res.data?.data?.unreadCount || 0;
   },
 
   markAsRead: async (id: string): Promise<NotificationItem> => {

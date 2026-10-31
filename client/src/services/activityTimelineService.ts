@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-// ─── Types ────────────────────────────────────────────────────
-
 export type ActivityType =
   | 'study_session'
   | 'mock_test'
@@ -37,12 +35,10 @@ export interface TimelineResponse {
 export interface TimelineFilterParams {
   startDate?: string;
   endDate?: string;
-  types?: string; // comma-separated
+  types?: string;
   page?: number;
   limit?: number;
 }
-
-// ─── Service ──────────────────────────────────────────────────
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');

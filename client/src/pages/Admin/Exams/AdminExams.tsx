@@ -74,7 +74,7 @@ const AdminExams: React.FC = () => {
         await createExam(formData);
       }
       handleCloseModal();
-      fetchExams(); // Refresh list
+      fetchExams();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to save exam');
     }

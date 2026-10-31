@@ -8,7 +8,7 @@ const getHeaders = () => {
 export interface PYQOption {
   _id?: string;
   text: string;
-  isCorrect?: boolean; // May not be sent in list view until attempted
+  isCorrect?: boolean;
 }
 
 export interface PYQData {

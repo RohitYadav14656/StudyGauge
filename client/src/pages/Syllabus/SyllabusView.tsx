@@ -28,7 +28,6 @@ interface AnalyticsData {
   subjects: SubjectAnalytics[];
 }
 
-
 interface Subtopic {
   _id: string;
   name: string;
@@ -75,8 +74,7 @@ const SyllabusView: React.FC = () => {
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
-  // Track expanded state for subjects and topics
+
   const [expandedSubjects, setExpandedSubjects] = useState<Record<string, boolean>>({});
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
 
@@ -109,8 +107,7 @@ const SyllabusView: React.FC = () => {
               console.error('Failed to authenticate user', authErr);
             }
           }
-          
-          // Expand first subject by default
+
           if (res.syllabus && res.syllabus.length > 0) {
             setExpandedSubjects({ [res.syllabus[0]._id]: true });
           }
@@ -142,19 +139,18 @@ const SyllabusView: React.FC = () => {
 
   const handleStatusChange = async (topicId: string, newStatus: string) => {
     if (!examId || !isStudent) return;
-    
-    // Optimistic UI update
+
     const previousStatus = progressMap[topicId] || 'Not Started';
     setProgressMap(prev => ({ ...prev, [topicId]: newStatus }));
     
     try {
       await updateUserTopicProgress(examId, topicId, newStatus);
-      // Refresh analytics after status change
+
       const updatedAnalytics = await getExamProgressAnalytics(examId);
       setAnalytics(updatedAnalytics);
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to update progress. Have you added this exam to your list?');
-      // Revert on error
+
       setProgressMap(prev => ({ ...prev, [topicId]: previousStatus }));
     }
   };

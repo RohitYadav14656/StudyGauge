@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-// Student: Get Exam Syllabus
 export const getExamSyllabus = async (examId: string) => {
   const token = localStorage.getItem('token');
   const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -8,7 +7,6 @@ export const getExamSyllabus = async (examId: string) => {
   return response.data;
 };
 
-// Admin: Subjects
 export const getSubjects = async (examId?: string) => {
   const token = localStorage.getItem('token');
   const params = examId ? { examId } : {};
@@ -35,7 +33,6 @@ export const updateSubject = async (id: string, data: any) => {
   return response.data;
 };
 
-// Admin: Topics
 export const getTopics = async (examId?: string, subjectId?: string) => {
   const token = localStorage.getItem('token');
   const params: any = {};

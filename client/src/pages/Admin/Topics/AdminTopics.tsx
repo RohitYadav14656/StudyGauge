@@ -92,7 +92,7 @@ const AdminTopics: React.FC = () => {
   }, [selectedExam, selectedSubject]);
 
   const handleOpenModal = async (topic?: Topic) => {
-    // If we have selected an exam, ensure we have subjects loaded for the dropdown
+
     let currentSubjects = subjects;
     if (selectedExam && subjects.length === 0) {
        currentSubjects = await getSubjects(selectedExam);
@@ -103,8 +103,7 @@ const AdminTopics: React.FC = () => {
       setEditingTopic(topic);
       const eId = topic.examId ? (typeof topic.examId === 'object' ? topic.examId._id : topic.examId) : '';
       const sId = topic.subjectId ? (typeof topic.subjectId === 'object' ? topic.subjectId._id : topic.subjectId) : '';
-      
-      // If editing and we don't have subjects for this exam loaded in the modal dropdown, load them
+
       if (eId !== selectedExam) {
          const newSubjects = await getSubjects(eId);
          setSubjects(newSubjects);
@@ -139,7 +138,6 @@ const AdminTopics: React.FC = () => {
     setEditingTopic(null);
   };
 
-  // Subtopic Handlers
   const addSubtopic = () => {
     setFormData(prev => ({
       ...prev,
@@ -167,7 +165,7 @@ const AdminTopics: React.FC = () => {
         await createTopic(formData);
       }
       handleCloseModal();
-      fetchTopics(); // Refresh list
+      fetchTopics();
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to save topic');
     }

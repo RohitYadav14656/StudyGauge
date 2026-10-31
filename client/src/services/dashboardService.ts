@@ -178,6 +178,10 @@ const getHeaders = () => {
 
 export const dashboardService = {
   getDashboard: async (): Promise<DashboardResponse> => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
     const response = await axios.get('/api/dashboard', getHeaders());
     return response.data;
   },

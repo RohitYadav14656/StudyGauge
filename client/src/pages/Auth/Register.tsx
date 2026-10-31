@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Auth.css';
 
 const Register: React.FC = () => {
@@ -9,12 +9,9 @@ const Register: React.FC = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  
-  const navigate = useNavigate();
 
   const validatePassword = (pwd: string) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-    return regex.test(pwd);
+    return pwd.length >= 8;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -27,7 +24,7 @@ const Register: React.FC = () => {
     }
 
     if (!validatePassword(password)) {
-      setError('Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a number, and a special character.');
+      setError('Password must be at least 8 characters long.');
       return;
     }
 
@@ -35,10 +32,12 @@ const Register: React.FC = () => {
 
     try {
       const res = await axios.post('/api/auth/register', { name, email, password });
-      // Save token
-      localStorage.setItem('token', res.data.token);
-      // Redirect to profile setup
-      navigate('/profile');
+      if (res.data?.token) {
+        localStorage.setItem('token', res.data.token);
+        window.location.href = '/my-exams';
+      } else {
+        setError('Registration succeeded, but token missing.');
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to register. Please try again.');
     } finally {
@@ -50,11 +49,12 @@ const Register: React.FC = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-header">
+          <div className="auth-brand-badge">StudyGauge Portal</div>
           <h2>Create Account</h2>
-          <p>Join StudyGauge and transform your preparation</p>
+          <p>Register to start your preparation tracking</p>
         </div>
 
-        {error && <div className="auth-alert">{error}</div>}
+        {error && <div className="auth-error">{error}</div>}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
@@ -64,13 +64,13 @@ const Register: React.FC = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
+              placeholder="Full Name"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Email Address</label>
+            <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
@@ -82,7 +82,7 @@ const Register: React.FC = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Password (min 8 characters)</label>
             <input
               type="password"
               id="password"
@@ -93,13 +93,13 @@ const Register: React.FC = () => {
             />
           </div>
 
-          <button type="submit" className="auth-button" disabled={loading}>
-            {loading ? 'Creating Account...' : 'Sign Up'}
+          <button type="submit" className="auth-btn-submit" disabled={loading}>
+            {loading ? 'Registering...' : 'Register'}
           </button>
         </form>
 
         <div className="auth-footer">
-          <p>Already have an account? <Link to="/login">Log in here</Link></p>
+          Already have an account? <Link to="/login">Sign In</Link>
         </div>
       </div>
     </div>

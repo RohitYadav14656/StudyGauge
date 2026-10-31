@@ -50,7 +50,7 @@
   color: #94a3b8;
   text-decoration: none;
   border-radius: 0.5rem;
-  transition: all 0.3s ease;
+  transition: none;
 }
 
 .admin-nav a:hover {
@@ -98,7 +98,7 @@
   cursor: pointer;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: none;
 }
 
 .btn-logout {
