@@ -709,41 +709,92 @@
   .sg-page-content {
     padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
   }
-}
 
-@media (max-width: 640px) {
+  /* Mobile Topbar: ONLY 3 items visible: Logo, StudyGauge, and Dropdown trigger */
   .sg-topbar {
-    padding: 0 0.85rem;
+    padding: 0 1rem;
     height: 56px;
+  }
+
+  .sg-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
+  .sg-mobile-toggle {
+    display: none !important;
+  }
+
+  .sg-topbar-brand-mobile {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .sg-topbar-right {
     gap: 0.4rem;
   }
 
+  .sg-active-exam-pill,
+  .sg-timer-quick-btn,
+  .sg-topbar-bell-wrapper,
+  .sg-theme-toggle-top {
+    display: none !important;
+  }
+
+  .sg-profile-dropdown-wrapper {
+    display: block;
+  }
+
+  .sg-profile-trigger {
+    padding: 0.25rem 0.5rem;
+    background: var(--color-card-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    gap: 0.35rem;
+  }
+
+  .sg-profile-name {
+    display: none !important;
+  }
+
+  .sg-avatar-sm {
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
+    border-radius: 4px;
+  }
+
+  .sg-chevron {
+    font-size: 0.65rem;
+    color: var(--color-text);
+  }
+
+  /* Mobile Dropdown Styling */
   .sg-dropdown-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(2px);
-    z-index: 45;
+    background: rgba(15, 23, 42, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 55;
   }
 
   .sg-dropdown-menu {
     position: fixed;
-    top: 60px;
+    top: 62px;
     right: 12px;
     left: 12px;
     width: auto;
     max-width: 380px;
     margin-left: auto;
     border-radius: 5px;
-    padding: 0.75rem;
+    padding: 0.85rem;
     background: var(--color-card);
     border: 1px solid var(--color-border);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
-    z-index: 50;
-    max-height: calc(100vh - 75px);
+    box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18) !important;
+    z-index: 60;
+    max-height: calc(100vh - 80px);
     overflow-y: auto;
   }
 
@@ -751,16 +802,69 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 0.5rem 0.85rem;
-    margin-bottom: 0.5rem;
+    padding: 0.65rem 0.5rem 0.85rem;
+    margin-bottom: 0.35rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .sg-dropdown-user-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sg-user-badge {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.15rem 0.45rem;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border: 1px solid rgba(79, 70, 229, 0.2);
+    border-radius: 3px;
+  }
+
+  .sg-dropdown-theme-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.75rem;
+    margin: 0.45rem 0 0.65rem;
+    background: var(--color-card-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+  }
+
+  .sg-dropdown-theme-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-dark);
+  }
+
+  .sg-dropdown-theme-btn {
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.25rem 0.65rem;
+    font-size: 0.775rem;
+    font-weight: 700;
+    color: var(--color-text-dark);
+    cursor: pointer;
+  }
+
+  .sg-dropdown-theme-btn:hover {
+    background: var(--color-border);
   }
 
   .sg-dropdown-nav-mobile {
     display: block;
     margin: 0.25rem 0;
     padding: 0.25rem 0;
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
   }
 
   .sg-dropdown-item {
@@ -779,6 +883,14 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-muted);
-    padding: 0.35rem 0.75rem 0.2rem;
+    padding: 0.65rem 0.75rem 0.25rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .sg-dropdown-menu {
+    right: 8px;
+    left: 8px;
+    max-width: 100%;
   }
 }

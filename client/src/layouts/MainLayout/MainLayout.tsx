@@ -374,7 +374,9 @@ const MainLayout: React.FC = () => {
               <span className="hidden sm:inline text-xs font-semibold">Timer</span>
             </Link>
 
-            <NotificationBell />
+            <div className="sg-topbar-bell-wrapper">
+              <NotificationBell />
+            </div>
 
             <button
               onClick={toggleTheme}
@@ -406,13 +408,31 @@ const MainLayout: React.FC = () => {
                     <div className="sg-dropdown-header">
                       <div className="sg-avatar-sm">{getUserInitials(user?.name)}</div>
                       <div className="sg-dropdown-user-info">
-                        <p className="sg-dropdown-user-name">{user?.name || 'Student'}</p>
+                        <div className="sg-dropdown-user-row">
+                          <p className="sg-dropdown-user-name">{user?.name || 'Student'}</p>
+                          <span className="sg-user-badge">{user?.role === 'admin' ? 'Admin' : 'Student'}</span>
+                        </div>
                         <p className="sg-dropdown-user-email">{user?.email || 'Active Account'}</p>
                       </div>
                     </div>
 
+                    <div className="sg-dropdown-theme-row">
+                      <span className="sg-dropdown-theme-label">
+                        <span>{isDarkMode ? '🌙' : '☀️'}</span>
+                        <span>Dark Mode</span>
+                      </span>
+                      <button
+                        onClick={toggleTheme}
+                        className="sg-dropdown-theme-btn"
+                        type="button"
+                        aria-label="Toggle theme"
+                      >
+                        {isDarkMode ? '☀️ Light' : '🌙 Dark'}
+                      </button>
+                    </div>
+
                     <div className="sg-dropdown-nav-mobile">
-                      <div className="sg-dropdown-section-label">Navigation</div>
+                      <div className="sg-dropdown-section-label">Preparation</div>
                       <Link
                         to="/dashboard"
                         className="sg-dropdown-item"
@@ -435,7 +455,7 @@ const MainLayout: React.FC = () => {
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <span className="sg-dropdown-item-icon">⏱️</span>
-                        <span>Study Tracker</span>
+                        <span>Study Tracker & Timer</span>
                       </Link>
                       <Link
                         to="/planner"
@@ -445,6 +465,16 @@ const MainLayout: React.FC = () => {
                         <span className="sg-dropdown-item-icon">📅</span>
                         <span>Study Planner</span>
                       </Link>
+                      <Link
+                        to="/goals"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">🎯</span>
+                        <span>Study Goals</span>
+                      </Link>
+
+                      <div className="sg-dropdown-section-label">Practice & Recall</div>
                       <Link
                         to="/mock-tests"
                         className="sg-dropdown-item"
@@ -470,12 +500,28 @@ const MainLayout: React.FC = () => {
                         <span>Spaced Revision</span>
                       </Link>
                       <Link
+                        to="/recommendations"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">💡</span>
+                        <span>Recommendations</span>
+                      </Link>
+                      <Link
                         to="/analytics"
                         className="sg-dropdown-item"
                         onClick={() => setIsDropdownOpen(false)}
                       >
                         <span className="sg-dropdown-item-icon">📈</span>
                         <span>Analytics</span>
+                      </Link>
+                      <Link
+                        to="/notifications"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">🔔</span>
+                        <span>Notifications</span>
                       </Link>
                     </div>
 
@@ -504,6 +550,16 @@ const MainLayout: React.FC = () => {
                       <span className="sg-dropdown-item-icon">🔗</span>
                       <span>Connected Apps</span>
                     </Link>
+                    {user?.role === 'admin' && (
+                      <Link
+                        to="/admin"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">🛡️</span>
+                        <span>Admin Portal</span>
+                      </Link>
+                    )}
 
                     <div className="sg-dropdown-divider" />
                     <button onClick={handleLogout} className="sg-dropdown-item text-red">
@@ -551,12 +607,12 @@ const MainLayout: React.FC = () => {
             <span className="sg-bottom-nav-label">Questions</span>
           </NavLink>
           <button
-            onClick={() => setIsSidebarOpen(true)}
+            onClick={() => setIsDropdownOpen((prev) => !prev)}
             className="sg-bottom-nav-item"
             aria-label="More menu"
           >
             <span className="sg-bottom-nav-icon">☰</span>
-            <span className="sg-bottom-nav-label">More</span>
+            <span className="sg-bottom-nav-label">Menu</span>
           </button>
         </nav>
       </div>
