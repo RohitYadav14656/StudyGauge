@@ -39,6 +39,12 @@ const Login: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
+        <div className="auth-card-top-nav">
+          <Link to="/" className="auth-home-btn" title="Return to Home">
+            ← Go to Home
+          </Link>
+        </div>
+
         <div className="auth-header">
           <div className="auth-brand-badge">StudyGauge Portal</div>
           <h2>Welcome Back</h2>
@@ -78,7 +84,12 @@ const Login: React.FC = () => {
         </form>
 
         <div className="auth-footer">
-          Don't have an account? <Link to="/register">Register</Link>
+          <div>
+            Don't have an account? <Link to="/register">Register</Link>
+          </div>
+          <div className="auth-footer-home">
+            <Link to="/">Back to Homepage</Link>
+          </div>
         </div>
       </div>
     </div>

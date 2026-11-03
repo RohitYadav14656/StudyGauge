@@ -14,6 +14,7 @@ const MainLayout: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     return localStorage.getItem('study_gauge_theme') === 'dark';
   });
@@ -72,6 +73,7 @@ const MainLayout: React.FC = () => {
 
   useEffect(() => {
     setIsSidebarOpen(false);
+    setIsMobileNavOpen(false);
   }, [location.pathname]);
 
   const handleLogout = () => {
@@ -117,20 +119,64 @@ const MainLayout: React.FC = () => {
             <div className="sg-public-actions">
               <button
                 onClick={toggleTheme}
-                className="sg-theme-toggle-btn"
+                className="sg-theme-toggle-btn sg-theme-toggle-desktop"
                 title={`Switch to ${isDarkMode ? 'Light' : 'Dark'} Mode`}
                 aria-label="Toggle theme"
               >
                 {isDarkMode ? '☀️' : '🌙'}
               </button>
-              <Link to="/login" className="sg-btn-secondary text-sm">
+              <Link to="/login" className="sg-btn-secondary text-sm sg-public-login-btn">
                 Log In
               </Link>
-              <Link to="/register" className="sg-btn-primary text-sm">
+              <Link to="/register" className="sg-btn-primary text-sm sg-public-register-btn">
                 Register Free
               </Link>
+              <button
+                className="sg-public-hamburger"
+                onClick={() => setIsMobileNavOpen((o) => !o)}
+                aria-label={isMobileNavOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={isMobileNavOpen}
+              >
+                {isMobileNavOpen ? '✕' : '☰'}
+              </button>
             </div>
           </div>
+
+          {isMobileNavOpen && (
+            <>
+              <div
+                className="sg-public-mobile-backdrop"
+                onClick={() => setIsMobileNavOpen(false)}
+                aria-hidden="true"
+              />
+              <div className="sg-public-mobile-menu" role="dialog" aria-label="Mobile navigation">
+                <div className="sg-public-mobile-menu-item sg-public-mobile-darkmode">
+                  <span>Dark Mode</span>
+                  <button
+                    onClick={toggleTheme}
+                    className="sg-public-mobile-theme-btn"
+                    aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+                  >
+                    {isDarkMode ? '☀️ Light' : '🌙 Dark'}
+                  </button>
+                </div>
+                <Link
+                  to="/login"
+                  className="sg-btn-secondary sg-public-mobile-action-btn"
+                  onClick={() => setIsMobileNavOpen(false)}
+                >
+                  Log In
+                </Link>
+                <Link
+                  to="/register"
+                  className="sg-btn-primary sg-public-mobile-action-btn"
+                  onClick={() => setIsMobileNavOpen(false)}
+                >
+                  Register Free
+                </Link>
+              </div>
+            </>
+          )}
         </header>
 
         <main>

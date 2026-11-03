@@ -48,6 +48,12 @@ const Register: React.FC = () => {
   return (
     <div className="auth-container">
       <div className="auth-card">
+        <div className="auth-card-top-nav">
+          <Link to="/" className="auth-home-btn" title="Return to Home">
+            ← Go to Home
+          </Link>
+        </div>
+
         <div className="auth-header">
           <div className="auth-brand-badge">StudyGauge Portal</div>
           <h2>Create Account</h2>
