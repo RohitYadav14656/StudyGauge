@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosInstance';
 
 export const getExamSyllabus = async (examId: string) => {
   const token = localStorage.getItem('token');

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosInstance';
 
 const getHeaders = () => {
   const token = localStorage.getItem('token');

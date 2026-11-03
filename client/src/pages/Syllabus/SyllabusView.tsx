@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../services/axiosInstance';
 import { getExamSyllabus } from '../../services/syllabusService';
 import { getUserTopicProgress, updateUserTopicProgress, getExamProgressAnalytics } from '../../services/progressService';
 import './SyllabusView.css';

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosInstance';
 
 export const getDashboardStats = async () => {
   const token = localStorage.getItem('token');

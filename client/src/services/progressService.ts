@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from './axiosInstance';
 
 export const getUserTopicProgress = async (examId: string) => {
   const token = localStorage.getItem('token');
