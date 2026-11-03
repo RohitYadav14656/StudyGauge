@@ -2,17 +2,9 @@ import mongoose from 'mongoose';
 import Revision from '../models/Revision.js';
 import Topic from '../models/Topic.js';
 
-/**
- * Helper to compute start and end of day boundaries accounting for timezone offset.
- *
- * @param {Date|string} dateInput Target date
- * @param {number} timezoneOffsetMinutes Offset in minutes (e.g. -330 for UTC+5:30)
- * @returns {{ startOfDay: Date, endOfDay: Date }}
- */
 export const getStartAndEndOfDay = (dateInput = new Date(), timezoneOffsetMinutes = 0) => {
   const dateObj = new Date(dateInput);
 
-  // Apply timezone offset shift
   const localTimeMs = dateObj.getTime() - timezoneOffsetMinutes * 60 * 1000;
   const localDate = new Date(localTimeMs);
 
@@ -23,21 +15,12 @@ export const getStartAndEndOfDay = (dateInput = new Date(), timezoneOffsetMinute
   const startOfDayLocal = new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
   const endOfDayLocal = new Date(Date.UTC(year, month, day, 23, 59, 59, 999));
 
-  // Convert back to UTC
   const startOfDay = new Date(startOfDayLocal.getTime() + timezoneOffsetMinutes * 60 * 1000);
   const endOfDay = new Date(endOfDayLocal.getTime() + timezoneOffsetMinutes * 60 * 1000);
 
   return { startOfDay, endOfDay };
 };
 
-/**
- * Calculates next revision date given a base date and interval stage in days.
- *
- * @param {Date} baseDate Starting date
- * @param {number[]} intervals Array of spaced interval days (e.g. [1, 3, 7, 14, 30])
- * @param {number} stage Index in intervals array
- * @returns {{ nextRevisionDate: Date, intervalDays: number }}
- */
 export const calculateNextRevisionDate = (baseDate, intervals = [1, 3, 7, 14, 30], stage = 0) => {
   const safeStage = Math.max(0, Math.min(stage, intervals.length - 1));
   const intervalDays = intervals[safeStage] || 1;
@@ -48,9 +31,6 @@ export const calculateNextRevisionDate = (baseDate, intervals = [1, 3, 7, 14, 30
   return { nextRevisionDate: nextDate, intervalDays };
 };
 
-/**
- * Retrieves all revisions due today or overdue for a user.
- */
 export const getDueRevisions = async (userId, options = {}) => {
   const { examId, subjectId, timezoneOffset = 0, targetDate = new Date() } = options;
   const { startOfDay, endOfDay } = getStartAndEndOfDay(targetDate, Number(timezoneOffset) || 0);
@@ -60,7 +40,6 @@ export const getDueRevisions = async (userId, options = {}) => {
     nextRevisionDate: { $lte: endOfDay },
   };
 
-  // Find all revisions due by end of today
   const revisions = await Revision.find(query)
     .populate({
       path: 'topicId',
@@ -73,7 +52,6 @@ export const getDueRevisions = async (userId, options = {}) => {
     .sort({ nextRevisionDate: 1 })
     .lean();
 
-  // Optional subject/exam filtering
   let filtered = revisions;
   if (subjectId && mongoose.Types.ObjectId.isValid(subjectId)) {
     filtered = filtered.filter((r) => r.topicId?.subjectId?._id?.toString() === subjectId.toString());
@@ -82,7 +60,6 @@ export const getDueRevisions = async (userId, options = {}) => {
     filtered = filtered.filter((r) => r.topicId?.examId?._id?.toString() === examId.toString());
   }
 
-  // Update status dynamically based on target day boundaries
   const mapped = filtered.map((rev) => {
     const revDate = new Date(rev.nextRevisionDate);
     let computedStatus = rev.status;
@@ -113,9 +90,6 @@ export const getDueRevisions = async (userId, options = {}) => {
   };
 };
 
-/**
- * Creates or updates a spaced revision record for a topic.
- */
 export const createOrUpdateRevision = async (userId, payload) => {
   const {
     topicId,
@@ -136,7 +110,7 @@ export const createOrUpdateRevision = async (userId, payload) => {
   const now = new Date();
 
   if (!revision || action === 'SCHEDULE') {
-    // Initial scheduling
+
     const initialStudiedDate = studiedDate ? new Date(studiedDate) : now;
     const stage = 0;
     const { nextRevisionDate, intervalDays } = calculateNextRevisionDate(initialStudiedDate, intervals, stage);
@@ -163,12 +137,11 @@ export const createOrUpdateRevision = async (userId, payload) => {
       revision.status = nextRevisionDate <= now ? 'DUE' : 'PENDING';
     }
   } else if (action === 'COMPLETE') {
-    // Log completion of revision
+
     const completionDate = lastRevisedDate ? new Date(lastRevisedDate) : now;
     revision.lastRevisedDate = completionDate;
     revision.revisionCount = (revision.revisionCount || 0) + 1;
 
-    // Advance to next interval stage
     const nextStage = Math.min((revision.intervalStage || 0) + 1, (revision.intervals || intervals).length - 1);
     revision.intervalStage = nextStage;
 

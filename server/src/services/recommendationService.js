@@ -5,25 +5,12 @@ import UserExam from '../models/UserExam.js';
 import Subject from '../models/Subject.js';
 import StudySession from '../models/StudySession.js';
 
-/**
- * Deterministic Recommendation Engine Service
- *
- * Computes topic study priority without an LLM based on 7 factors:
- * 1. Weakness (100 - masteryScore)
- * 2. Revision Due (status & days overdue)
- * 3. Exam Priority (target exam deadline & subject weightage)
- * 4. Performance Trend (recent 30d vs baseline accuracy delta)
- * 5. Syllabus Priority (In Progress, Not Started, Completed, Revised)
- * 6. Recency / Inactivity Decay (days since last attempt/revision/session)
- * 7. Available Time Fit (matching candidate activity to available study window)
- */
 export const getTopicRecommendations = async (userId, filters = {}) => {
   const userObjId = new mongoose.Types.ObjectId(userId);
   const availableTime = Math.max(15, parseInt(filters.availableTime, 10) || 60);
   const limit = Math.min(50, Math.max(1, parseInt(filters.limit, 10) || 10));
   const minPriority = Math.max(0, parseFloat(filters.minPriority) || 0);
 
-  // 1. Fetch Weak-Topic analytics baseline
   const topicAnalyticsRes = await getTopicAnalyticsWithWeaknessEngine(userId, filters);
   const topicList = topicAnalyticsRes.topics || [];
 
@@ -41,7 +28,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
 
   const topicIds = topicList.map((t) => new mongoose.Types.ObjectId(t.topicId));
 
-  // 2. Fetch UserExams for target date calculation
   const userExams = await UserExam.find({ userId: userObjId, status: 'active' }).populate('examId').lean();
   const userExamMap = new Map();
   userExams.forEach((ue) => {
@@ -50,14 +36,12 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
     }
   });
 
-  // 3. Fetch Revisions for revision status & overdue days
   const revisions = await Revision.find({ userId: userObjId, topicId: { $in: topicIds } }).lean();
   const revisionMap = new Map();
   revisions.forEach((r) => {
     revisionMap.set(r.topicId.toString(), r);
   });
 
-  // 4. Fetch Subjects for weightage calculation
   const subjectIds = [...new Set(topicList.map((t) => t.subjectId?.toString()).filter(Boolean))];
   const subjects = await Subject.find({ _id: { $in: subjectIds } }).lean();
   const subjectMap = new Map();
@@ -65,7 +49,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
     subjectMap.set(s._id.toString(), s);
   });
 
-  // 5. Fetch recent StudySessions to compute recency per topic
   const studySessions = await StudySession.aggregate([
     { $match: { userId: userObjId, topicId: { $in: topicIds } } },
     { $group: { _id: '$topicId', lastSessionDate: { $max: '$date' } } },
@@ -77,17 +60,14 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
 
   const now = new Date();
 
-  // 6. Calculate priority score for each topic
   const recommendations = topicList.map((t) => {
     const topicIdStr = t.topicId.toString();
     const subjectIdStr = t.subjectId ? t.subjectId.toString() : null;
     const examIdStr = t.examId ? t.examId.toString() : null;
 
-    // --- Factor 1: Weakness Factor (F_weakness) ---
     const masteryScore = typeof t.masteryScore === 'number' ? t.masteryScore : 0;
     const weaknessFactor = Math.min(100, Math.max(0, 100 - masteryScore));
 
-    // --- Factor 2: Revision Due Factor (F_revision) ---
     const revisionRecord = revisionMap.get(topicIdStr);
     let revisionStatus = 'NONE';
     let daysOverdue = 0;
@@ -119,7 +99,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
       }
     }
 
-    // --- Factor 3: Exam Priority Factor (F_exam) ---
     const userExam = userExamMap.get(examIdStr);
     let daysToExam = null;
     let urgencyWeight = 40;
@@ -139,7 +118,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
     const subjectWeightage = subjectObj && typeof subjectObj.weightage === 'number' ? subjectObj.weightage : 33.3;
     const examFactor = Math.min(100, Math.round(0.7 * urgencyWeight + 0.3 * Math.min(100, subjectWeightage * 3)));
 
-    // --- Factor 4: Performance Trend Factor (F_trend) ---
     const recentAcc = t.recentAccuracy !== undefined ? t.recentAccuracy : t.accuracy;
     const overallAcc = t.pyqAccuracy || t.accuracy || 0;
     const performanceTrendDelta = t.totalAttempts > 0 ? Math.round((recentAcc - overallAcc) * 10) / 10 : 0;
@@ -150,14 +128,12 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
     else if (performanceTrendDelta === 0) trendFactor = 50;
     else trendFactor = 30;
 
-    // --- Factor 5: Syllabus Priority Factor (F_syllabus) ---
     let syllabusFactor = 70;
     if (t.syllabusStatus === 'In Progress') syllabusFactor = 85;
     else if (t.syllabusStatus === 'Not Started') syllabusFactor = 70;
     else if (t.syllabusStatus === 'Completed') syllabusFactor = 40;
     else if (t.syllabusStatus === 'Revised') syllabusFactor = 25;
 
-    // --- Factor 6: Recency / Inactivity Decay Factor (F_recency) ---
     const lastSessionDate = sessionMap.get(topicIdStr);
     const lastRevisedAt = t.lastRevisedAt;
 
@@ -180,13 +156,11 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
       else recencyFactor = 50;
     }
 
-    // --- Factor 7: Available Time Fit Factor (F_time) ---
     let timeFitFactor = 80;
     if (availableTime >= 60) timeFitFactor = 90;
     else if (availableTime >= 30) timeFitFactor = 80;
     else timeFitFactor = 75;
 
-    // --- Composite Priority Score Calculation ---
     const rawPriorityScore =
       0.25 * weaknessFactor +
       0.20 * revisionFactor +
@@ -198,13 +172,11 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
 
     const priorityScore = Math.min(100, Math.max(0, Math.round(rawPriorityScore * 10) / 10));
 
-    // Priority Level Classification
     let priorityLevel = 'LOW';
     if (priorityScore >= 75) priorityLevel = 'CRITICAL';
     else if (priorityScore >= 60) priorityLevel = 'HIGH';
     else if (priorityScore >= 45) priorityLevel = 'MEDIUM';
 
-    // --- Reason Codes & Explainability Sentences ---
     const reasonCodes = [];
     const reasons = [];
 
@@ -250,7 +222,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
       reasons.push(`Topic performance is ${t.masteryScore}% with status "${t.syllabusStatus}".`);
     }
 
-    // --- Recommended Action Generation ---
     let actionType = 'PRACTICE_PYQS';
     let actionTitle = '';
     let actionDescription = '';
@@ -324,7 +295,6 @@ export const getTopicRecommendations = async (userId, filters = {}) => {
     };
   });
 
-  // Filter by minPriority threshold and sort descending by priority score
   const filtered = recommendations
     .filter((r) => r.priority.score >= minPriority)
     .sort((a, b) => b.priority.score - a.priority.score);

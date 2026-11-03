@@ -1,9 +1,6 @@
 import Subject from '../models/Subject.js';
 import Exam from '../models/Exam.js';
 
-// @desc    Get all subjects (optionally filtered by exam)
-// @route   GET /api/subjects
-// @access  Public (or Student)
 export const getSubjects = async (req, res, next) => {
   try {
     const { examId, active } = req.query;
@@ -14,7 +11,7 @@ export const getSubjects = async (req, res, next) => {
 
     const subjects = await Subject.find(filter)
       .sort({ order: 1, name: 1 })
-      .populate('examId', 'name'); // useful for admin table
+      .populate('examId', 'name');
       
     res.json(subjects);
   } catch (error) {
@@ -22,9 +19,6 @@ export const getSubjects = async (req, res, next) => {
   }
 };
 
-// @desc    Get single subject
-// @route   GET /api/subjects/:id
-// @access  Public (or Student)
 export const getSubjectById = async (req, res, next) => {
   try {
     const subject = await Subject.findById(req.params.id).populate('examId', 'name');
@@ -38,21 +32,16 @@ export const getSubjectById = async (req, res, next) => {
   }
 };
 
-// @desc    Create a subject
-// @route   POST /api/subjects
-// @access  Private/Admin
 export const createSubject = async (req, res, next) => {
   try {
     const { examId, name, shortName, description, order, active, weightage } = req.body;
 
-    // Verify exam exists
     const exam = await Exam.findById(examId);
     if (!exam) {
       res.status(404);
       throw new Error('Exam not found');
     }
 
-    // Check for duplicate name under the same exam
     const existing = await Subject.findOne({ examId, name: { $regex: new RegExp(`^${name}$`, 'i') } });
     if (existing) {
       res.status(400);
@@ -75,9 +64,6 @@ export const createSubject = async (req, res, next) => {
   }
 };
 
-// @desc    Update a subject
-// @route   PUT /api/subjects/:id
-// @access  Private/Admin
 export const updateSubject = async (req, res, next) => {
   try {
     const { name, shortName, description, order, active, weightage, examId } = req.body;
@@ -88,7 +74,6 @@ export const updateSubject = async (req, res, next) => {
       throw new Error('Subject not found');
     }
 
-    // If changing exam or name, verify no duplicates
     const targetExamId = examId || subject.examId;
     const targetName = name || subject.name;
     
@@ -104,7 +89,6 @@ export const updateSubject = async (req, res, next) => {
       }
     }
 
-    // If updating examId, verify exam exists
     if (examId && examId !== subject.examId.toString()) {
       const exam = await Exam.findById(examId);
       if (!exam) {
@@ -128,9 +112,6 @@ export const updateSubject = async (req, res, next) => {
   }
 };
 
-// @desc    Update subject status
-// @route   PATCH /api/subjects/:id/status
-// @access  Private/Admin
 export const updateSubjectStatus = async (req, res, next) => {
   try {
     const { active } = req.body;

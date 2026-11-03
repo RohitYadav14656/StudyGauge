@@ -1,8 +1,4 @@
-/**
- * StudyGauge Domain-Specific Prompt Templates
- * 
- * Strict, pedagogical system directives and templates for competitive exam preparation.
- */
+
 
 export const SYSTEM_DIRECTIVE = `
 You are StudyGauge AI, an expert, highly pedagogical competitive-exam tutor and study advisor.

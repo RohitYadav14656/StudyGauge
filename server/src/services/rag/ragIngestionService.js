@@ -1,18 +1,4 @@
-/**
- * ragIngestionService.js
- *
- * Orchestrates the complete document ingestion pipeline:
- *
- *  1. Validate & sanitize (security layer)
- *  2. Dedup check via SHA-256 content hash
- *  3. Persist KnowledgeDocument (status = 'pending')
- *  4. Chunk the sanitized content
- *  5. Batch-embed all chunks via embeddingService
- *  6. Persist KnowledgeChunks with embeddings + metadata
- *  7. Update KnowledgeDocument status → 'complete'
- *
- * This is the single public API for adding knowledge to the RAG store.
- */
+
 
 import KnowledgeDocument from '../../models/KnowledgeDocument.js';
 import KnowledgeChunk from '../../models/KnowledgeChunk.js';
@@ -20,28 +6,6 @@ import { sanitizeDocumentContent } from './contentSanitizer.js';
 import { chunkDocument } from './documentChunker.js';
 import { embedBatch } from './embeddingService.js';
 
-// ─── Main Ingestion Function ──────────────────────────────────────────────────
-
-/**
- * Ingests a document into the RAG knowledge base.
- *
- * @param {object} params
- * @param {string}  params.title          - Human-readable document title
- * @param {string}  params.rawContent     - Raw text content
- * @param {string}  [params.contentType]  - 'text' | 'markdown' | 'pdf_extracted' | 'web_scraped'
- * @param {string}  [params.sourceUrl]    - URL or file path the content came from
- * @param {object}  [params.metadata]     - Educational metadata
- * @param {string}  [params.metadata.exam]
- * @param {string}  [params.metadata.subject]
- * @param {string}  [params.metadata.topic]
- * @param {string}  [params.metadata.source]
- * @param {string}  [params.metadata.difficulty]  - 'beginner'|'intermediate'|'advanced'
- * @param {string[]}[params.metadata.tags]
- * @param {number}  [params.metadata.year]
- * @param {string}  [params.uploadedBy]   - User ObjectId string
- *
- * @returns {Promise<{ success: boolean, document?: object, message: string, skipped?: boolean }>}
- */
 export async function ingestDocument(params) {
   const {
     title,
@@ -52,12 +16,10 @@ export async function ingestDocument(params) {
     uploadedBy = null,
   } = params;
 
-  // ── 1. Input validation ────────────────────────────────────────────────────
   if (!title || !rawContent) {
     return { success: false, message: 'title and rawContent are required.' };
   }
 
-  // ── 2. Security sanitization ───────────────────────────────────────────────
   const sanitizationResult = sanitizeDocumentContent(rawContent, title);
 
   if (!sanitizationResult.isAccepted) {
@@ -71,9 +33,6 @@ export async function ingestDocument(params) {
 
   const { sanitizedContent, safetyFlags } = sanitizationResult;
 
-  // ── 3. Compute hash & check for duplicate ──────────────────────────────────
-  // Hash is computed in the KnowledgeDocument pre-validate hook,
-  // but we compute it early here for the existence check.
   const { createHash } = await import('crypto');
   const contentHash = createHash('sha256').update(sanitizedContent.trim()).digest('hex');
 
@@ -88,7 +47,6 @@ export async function ingestDocument(params) {
     };
   }
 
-  // ── 4. Create KnowledgeDocument (status: pending) ─────────────────────────
   let doc;
   try {
     doc = await KnowledgeDocument.create({
@@ -112,7 +70,7 @@ export async function ingestDocument(params) {
       uploadedBy: uploadedBy || null,
     });
   } catch (err) {
-    // Handle duplicate key error (race condition)
+
     if (err.code === 11000) {
       const existingDoc = await KnowledgeDocument.findOne({ contentHash });
       return {
@@ -125,7 +83,6 @@ export async function ingestDocument(params) {
     throw err;
   }
 
-  // ── 5. Chunk the document ─────────────────────────────────────────────────
   await KnowledgeDocument.findByIdAndUpdate(doc._id, { processingStatus: 'chunking' });
 
   const rawChunks = chunkDocument(sanitizedContent);
@@ -138,7 +95,6 @@ export async function ingestDocument(params) {
     return { success: false, message: 'Document could not be chunked (content too short or empty).' };
   }
 
-  // ── 6. Embed all chunks ───────────────────────────────────────────────────
   await KnowledgeDocument.findByIdAndUpdate(doc._id, { processingStatus: 'embedding' });
 
   const chunkTexts = rawChunks.map((c) => c.text);
@@ -153,7 +109,6 @@ export async function ingestDocument(params) {
     throw err;
   }
 
-  // ── 7. Persist KnowledgeChunks ────────────────────────────────────────────
   const chunkDocs = rawChunks.map((chunk, i) => ({
     documentId: doc._id,
     content: chunk.text,
@@ -177,7 +132,6 @@ export async function ingestDocument(params) {
 
   await KnowledgeChunk.insertMany(chunkDocs, { ordered: false });
 
-  // ── 8. Mark document as complete ─────────────────────────────────────────
   const completedDoc = await KnowledgeDocument.findByIdAndUpdate(
     doc._id,
     {
@@ -199,14 +153,6 @@ export async function ingestDocument(params) {
   };
 }
 
-/**
- * Ingests multiple documents. Processes sequentially to avoid embedding rate limits.
- *
- * @param {object[]} documents - Array of ingestion param objects
- * @param {object}   [options]
- * @param {boolean}  [options.continueOnError] - If true, log errors and continue
- * @returns {Promise<{ results: object[], summary: object }>}
- */
 export async function ingestDocumentBatch(documents, options = {}) {
   const { continueOnError = true } = options;
   const results = [];

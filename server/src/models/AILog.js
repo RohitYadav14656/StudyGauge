@@ -1,12 +1,5 @@
 import mongoose from 'mongoose';
 
-/**
- * AILog Schema - Anonymized AI Usage & Telemetry Log
- * 
- * IMPORTANT PRIVACY RULE:
- * This collection logs operational telemetry (token counts, latency, status, provider metadata)
- * WITHOUT storing sensitive user prompt text, context payload, or completion response text.
- */
 const aiLogSchema = new mongoose.Schema(
   {
     userId: {
@@ -83,7 +76,6 @@ const aiLogSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for analytical aggregation queries (e.g. daily token usage per user or overall provider health)
 aiLogSchema.index({ createdAt: -1 });
 aiLogSchema.index({ userId: 1, createdAt: -1 });
 aiLogSchema.index({ provider: 1, status: 1 });

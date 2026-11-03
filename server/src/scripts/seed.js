@@ -3,12 +3,11 @@ import dotenv from 'dotenv';
 import connectDB from '../config/db.js';
 import { Exam, Subject, Topic } from '../models/index.js';
 
-// Load env vars
 dotenv.config();
 
 const seedDatabase = async () => {
   try {
-    // Connect to database
+
     await connectDB();
 
     console.log('Clearing existing exam data...');
@@ -18,7 +17,6 @@ const seedDatabase = async () => {
 
     console.log('Seeding GATE CS data...');
 
-    // 1. Create Exam
     const gateExam = await Exam.create({
       name: 'GATE CS',
       description: 'Graduate Aptitude Test in Engineering for Computer Science',
@@ -31,7 +29,6 @@ const seedDatabase = async () => {
 
     console.log(`Created Exam: ${gateExam.name}`);
 
-    // 2. Create Subjects
     const subjectsData = [
       {
         name: 'Data Structures and Algorithms',
@@ -62,9 +59,8 @@ const seedDatabase = async () => {
 
     const [dsa, os, dbms] = createdSubjects;
 
-    // 3. Create Topics and Subtopics
     const topicsData = [
-      // DSA Topics
+
       {
         subjectId: dsa._id,
         name: 'Arrays and Linked Lists',
@@ -85,7 +81,7 @@ const seedDatabase = async () => {
           { name: 'AVL Trees' },
         ],
       },
-      // OS Topics
+
       {
         subjectId: os._id,
         name: 'Process Management',
@@ -95,7 +91,7 @@ const seedDatabase = async () => {
           { name: 'CPU Scheduling Algorithms' },
         ],
       },
-      // DBMS Topics
+
       {
         subjectId: dbms._id,
         name: 'Relational Model',

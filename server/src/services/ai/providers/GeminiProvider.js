@@ -86,7 +86,6 @@ export class GeminiProvider extends BaseProvider {
     const candidate = data?.candidates?.[0];
     const outputText = candidate?.content?.parts?.[0]?.text || '';
 
-    // Usage metadata
     const usage = data?.usageMetadata || {};
     const promptTokens = usage.promptTokenCount || estimateTokenCount(userPrompt + systemDirective);
     const completionTokens = usage.candidatesTokenCount || estimateTokenCount(outputText);

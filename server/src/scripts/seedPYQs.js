@@ -79,19 +79,16 @@ const seedPYQs = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('MongoDB connected for seeding...');
 
-    // Get or create dummy Exam
     let exam = await Exam.findOne({ name: 'Demo Exam' });
     if (!exam) {
       exam = await Exam.create({ name: 'Demo Exam', description: 'A demo exam for testing PYQs' });
     }
 
-    // Get or create dummy Subject
     let subject = await Subject.findOne({ name: 'General Science & Math', examId: exam._id });
     if (!subject) {
       subject = await Subject.create({ name: 'General Science & Math', examId: exam._id });
     }
 
-    // Delete existing PYQs for this exam to avoid duplicates during repeated seeding
     await PYQ.deleteMany({ examId: exam._id });
     
     const pyqsToInsert = samplePYQs.map(pyq => ({

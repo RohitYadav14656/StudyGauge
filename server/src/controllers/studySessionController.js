@@ -1,23 +1,18 @@
 import StudySession from '../models/StudySession.js';
 
-// @desc    Create a new study session
-// @route   POST /api/study-sessions
-// @access  Private
 export const createStudySession = async (req, res, next) => {
   try {
     const sessionData = {
       ...req.body,
       userId: req.user._id,
     };
-    
-    // If timerEvents are provided, calculate exact duration, startTime, and endTime
+
     if (sessionData.timerEvents && sessionData.timerEvents.length > 0) {
       let durationMs = 0;
       let lastStartTime = null;
       let firstStartTime = null;
       let lastEndTime = null;
 
-      // Sort events by time to ensure order
       const sortedEvents = [...sessionData.timerEvents].sort(
         (a, b) => new Date(a.time).getTime() - new Date(b.time).getTime()
       );
@@ -42,18 +37,16 @@ export const createStudySession = async (req, res, next) => {
       sessionData.startTime = firstStartTime || new Date();
       sessionData.endTime = lastEndTime || new Date();
       sessionData.durationMinutes = Math.max(0, Math.round(durationMs / 60000));
-      
-      // Remove timerEvents from sessionData as it's not in the schema
+
       delete sessionData.timerEvents;
     } else if (sessionData.endTime && sessionData.startTime && !sessionData.durationMinutes) {
-      // Calculate duration if endTime is provided and durationMinutes is not
+
       const start = new Date(sessionData.startTime);
       const end = new Date(sessionData.endTime);
       const diffMs = end - start;
       sessionData.durationMinutes = Math.max(0, Math.round(diffMs / 60000));
     }
-    
-    // Ensure startTime is present
+
     if (!sessionData.startTime) {
        sessionData.startTime = new Date();
     }
@@ -65,9 +58,6 @@ export const createStudySession = async (req, res, next) => {
   }
 };
 
-// @desc    Get user's study sessions with pagination and filtering
-// @route   GET /api/study-sessions
-// @access  Private
 export const getStudySessions = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
@@ -76,7 +66,6 @@ export const getStudySessions = async (req, res, next) => {
 
     const query = { userId: req.user._id };
 
-    // Filtering
     if (req.query.subjectId) {
       query.subjectId = req.query.subjectId;
     }
@@ -89,8 +78,7 @@ export const getStudySessions = async (req, res, next) => {
     if (req.query.studyType) {
       query.studyType = req.query.studyType;
     }
-    
-    // Date filtering
+
     if (req.query.startDate || req.query.endDate) {
       query.date = {};
       if (req.query.startDate) {
@@ -125,9 +113,6 @@ export const getStudySessions = async (req, res, next) => {
   }
 };
 
-// @desc    Update a study session
-// @route   PUT /api/study-sessions/:id
-// @access  Private
 export const updateStudySession = async (req, res, next) => {
   try {
     const studySession = await StudySession.findOne({
@@ -143,8 +128,7 @@ export const updateStudySession = async (req, res, next) => {
     const updatedData = { ...req.body };
     const startTime = updatedData.startTime ? new Date(updatedData.startTime) : studySession.startTime;
     const endTime = updatedData.endTime ? new Date(updatedData.endTime) : studySession.endTime;
-    
-    // Recalculate duration if times change
+
     if (endTime && startTime && updatedData.endTime && !updatedData.durationMinutes) {
        const diffMs = endTime - startTime;
        updatedData.durationMinutes = Math.max(0, Math.round(diffMs / 60000));
@@ -165,9 +149,6 @@ export const updateStudySession = async (req, res, next) => {
   }
 };
 
-// @desc    Delete a study session
-// @route   DELETE /api/study-sessions/:id
-// @access  Private
 export const deleteStudySession = async (req, res, next) => {
   try {
     const studySession = await StudySession.findOne({

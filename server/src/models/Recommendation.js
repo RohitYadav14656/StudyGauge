@@ -15,10 +15,10 @@ const recommendationSchema = new mongoose.Schema(
       type: String,
     },
     type: {
-      type: String, // e.g. 'topic-review', 'practice-mock'
+      type: String,
     },
     referenceId: {
-      type: mongoose.Schema.Types.ObjectId, // Can point to Topic, MockTest etc. depending on type
+      type: mongoose.Schema.Types.ObjectId,
     },
     status: {
       type: String,

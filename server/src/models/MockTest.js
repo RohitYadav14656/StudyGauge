@@ -43,7 +43,7 @@ const mockTestSchema = new mongoose.Schema(
       required: true,
     },
     timeTaken: {
-      type: Number, // in minutes
+      type: Number,
       required: true,
     },
     subjectPerformance: [

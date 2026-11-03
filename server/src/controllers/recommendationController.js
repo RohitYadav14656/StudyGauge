@@ -1,13 +1,6 @@
 import { getTopicRecommendations } from '../services/recommendationService.js';
 import UserExam from '../models/UserExam.js';
 
-/**
- * Controller handler for topic recommendations
- */
-
-// @desc    Get prioritized topic recommendations
-// @route   GET /api/recommendations
-// @access  Private
 export const getRecommendations = async (req, res, next) => {
   try {
     const userId = req.user._id;

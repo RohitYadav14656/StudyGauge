@@ -1,11 +1,5 @@
 import Joi from 'joi';
 
-/**
- * Validation schema for GET /api/activity-timeline query parameters.
- *
- * Validates via the query-string middleware (not body), so we use
- * `validateQuery` in the route rather than `validate`.
- */
 export const activityTimelineQuerySchema = Joi.object({
   startDate: Joi.date().iso().optional(),
   endDate: Joi.date().iso().optional().when('startDate', {
@@ -15,7 +9,7 @@ export const activityTimelineQuerySchema = Joi.object({
   types: Joi.string()
     .optional()
     .custom((value) => {
-      // Accept comma-separated values, split and validate each
+
       const arr = value.split(',').map((v) => v.trim()).filter(Boolean);
       const allowed = ['study_session', 'mock_test', 'pyq_attempt', 'revision', 'planner_item'];
       const invalid = arr.filter((v) => !allowed.includes(v));

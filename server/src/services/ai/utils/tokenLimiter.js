@@ -1,8 +1,5 @@
 import { AITokenLimitExceededError } from '../errors/AIError.js';
 
-/**
- * Task-specific Token Budgets (Input & Output Caps)
- */
 export const TASK_TOKEN_BUDGETS = {
   CONCEPT_EXPLANATION: { maxInputTokens: 3000, maxOutputTokens: 1000 },
   QUESTION_GENERATION: { maxInputTokens: 2500, maxOutputTokens: 1200 },
@@ -14,23 +11,12 @@ export const TASK_TOKEN_BUDGETS = {
 
 export const ABSOLUTE_MAX_INPUT_TOKENS = 8000;
 
-/**
- * Heuristic Token Counter (approx. 3.8 characters per token for English & Code)
- * @param {string} text 
- * @returns {number} Estimated token count
- */
 export function estimateTokenCount(text = '') {
   if (typeof text !== 'string') return 0;
   if (!text.trim()) return 0;
   return Math.ceil(text.length / 3.8);
 }
 
-/**
- * Enforces token limits for a given prompt and task type.
- * @param {string} prompt 
- * @param {string} taskType 
- * @returns {object} { estimatedPromptTokens, maxOutputTokens }
- */
 export function enforceTokenLimits(prompt, taskType = 'GENERAL_STUDY_HELP') {
   const estimatedTokens = estimateTokenCount(prompt);
   const budget = TASK_TOKEN_BUDGETS[taskType] || TASK_TOKEN_BUDGETS.GENERAL_STUDY_HELP;
@@ -42,7 +28,7 @@ export function enforceTokenLimits(prompt, taskType = 'GENERAL_STUDY_HELP') {
   }
 
   if (estimatedTokens > budget.maxInputTokens) {
-    // Return pruned/budgeted warning metadata
+
     return {
       estimatedPromptTokens: estimatedTokens,
       maxOutputTokens: budget.maxOutputTokens,
@@ -57,12 +43,6 @@ export function enforceTokenLimits(prompt, taskType = 'GENERAL_STUDY_HELP') {
   };
 }
 
-/**
- * Prunes long text context to fit within specified maximum token budget.
- * @param {string} text 
- * @param {number} maxTokens 
- * @returns {string} Truncated text
- */
 export function pruneTextToTokenLimit(text = '', maxTokens = 2000) {
   const currentTokens = estimateTokenCount(text);
   if (currentTokens <= maxTokens) return text;

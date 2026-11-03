@@ -2,9 +2,6 @@ import Exam from '../models/Exam.js';
 import Subject from '../models/Subject.js';
 import Topic from '../models/Topic.js';
 
-// @desc    Get all exams
-// @route   GET /api/exams
-// @access  Public
 export const getExams = async (req, res, next) => {
   try {
     const exams = await Exam.find({});
@@ -14,9 +11,6 @@ export const getExams = async (req, res, next) => {
   }
 };
 
-// @desc    Get exam by ID
-// @route   GET /api/exams/:id
-// @access  Public
 export const getExamById = async (req, res, next) => {
   try {
     const exam = await Exam.findById(req.params.id);
@@ -31,9 +25,6 @@ export const getExamById = async (req, res, next) => {
   }
 };
 
-// @desc    Create a new exam
-// @route   POST /api/exams
-// @access  Private/Admin (Placeholder for admin auth)
 export const createExam = async (req, res, next) => {
   try {
     const { name, description, level, metadata } = req.body;
@@ -57,9 +48,6 @@ export const createExam = async (req, res, next) => {
   }
 };
 
-// @desc    Update an exam
-// @route   PUT /api/exams/:id
-// @access  Private/Admin
 export const updateExam = async (req, res, next) => {
   try {
     const { name, description, level, metadata } = req.body;
@@ -85,9 +73,6 @@ export const updateExam = async (req, res, next) => {
   }
 };
 
-// @desc    Get syllabus for an exam (Hierarchy)
-// @route   GET /api/exams/:examId/syllabus
-// @access  Public (or Student)
 export const getExamSyllabus = async (req, res, next) => {
   try {
     const { examId } = req.params;
@@ -98,17 +83,14 @@ export const getExamSyllabus = async (req, res, next) => {
       throw new Error('Exam not found');
     }
 
-    // Fetch all active subjects for this exam
     const subjects = await Subject.find({ examId, active: true })
       .sort({ order: 1, name: 1 })
       .lean();
 
-    // Fetch all active topics for this exam
     const topics = await Topic.find({ examId, active: true })
       .sort({ order: 1, name: 1 })
       .lean();
 
-    // Map topics to their subjects
     const subjectsMap = {};
     subjects.forEach(subject => {
       subjectsMap[subject._id.toString()] = {
@@ -118,7 +100,7 @@ export const getExamSyllabus = async (req, res, next) => {
     });
 
     topics.forEach(topic => {
-      // Filter and sort active subtopics
+
       topic.subtopics = (topic.subtopics || [])
         .filter(st => st.active !== false)
         .sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -128,7 +110,6 @@ export const getExamSyllabus = async (req, res, next) => {
       }
     });
 
-    // Convert map to array maintaining original subject sort order
     const syllabus = subjects.map(subject => subjectsMap[subject._id.toString()]);
 
     res.json({

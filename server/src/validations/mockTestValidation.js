@@ -10,7 +10,7 @@ export const createMockTestSchema = {
     questionsAttempted: Joi.number().required().min(0).integer(),
     correct: Joi.number().required().min(0).integer().max(Joi.ref('questionsAttempted')),
     wrong: Joi.number().required().min(0).integer(),
-    timeTaken: Joi.number().required().min(0), // minutes
+    timeTaken: Joi.number().required().min(0),
     subjectPerformance: Joi.array().items(
       Joi.object().keys({
         subject: Joi.string().required(),

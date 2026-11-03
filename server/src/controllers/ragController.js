@@ -1,22 +1,7 @@
-/**
- * ragController.js
- *
- * Express controllers for the RAG Knowledge Base API.
- *
- * Routes:
- *   POST   /api/rag/ingest              - Ingest a document (admin)
- *   POST   /api/rag/query               - Semantic RAG query (authenticated)
- *   GET    /api/rag/documents           - List documents (admin)
- *   GET    /api/rag/documents/:id       - Get document details (admin)
- *   DELETE /api/rag/documents/:id       - Soft-delete document (admin)
- *   DELETE /api/rag/documents/:id/hard  - Hard-delete document (admin)
- *   GET    /api/rag/stats               - Knowledge base statistics (admin)
- */
+
 
 import ragService from '../services/rag/ragService.js';
 import Joi from 'joi';
-
-// ─── Validation Schemas ───────────────────────────────────────────────────────
 
 const ingestSchema = Joi.object({
   title: Joi.string().trim().min(3).max(500).required(),
@@ -52,13 +37,6 @@ const querySchema = Joi.object({
   topK: Joi.number().integer().min(1).max(20).default(5),
 });
 
-// ─── Controllers ──────────────────────────────────────────────────────────────
-
-/**
- * @desc    Ingest a document into the RAG knowledge base
- * @route   POST /api/rag/ingest
- * @access  Admin
- */
 export const ingestDocument = async (req, res, next) => {
   try {
     const { error, value } = ingestSchema.validate(req.body, { abortEarly: false });
@@ -97,11 +75,6 @@ export const ingestDocument = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Semantic RAG query - retrieve context and generate an AI answer
- * @route   POST /api/rag/query
- * @access  Private
- */
 export const ragQuery = async (req, res, next) => {
   try {
     const { error, value } = querySchema.validate(req.body, { abortEarly: false });
@@ -137,11 +110,6 @@ export const ragQuery = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    List knowledge base documents
- * @route   GET /api/rag/documents
- * @access  Admin
- */
 export const listDocuments = async (req, res, next) => {
   try {
     const { exam, subject, topic, difficulty, processingStatus, page = 1, limit = 20 } = req.query;
@@ -157,11 +125,6 @@ export const listDocuments = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Get a single knowledge document
- * @route   GET /api/rag/documents/:id
- * @access  Admin
- */
 export const getDocument = async (req, res, next) => {
   try {
     const doc = await ragService.getDocument(req.params.id);
@@ -172,11 +135,6 @@ export const getDocument = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Soft-delete a knowledge document and its chunks
- * @route   DELETE /api/rag/documents/:id
- * @access  Admin
- */
 export const deleteDocument = async (req, res, next) => {
   try {
     const result = await ragService.deleteDocument(req.params.id);
@@ -187,11 +145,6 @@ export const deleteDocument = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Hard-delete a knowledge document and its chunks permanently
- * @route   DELETE /api/rag/documents/:id/hard
- * @access  Admin
- */
 export const hardDeleteDocument = async (req, res, next) => {
   try {
     const result = await ragService.hardDeleteDocument(req.params.id);
@@ -202,11 +155,6 @@ export const hardDeleteDocument = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Get knowledge base statistics
- * @route   GET /api/rag/stats
- * @access  Admin
- */
 export const getKnowledgeBaseStats = async (req, res, next) => {
   try {
     const stats = await ragService.getStats();

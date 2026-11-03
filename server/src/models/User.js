@@ -51,8 +51,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Indexes are created automatically by Mongoose for fields with unique: true
-
 const User = mongoose.model('User', userSchema);
 
 export default User;

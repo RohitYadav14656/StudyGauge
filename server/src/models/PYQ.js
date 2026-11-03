@@ -53,9 +53,9 @@ pyqSchema.index({ examId: 1, subjectId: 1, year: 1 });
 pyqSchema.index({ topicId: 1 });
 pyqSchema.index({ difficulty: 1 });
 pyqSchema.index({ tags: 1 });
-// Text index for full-text search on question content and tags
+
 pyqSchema.index({ questionText: 'text', tags: 'text' });
-// Compound index for browsing PYQs by exam sorted by year (descending)
+
 pyqSchema.index({ examId: 1, year: -1 });
 
 const PYQ = mongoose.model('PYQ', pyqSchema);

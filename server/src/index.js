@@ -24,21 +24,20 @@ import activityTimelineRoutes from './routes/activityTimelineRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import ragRoutes from './routes/ragRoutes.js';
+import integrationRoutes from './routes/integrationRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 dotenv.config();
 
-// Connect to MongoDB if not in test mode
 if (process.env.NODE_ENV !== 'test') {
   connectDB();
 }
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/users/exams', userExamRoutes);
@@ -59,13 +58,13 @@ app.use('/api/activity-timeline', activityTimelineRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/rag', ragRoutes);
-
+app.use('/api/integrations', integrationRoutes);
+app.use('/api/users', userRoutes);
 
 app.get('/api/status', (req, res) => {
   res.json({ message: 'StudyGauge Backend is running', status: 'OK' });
 });
 
-// Error Handling
 app.use(notFound);
 app.use(errorHandler);
 

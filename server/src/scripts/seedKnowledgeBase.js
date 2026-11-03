@@ -1,16 +1,4 @@
-/**
- * seedKnowledgeBase.js
- *
- * Seeds a demo knowledge base with high-quality study content
- * covering popular Indian competitive exams (JEE, NEET, UPSC, CAT).
- *
- * Usage:
- *   node src/scripts/seedKnowledgeBase.js
- *
- * Environment:
- *   Requires MONGODB_URI and optionally GEMINI_API_KEY (for real embeddings).
- *   If no GEMINI_API_KEY, mock embeddings are used (still functional for testing).
- */
+
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -20,12 +8,8 @@ import { ingestDocumentBatch } from '../services/rag/ragIngestionService.js';
 
 const MONGO_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/studygauge';
 
-// ─── Demo Knowledge Base Documents ───────────────────────────────────────────
-
 const DEMO_DOCUMENTS = [
-  // ═══════════════════════════════════════════════════════════════════════════
-  // JEE PHYSICS — Newton's Laws
-  // ═══════════════════════════════════════════════════════════════════════════
+
   {
     title: "Newton's Laws of Motion – JEE Physics",
     contentType: 'markdown',
@@ -104,9 +88,6 @@ For every action, there is an equal and opposite reaction.
 - Ignoring the vector nature of force and acceleration`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // JEE CHEMISTRY — Periodic Table Trends
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Periodic Table Trends – JEE Chemistry',
     contentType: 'markdown',
@@ -205,9 +186,6 @@ For isoelectronic species: Increasing Z → decreasing size (more nuclear pull o
 Example: N³⁻ > O²⁻ > F⁻ > Na⁺ > Mg²⁺ (all have 10 electrons)`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // NEET BIOLOGY — Cell Division (Mitosis & Meiosis)
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Cell Division: Mitosis and Meiosis – NEET Biology',
     contentType: 'markdown',
@@ -325,9 +303,6 @@ Prophase II → Metaphase II → Anaphase II (sister chromatids separate) → Te
 - Confusing Anaphase (chromatids separate in mitosis/meiosis II) with Anaphase I (homologs separate)`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // UPSC — Indian Constitution Fundamentals
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Indian Constitution – Fundamental Rights and DPSP',
     contentType: 'markdown',
@@ -437,9 +412,6 @@ DPSPs are non-justiciable guidelines for the State in making laws. They represen
 - Article 32 itself is a Fundamental Right — cannot be suspended except during emergency`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // CAT — Quantitative Aptitude: Number Systems
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Number Systems – CAT Quantitative Aptitude',
     contentType: 'markdown',
@@ -555,9 +527,6 @@ For N = p^a · q^b · r^c ...,
 5. **Sum of first n natural numbers:** n(n+1)/2`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // JEE MATHS — Integration
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Integration – JEE Mathematics',
     contentType: 'markdown',
@@ -673,9 +642,6 @@ Area between two curves: A = ∫[a to b] |f(x) - g(x)|dx
 5. Practice the **Walli's formula** for products of sin and cos over [0, π/2]`,
   },
 
-  // ═══════════════════════════════════════════════════════════════════════════
-  // NEET CHEMISTRY — Chemical Bonding
-  // ═══════════════════════════════════════════════════════════════════════════
   {
     title: 'Chemical Bonding and Molecular Structure – NEET Chemistry',
     contentType: 'text',
@@ -771,8 +737,6 @@ Magnetic behavior: Molecules with unpaired electrons are paramagnetic; paired el
 O2 bond order = (8-4)/2 = 2; O2 is paramagnetic (2 unpaired electrons in degenerate π* orbitals) — this is a landmark result of MOT that VSEPR fails to predict.`,
   },
 ];
-
-// ─── Main Seed Function ───────────────────────────────────────────────────────
 
 async function main() {
   console.log('🌱 StudyGauge RAG Knowledge Base Seeder');

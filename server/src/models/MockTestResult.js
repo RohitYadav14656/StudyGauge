@@ -21,7 +21,7 @@ const mockTestResultSchema = new mongoose.Schema(
     },
     analytics: {
       type: Map,
-      of: mongoose.Schema.Types.Mixed, // e.g. section-wise scores
+      of: mongoose.Schema.Types.Mixed,
     },
   },
   {

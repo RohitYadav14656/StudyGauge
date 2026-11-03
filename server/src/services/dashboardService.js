@@ -21,20 +21,6 @@ import PYQAttempt from '../models/PYQAttempt.js';
 import MockTestResult from '../models/MockTestResult.js';
 import UserTopicProgress from '../models/UserTopicProgress.js';
 
-/**
- * Dashboard Aggregation Service
- *
- * Single entry-point that fetches ALL dashboard data in parallel.
- * Avoids dozens of independent client-side API calls by orchestrating
- * 7 query groups server-side via Promise.all.
- *
- * Each sub-query is fail-safe: a single data source failing returns null
- * instead of crashing the entire dashboard.
- */
-
-/**
- * Calculates dynamic progress for a single goal (same logic as goalController).
- */
 const calculateGoalProgress = async (goal, userId) => {
   let currentValue = 0;
 
@@ -92,17 +78,10 @@ const calculateGoalProgress = async (goal, userId) => {
   };
 };
 
-/**
- * Main aggregation function — returns the complete dashboard payload.
- *
- * @param {string} userId - The authenticated user's ID
- * @returns {Object} Full dashboard data object
- */
 export const getDashboardData = async (userId) => {
   const userObjId = new mongoose.Types.ObjectId(userId);
   const now = new Date();
 
-  // ── Step 1: Resolve active exam (needed by many downstream queries) ──
   const activeUserExam = await UserExam.findOne({ userId: userObjId, status: 'active' })
     .populate('examId', 'name description')
     .lean();
@@ -111,7 +90,6 @@ export const getDashboardData = async (userId) => {
   const examName = activeUserExam?.examId?.name || null;
   const targetDate = activeUserExam?.targetDate || null;
 
-  // Exam countdown
   let daysLeft = null;
   if (targetDate) {
     const diffMs = new Date(targetDate).getTime() - now.getTime();
@@ -120,51 +98,44 @@ export const getDashboardData = async (userId) => {
 
   const filters = { examId: targetExamId };
 
-  // ── Step 2: Fan out 7 parallel query groups ──
-  // Today boundaries for plan items
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
   const [
-    groupA,    // Study Time & Consistency
-    groupB,    // Syllabus & Readiness
-    groupC,    // Performance (subjects + weak topics)
-    groupD,    // Mock tests & score trends
-    groupE,    // Actionable (revisions + recommendations)
-    groupF,    // Goals
-    groupG,    // Today's plan & recent activity
+    groupA,
+    groupB,
+    groupC,
+    groupD,
+    groupE,
+    groupF,
+    groupG,
   ] = await Promise.all([
-    // ── Group A: Study Time & Consistency ──
+
     Promise.all([
       getStudyHours(userId, filters).catch(() => null),
       getConsistencyMetrics(userId, 30, filters).catch(() => null),
     ]),
 
-    // ── Group B: Syllabus & Readiness ──
     Promise.all([
       targetExamId ? getSyllabusCompletion(userId, targetExamId).catch(() => null) : null,
       targetExamId ? getUserReadinessData(userId, targetExamId).catch(() => null) : null,
     ]),
 
-    // ── Group C: Subject Performance & Weak Topics ──
     Promise.all([
       getSubjectPerformance(userId, filters).catch(() => null),
       getTopicAnalyticsWithWeaknessEngine(userId, filters).catch(() => null),
     ]),
 
-    // ── Group D: Mock Tests & Score Trends ──
     Promise.all([
       getMockTestPerformance(userId, filters).catch(() => null),
       getScoreTrends(userId, 90, filters).catch(() => null),
     ]),
 
-    // ── Group E: Revisions & Recommendations ──
     Promise.all([
       getDueRevisions(userId, { examId: targetExamId }).catch(() => null),
       getTopicRecommendations(userId, { ...filters, limit: 5 }).catch(() => null),
     ]),
 
-    // ── Group F: Goals with progress ──
     (async () => {
       try {
         const goals = await Goal.find({ userId: userObjId, status: 'in-progress' })
@@ -177,9 +148,8 @@ export const getDashboardData = async (userId) => {
       }
     })(),
 
-    // ── Group G: Today's Plan & Recent Activity ──
     Promise.all([
-      // Today's plan items from active study plan
+
       (async () => {
         try {
           const activePlan = await StudyPlan.findOne({
@@ -204,7 +174,6 @@ export const getDashboardData = async (userId) => {
         }
       })(),
 
-      // Recent activity (last 5 study sessions)
       StudySession.find({ userId: userObjId })
         .sort({ date: -1, startTime: -1 })
         .limit(5)
@@ -215,7 +184,6 @@ export const getDashboardData = async (userId) => {
     ]),
   ]);
 
-  // ── Step 3: Destructure results ──
   const [studyHoursResult, consistencyResult] = groupA;
   const [syllabusResult, readinessResult] = groupB;
   const [subjectPerfResult, topicAnalyticsResult] = groupC;
@@ -224,7 +192,6 @@ export const getDashboardData = async (userId) => {
   const goalsResult = groupF;
   const [todaysPlanResult, recentActivityResult] = groupG;
 
-  // ── Step 4: Shape weak topics (top 5 only for dashboard) ──
   const weakTopics = topicAnalyticsResult
     ? {
         summary: topicAnalyticsResult.summary,
@@ -234,7 +201,6 @@ export const getDashboardData = async (userId) => {
       }
     : { summary: { totalTopics: 0, weakTopics: 0, moderateTopics: 0, strongTopics: 0 }, topics: [] };
 
-  // ── Step 5: Shape recent activity with readable fields ──
   const recentActivity = (recentActivityResult || []).map((s) => ({
     _id: s._id,
     studyType: s.studyType,
@@ -244,7 +210,6 @@ export const getDashboardData = async (userId) => {
     date: s.date,
   }));
 
-  // ── Step 6: Shape today's plan with readable fields ──
   const todaysPlan = (todaysPlanResult || []).map((item) => ({
     _id: item._id,
     title: item.title || item.topicId?.name || 'Study Block',
@@ -258,7 +223,6 @@ export const getDashboardData = async (userId) => {
     completion: item.completion,
   }));
 
-  // ── Step 7: Shape revision due (limit items for dashboard) ──
   const revisionDue = revisionDueResult
     ? {
         dueTodayCount: revisionDueResult.dueTodayCount || 0,
@@ -275,7 +239,6 @@ export const getDashboardData = async (userId) => {
       }
     : { dueTodayCount: 0, overdueCount: 0, totalDue: 0, revisions: [] };
 
-  // ── Step 8: Assemble and return ──
   return {
     examCountdown: {
       examName,

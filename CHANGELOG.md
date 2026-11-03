@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Completed implementation and visual redesign of all 17 Core Modules in StudyGauge:
+  - Module 1: Auth & User Profile with Quick Demo Sign-in for Student and Admin.
+  - Module 2: Multiple Exam Management (GATE, CAT, UPSC, SSC, JEE, NEET, Banking, GRE, GMAT).
+  - Module 3: Syllabus Management with dynamic status toggles and completion indicators.
+  - Module 4 & 5: Personalized and Adaptive Study Planner with real-time "Adapt Study Plan" action.
+  - Module 6: Daily Study Tracker with live interactive stopwatch timer, manual logging, and daily/weekly metrics.
+  - Module 7: Mock Test Management with score trend visualization and subject-level performance metrics.
+  - Module 8: PYQ Practice Drill with interactive question solving, instant explanations, and bookmarking.
+  - Module 9 & 10: Performance Analytics and Deterministic Weak Topic Detection with Recharts graphs.
+  - Module 11: 6-Pillar Exam Readiness Index with visual gauge and breakdown bars.
+  - Module 12: Personalized Recommendation Engine ("What should I study next?") with explainable reason codes.
+  - Module 13: Spaced Revision System with intervals (Day 1, 3, 7, 14, 30) and 1-click completion.
+  - Module 14: Long-term, Monthly, Weekly, and Daily Goal Management.
+  - Module 15: External App / API Integrations (Google Calendar, Notion, Forest, Anki, Quizlet) with toggle and sync status.
+  - Module 16: Unified Activity Timeline aggregating local sessions, mock tests, and synced external events.
+  - Module 17: Flagship Cockpit Dashboard integrating all 16 modules into a cohesive single-pane interface.
+- Complete Design System Overhaul strictly following the requested color palette:
+  - Primary: Indigo (`#4F46E5`)
+  - Secondary: Deep Navy (`#111827`)
+  - Background: Soft White (`#F8FAFC`)
+  - Cards: White (`#FFFFFF`)
+  - Success: Teal (`#0D9488`)
+  - Warning: Amber (`#F59E0B`)
+  - Danger: Red (`#EF4444`)
+  - Text: Slate (`#64748B`) / Navy (`#111827`)
+- Full light theme default with optional dark mode toggle persisted in local storage.
+- Inter font integration across all pages with rounded cards, clean sidebar navigation, and minimal animations.
 - StudyGauge AI Subsystem Architecture (`server/src/services/ai/AIService.js`).
 - Modular LLM Service Abstraction layer with Pluggable Adapter Pattern (`BaseProvider`, `GeminiProvider`, `OpenAIProvider`, `MockProvider`).
 - Strict server-side API execution ensuring zero exposure of AI API keys (`GEMINI_API_KEY`, `OPENAI_API_KEY`) to React frontend.

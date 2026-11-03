@@ -140,13 +140,11 @@ const seedSyllabus = async () => {
 
     console.log('Seeding GATE Syllabus...');
 
-    // Clear old GATE subjects and topics to prevent duplicates on re-run
     const oldSubjects = await Subject.find({ examId: gateExam._id });
     const oldSubjectIds = oldSubjects.map(s => s._id);
     await Topic.deleteMany({ subjectId: { $in: oldSubjectIds } });
     await Subject.deleteMany({ examId: gateExam._id });
 
-    // Seed new syllabus
     for (const subData of gateSyllabus) {
       const { topics, ...subjectFields } = subData;
       

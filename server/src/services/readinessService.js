@@ -8,10 +8,6 @@ import {
 } from './analyticsService.js';
 import Revision from '../models/Revision.js';
 
-/**
- * DEFAULT FACTOR WEIGHTS FOR EXAM READINESS SCORE
- * Total sum of default weights = 1.0 (100%)
- */
 export const FACTOR_DEFINITIONS = {
   syllabusCompletion: { name: 'Syllabus Completion', defaultWeight: 0.20 },
   topicMastery: { name: 'Topic Mastery', defaultWeight: 0.20 },
@@ -22,16 +18,6 @@ export const FACTOR_DEFINITIONS = {
   pyqPerformance: { name: 'PYQ Performance', defaultWeight: 0.05 },
 };
 
-/**
- * Pure calculation function for Exam Readiness Score (0-100).
- * ZERO LLM dependency - strictly deterministic arithmetic.
- *
- * Handles missing data gracefully by redistributing missing weights proportionally
- * among available factors.
- *
- * @param {Object} inputs Map of factorKey -> raw value (0-100 or null/undefined)
- * @returns {Object} Complete readiness response with overall score, components, and metadata
- */
 export const calculateReadinessScore = (inputs = {}) => {
   const componentScores = {};
   const missingFactors = [];
@@ -39,13 +25,12 @@ export const calculateReadinessScore = (inputs = {}) => {
 
   let totalAvailableWeight = 0;
 
-  // Step 1: Identify available and missing factors
   for (const [factorKey, def] of Object.entries(FACTOR_DEFINITIONS)) {
     const rawVal = inputs[factorKey];
     const isAvailable = typeof rawVal === 'number' && !isNaN(rawVal);
 
     if (isAvailable) {
-      // Clamp raw score between 0 and 100
+
       const score = Math.min(100, Math.max(0, Math.round(rawVal * 10) / 10));
 
       availableFactors.push({
@@ -69,7 +54,6 @@ export const calculateReadinessScore = (inputs = {}) => {
     }
   }
 
-  // Step 2: Handle edge case where no data is available
   if (availableFactors.length === 0 || totalAvailableWeight === 0) {
     return {
       overallScore: 0,
@@ -86,7 +70,6 @@ export const calculateReadinessScore = (inputs = {}) => {
     };
   }
 
-  // Step 3: Compute normalized weights & overall weighted score
   let overallScoreRaw = 0;
   const weightAdjustments = {};
 
@@ -109,7 +92,6 @@ export const calculateReadinessScore = (inputs = {}) => {
 
   const overallScore = Math.min(100, Math.max(0, Math.round(overallScoreRaw * 10) / 10));
 
-  // Step 4: Determine confidence level
   let confidenceLevel = 'LOW';
   if (availableFactors.length >= 5) {
     confidenceLevel = 'HIGH';
@@ -117,7 +99,6 @@ export const calculateReadinessScore = (inputs = {}) => {
     confidenceLevel = 'MEDIUM';
   }
 
-  // Step 5: Generate actionable insights
   const insights = [];
   const sortedAvailable = [...availableFactors].sort((a, b) => b.score - a.score);
 
@@ -152,9 +133,6 @@ export const calculateReadinessScore = (inputs = {}) => {
   };
 };
 
-/**
- * Fetches user data from database and computes readiness score.
- */
 export const getUserReadinessData = async (userId, targetExamId) => {
   const filters = { examId: targetExamId };
 
@@ -168,13 +146,11 @@ export const getUserReadinessData = async (userId, targetExamId) => {
       Revision.find({ userId }).lean().catch(() => []),
     ]);
 
-  // Extract factors safely
   const syllabusCompletion =
     syllabusRes && typeof syllabusRes.completionPercentage === 'number'
       ? syllabusRes.completionPercentage
       : null;
 
-  // Topic mastery average from topic analytics
   let topicMastery = null;
   let accuracy = null;
   if (topicAnalytics?.topics?.length > 0) {
@@ -191,25 +167,21 @@ export const getUserReadinessData = async (userId, targetExamId) => {
     }
   }
 
-  // Mock performance
   let mockPerformance = null;
   if (mockPerf?.summary?.totalTests > 0 && typeof mockPerf.summary.averageScorePercentage === 'number') {
     mockPerformance = mockPerf.summary.averageScorePercentage;
   }
 
-  // PYQ performance
   let pyqPerformance = null;
   if (pyqRes?.overall?.attempted > 0 && typeof pyqRes.overall.accuracy === 'number') {
     pyqPerformance = pyqRes.overall.accuracy;
   }
 
-  // Study consistency
   let studyConsistency = null;
   if (consistencyRes && typeof consistencyRes.activeDays === 'number') {
     studyConsistency = Math.min(100, Math.round((consistencyRes.activeDays / 30) * 100));
   }
 
-  // Revision consistency
   let revisionConsistency = null;
   if (userRevisions.length > 0) {
     const completedOrPending = userRevisions.filter((r) => r.status === 'COMPLETED' || r.status === 'PENDING').length;

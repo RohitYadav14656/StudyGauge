@@ -1,8 +1,5 @@
 import MockTest from '../models/MockTest.js';
 
-// @desc    Create a new mock test entry
-// @route   POST /api/mock-tests
-// @access  Private
 export const createMockTest = async (req, res) => {
   try {
     const {
@@ -41,9 +38,6 @@ export const createMockTest = async (req, res) => {
   }
 };
 
-// @desc    Get all mock tests for a user
-// @route   GET /api/mock-tests
-// @access  Private
 export const getMockTests = async (req, res) => {
   try {
     const mockTests = await MockTest.find({ userId: req.user._id }).sort({ date: -1 });
@@ -53,9 +47,6 @@ export const getMockTests = async (req, res) => {
   }
 };
 
-// @desc    Get a specific mock test by ID
-// @route   GET /api/mock-tests/:id
-// @access  Private
 export const getMockTestById = async (req, res) => {
   try {
     const mockTest = await MockTest.findOne({

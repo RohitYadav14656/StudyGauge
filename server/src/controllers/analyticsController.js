@@ -15,15 +15,6 @@ import {
 import { getUserReadinessData } from '../services/readinessService.js';
 import UserExam from '../models/UserExam.js';
 
-/**
- * Controller handlers for the Analytics Dashboard.
- * Parses query filters (dateRange, examId, subjectId, etc.) and
- * delegates data aggregation to the analyticsService.
- */
-
-// @desc    Overview dashboard metrics
-// @route   GET /api/analytics/overview
-// @access  Private
 export const getOverview = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -64,9 +55,6 @@ export const getOverview = async (req, res, next) => {
   }
 };
 
-// @desc    Subject-level performance analytics
-// @route   GET /api/analytics/subjects
-// @access  Private
 export const getSubjects = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -84,9 +72,6 @@ export const getSubjects = async (req, res, next) => {
   }
 };
 
-// @desc    Topic-level analytics & Deterministic Weak-Topic Detection Engine
-// @route   GET /api/analytics/topics
-// @access  Private
 export const getTopics = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -104,9 +89,6 @@ export const getTopics = async (req, res, next) => {
   }
 };
 
-// @desc    Mock test performance, score trends, accuracy trends
-// @route   GET /api/analytics/tests
-// @access  Private
 export const getTests = async (req, res, next) => {
   try {
     const userId = req.user._id;
@@ -137,15 +119,11 @@ export const getTests = async (req, res, next) => {
   }
 };
 
-// @desc    Study hours breakdown, study type distribution, consistency
-// @route   GET /api/analytics/study
-// @access  Private
 export const getStudy = async (req, res, next) => {
   try {
     const userId = req.user._id;
     const { dateRange, examId, subjectId, startDate, endDate, days: daysParam, period } = req.query;
-    
-    // Support legacy 'period' param (e.g. '30d')
+
     const effectiveDateRange = dateRange || period || '30d';
     const days = Math.min(365, Math.max(7, Number(daysParam) || (effectiveDateRange === '7d' ? 7 : 30)));
     const filters = { dateRange: effectiveDateRange, examId, subjectId, startDate, endDate };
@@ -173,9 +151,6 @@ export const getStudy = async (req, res, next) => {
   }
 };
 
-// @desc    Deterministic Exam Readiness Score (0-100)
-// @route   GET /api/analytics/readiness
-// @access  Private
 export const getReadinessScore = async (req, res, next) => {
   try {
     const userId = req.user._id;

@@ -5,11 +5,6 @@ import { activityTimelineQuerySchema } from '../validations/activityTimelineVali
 
 const router = express.Router();
 
-/**
- * Query-param validation middleware.
- * Re-uses the same pattern as the body `validate` middleware but targets
- * `req.query` instead of `req.body`.
- */
 const validateQuery = (schema) => (req, res, next) => {
   const { error, value } = schema.validate(req.query, {
     abortEarly: false,

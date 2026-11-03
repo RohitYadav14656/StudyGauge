@@ -7,23 +7,6 @@ import Subject from '../models/Subject.js';
 import Topic from '../models/Topic.js';
 import Revision from '../models/Revision.js';
 
-/**
- * Centralized Analytics Service
- *
- * Provides aggregated study metrics, performance stats, and the
- * DETERMINISTIC WEAK-TOPIC DETECTION ENGINE.
- *
- * Zero LLM dependency is used for weak topic detection or mathematical metrics.
- */
-
-// ──────────────────────────────────────────────────────────────
-// FILTER HELPER
-// ──────────────────────────────────────────────────────────────
-
-/**
- * Parses filter options into Date object bounds.
- * Supported dateRange values: '7d', '30d', '90d', '1y', 'all'
- */
 export const parseDateFilter = (dateRange, startDateStr, endDateStr) => {
   let startDate = null;
   let endDate = null;
@@ -47,13 +30,6 @@ export const parseDateFilter = (dateRange, startDateStr, endDateStr) => {
   return { startDate, endDate };
 };
 
-// ──────────────────────────────────────────────────────────────
-// STUDY HOURS
-// ──────────────────────────────────────────────────────────────
-
-/**
- * Computes study hours for today, this week, and this month.
- */
 export const getStudyHours = async (userId, filters = {}) => {
   const now = new Date();
   const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -104,9 +80,6 @@ export const getStudyHours = async (userId, filters = {}) => {
   };
 };
 
-/**
- * Returns daily study hours breakdown for chart rendering.
- */
 export const getDailyStudyHours = async (userId, days = 30, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange || `${days}d`, filters.startDate, filters.endDate);
   const matchStage = { userId: new mongoose.Types.ObjectId(userId) };
@@ -147,10 +120,6 @@ export const getDailyStudyHours = async (userId, days = 30, filters = {}) => {
     },
   ]);
 };
-
-// ──────────────────────────────────────────────────────────────
-// CONSISTENCY
-// ──────────────────────────────────────────────────────────────
 
 export const getConsistencyMetrics = async (userId, days = 30, filters = {}) => {
   const { startDate } = parseDateFilter(filters.dateRange || `${days}d`, filters.startDate, filters.endDate);
@@ -193,7 +162,6 @@ export const getConsistencyMetrics = async (userId, days = 30, filters = {}) => 
   }
   currentStreak = tempStreak;
 
-  // Recalculate global longest streak
   tempStreak = 1;
   const sortedDays = activeDaysResult.map((d) => d._id).sort();
   for (let i = 1; i < sortedDays.length; i++) {
@@ -217,10 +185,6 @@ export const getConsistencyMetrics = async (userId, days = 30, filters = {}) => 
     longestStreak,
   };
 };
-
-// ──────────────────────────────────────────────────────────────
-// SYLLABUS COMPLETION
-// ──────────────────────────────────────────────────────────────
 
 export const getSyllabusCompletion = async (userId, examId) => {
   const examFilter = examId && mongoose.Types.ObjectId.isValid(examId)
@@ -253,10 +217,6 @@ export const getSyllabusCompletion = async (userId, examId) => {
     overallCompletionPercentage: completionPercentage,
   };
 };
-
-// ──────────────────────────────────────────────────────────────
-// SUBJECT PERFORMANCE
-// ──────────────────────────────────────────────────────────────
 
 export const getSubjectPerformance = async (userId, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange, filters.startDate, filters.endDate);
@@ -341,17 +301,9 @@ export const getSubjectPerformance = async (userId, filters = {}) => {
   return { subjects };
 };
 
-// ──────────────────────────────────────────────────────────────
-// TOPIC PERFORMANCE
-// ──────────────────────────────────────────────────────────────
-
 export const getTopicPerformance = async (userId, subjectId, filters = {}) => {
   return getTopicAnalyticsWithWeaknessEngine(userId, { ...filters, subjectId });
 };
-
-// ──────────────────────────────────────────────────────────────
-// PYQ ACCURACY
-// ──────────────────────────────────────────────────────────────
 
 export const getPYQAccuracy = async (userId, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange, filters.startDate, filters.endDate);
@@ -443,10 +395,6 @@ export const getPYQAccuracy = async (userId, filters = {}) => {
     byDifficulty: result?.byDifficulty || [],
   };
 };
-
-// ──────────────────────────────────────────────────────────────
-// MOCK TEST PERFORMANCE
-// ──────────────────────────────────────────────────────────────
 
 export const getMockTestPerformance = async (userId, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange, filters.startDate, filters.endDate);
@@ -562,10 +510,6 @@ export const getMockTestPerformance = async (userId, filters = {}) => {
   };
 };
 
-// ──────────────────────────────────────────────────────────────
-// SCORE TRENDS (Mock Test)
-// ──────────────────────────────────────────────────────────────
-
 export const getScoreTrends = async (userId, days = 90, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange || `${days}d`, filters.startDate, filters.endDate);
   const matchStage = { userId: new mongoose.Types.ObjectId(userId) };
@@ -616,10 +560,6 @@ export const getScoreTrends = async (userId, days = 90, filters = {}) => {
   ]);
 };
 
-// ──────────────────────────────────────────────────────────────
-// ACCURACY TRENDS (PYQ)
-// ──────────────────────────────────────────────────────────────
-
 export const getAccuracyTrends = async (userId, days = 90, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange || `${days}d`, filters.startDate, filters.endDate);
   const matchStage = {
@@ -667,10 +607,6 @@ export const getAccuracyTrends = async (userId, days = 90, filters = {}) => {
   ]);
 };
 
-// ──────────────────────────────────────────────────────────────
-// STUDY TYPE DISTRIBUTION
-// ──────────────────────────────────────────────────────────────
-
 export const getStudyTypeDistribution = async (userId, days = 30, filters = {}) => {
   const { startDate, endDate } = parseDateFilter(filters.dateRange || `${days}d`, filters.startDate, filters.endDate);
   const matchStage = { userId: new mongoose.Types.ObjectId(userId) };
@@ -701,32 +637,10 @@ export const getStudyTypeDistribution = async (userId, days = 30, filters = {}) 
   ]);
 };
 
-// ──────────────────────────────────────────────────────────────
-// DETERMINISTIC WEAK-TOPIC DETECTION ENGINE
-// ──────────────────────────────────────────────────────────────
-
-/**
- * Computes topic-level performance and applies the deterministic weakness algorithm.
- *
- * Topic Mastery Formula ($S_{topic}$):
- *  S_{topic} = min(100, max(0, A_{weighted} * M_{syl} + P_{rev}))
- *
- * Classifications:
- *  - STRONG: S_{topic} >= 75
- *  - MODERATE: 50 <= S_{topic} < 75
- *  - WEAK: S_{topic} < 50
- *
- * Confidence & Insufficient Data:
- *  - Total attempts N = pyqAttempted + mockAttempted
- *  - N < 5: confidence = 'LOW', insufficientData = true
- *  - 5 <= N < 15: confidence = 'MEDIUM', insufficientData = false
- *  - N >= 15: confidence = 'HIGH', insufficientData = false
- */
 export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) => {
   const userObjId = new mongoose.Types.ObjectId(userId);
   const { startDate, endDate } = parseDateFilter(filters.dateRange, filters.startDate, filters.endDate);
 
-  // 1. Fetch Topics matching exam & subject filter
   const topicQuery = { active: true };
   if (filters.examId && mongoose.Types.ObjectId.isValid(filters.examId)) {
     topicQuery.examId = new mongoose.Types.ObjectId(filters.examId);
@@ -756,7 +670,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
   const topicIds = topics.map((t) => t._id);
   const thirtyDaysAgo = new Date(Date.now() - 30 * 86400000);
 
-  // 2. Aggregate PYQ attempts per topic
   const pyqMatch = {
     userId: userObjId,
     selectedOptionIndex: { $gte: 0 },
@@ -811,7 +724,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     pyqMap.set(item._id.toString(), item);
   });
 
-  // 3. Aggregate Mock Test topic scores
   const mockMatch = { userId: userObjId };
   if (startDate || endDate) {
     mockMatch.date = {};
@@ -836,7 +748,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     mockMap.set(item._id.toLowerCase().trim(), item);
   });
 
-  // 4. Fetch UserTopicProgress & Revision records
   const [progressRecords, revisionRecords] = await Promise.all([
     UserTopicProgress.find({ userId: userObjId, topicId: { $in: topicIds } }).lean(),
     Revision.find({ userId: userObjId, topicId: { $in: topicIds } }).lean(),
@@ -853,19 +764,16 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     revisionMap.set(r.topicId.toString(), { count, lastRevisedAt });
   });
 
-  // 5. Evaluate deterministic weakness engine for each topic
   const now = new Date();
   const processedTopics = topics.map((topic) => {
     const topicIdStr = topic._id.toString();
     const topicName = topic.name;
 
-    // PYQ metrics
     const pyqData = pyqMap.get(topicIdStr) || { attempted: 0, correct: 0, recentAttempted: 0, recentCorrect: 0 };
     const pyqAttempted = pyqData.attempted;
     const pyqCorrect = pyqData.correct;
     const pyqAccuracy = pyqAttempted > 0 ? Math.round((pyqCorrect / pyqAttempted) * 1000) / 10 : 0;
 
-    // Mock metrics
     const mockData = mockMap.get(topicName.toLowerCase().trim()) || { count: 0, totalScore: 0 };
     const mockAttempted = mockData.count;
     const mockAccuracy = mockAttempted > 0 ? Math.min(100, Math.max(0, Math.round(mockData.totalScore / mockAttempted))) : 0;
@@ -873,7 +781,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
 
     const totalAttempts = pyqAttempted + mockAttempted;
 
-    // Combined Practice Accuracy
     let combinedAccuracy = 0;
     if (pyqAttempted > 0 && mockAttempted > 0) {
       combinedAccuracy = 0.5 * pyqAccuracy + 0.5 * mockAccuracy;
@@ -883,25 +790,21 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       combinedAccuracy = mockAccuracy;
     }
 
-    // Recent Accuracy (last 30 days)
     let recentAccuracy = combinedAccuracy;
     if (pyqData.recentAttempted > 0) {
       recentAccuracy = Math.round((pyqData.recentCorrect / pyqData.recentAttempted) * 1000) / 10;
     }
 
-    // Weighted Recency Performance
     const weightedAccuracy = pyqData.recentAttempted > 0
       ? 0.6 * recentAccuracy + 0.4 * combinedAccuracy
       : combinedAccuracy;
 
-    // Syllabus Multiplier
     const syllabusStatus = progressMap.get(topicIdStr) || 'Not Started';
     let syllabusMultiplier = 0.70;
     if (syllabusStatus === 'Revised') syllabusMultiplier = 1.05;
     else if (syllabusStatus === 'Completed') syllabusMultiplier = 1.00;
     else if (syllabusStatus === 'In Progress') syllabusMultiplier = 0.85;
 
-    // Revision History Factor & Decay Penalty
     const revData = revisionMap.get(topicIdStr) || { count: 0, lastRevisedAt: null };
     let revisionPenalty = 0;
     let daysSinceRevision = null;
@@ -917,7 +820,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       }
     }
 
-    // Final Mastery Score Calculation
     let masteryScore = 0;
     if (totalAttempts === 0) {
       if (syllabusStatus === 'Revised' || syllabusStatus === 'Completed') masteryScore = 70;
@@ -928,12 +830,10 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       masteryScore = Math.min(100, Math.max(0, Math.round(rawScore * 10) / 10));
     }
 
-    // Deterministic Classification
     let classification = 'WEAK';
     if (masteryScore >= 75) classification = 'STRONG';
     else if (masteryScore >= 50) classification = 'MODERATE';
 
-    // Confidence & Insufficient Data Handling
     let confidence = 'LOW';
     let insufficientData = true;
 
@@ -948,7 +848,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       insufficientData = true;
     }
 
-    // Rationale Sentence Generation
     let reason = '';
     if (totalAttempts === 0) {
       reason = `Topic status is "${syllabusStatus}" with 0 practice questions attempted. Attempt questions to establish baseline.`;
@@ -984,7 +883,7 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       confidence,
       insufficientData,
       reason,
-      // Field aliases for UI table compatibility
+
       attempted: totalAttempts,
       correct: pyqCorrect + mockCorrect,
       wrong: totalAttempts - (pyqCorrect + mockCorrect),
@@ -992,7 +891,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     };
   });
 
-  // Apply optional classification filter
   let filteredTopics = processedTopics;
   if (filters.classification && ['STRONG', 'MODERATE', 'WEAK'].includes(filters.classification.toUpperCase())) {
     filteredTopics = processedTopics.filter(
@@ -1000,7 +898,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     );
   }
 
-  // Sort: WEAK first, then MODERATE, then STRONG
   const classificationPriority = { WEAK: 1, MODERATE: 2, STRONG: 3 };
   filteredTopics.sort((a, b) => {
     if (classificationPriority[a.classification] !== classificationPriority[b.classification]) {
@@ -1009,7 +906,6 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
     return a.masteryScore - b.masteryScore;
   });
 
-  // Calculate summary statistics
   const summary = {
     totalTopics: processedTopics.length,
     weakTopics: processedTopics.filter((t) => t.classification === 'WEAK').length,

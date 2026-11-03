@@ -6,24 +6,6 @@ import Revision from '../models/Revision.js';
 import StudyPlanItem from '../models/StudyPlanItem.js';
 import StudyPlan from '../models/StudyPlan.js';
 
-/**
- * Unified Activity Timeline Service
- *
- * Combines activities from multiple collections into a single chronologically
- * sorted, paginated timeline. Uses a parallel fan-out strategy — each source
- * collection is queried independently with its own date-range filter and
- * per-source limit, then results are merged via k-way merge on the `date`
- * field.
- *
- * Key design decisions:
- * - Never loads full history: each sub-query fetches at most (limit + 1) docs
- *   per source to detect whether more data exists.
- * - Date-keyed pagination avoids O(n) skip offsets on large collections.
- * - Activity-type filtering happens at the DB query level (queries for
- *   unrequested types are simply skipped), not post-fetch.
- */
-
-/** All recognized activity types in the timeline */
 export const ACTIVITY_TYPES = [
   'study_session',
   'mock_test',
@@ -31,10 +13,6 @@ export const ACTIVITY_TYPES = [
   'revision',
   'planner_item',
 ];
-
-// ──────────────────────────────────────────────────────────────
-// Normalizers — convert source-specific documents into a common shape
-// ──────────────────────────────────────────────────────────────
 
 const normalizeStudySession = (doc) => ({
   id: doc._id.toString(),
@@ -131,13 +109,6 @@ const normalizePlannerItem = (doc) => ({
   sourceId: doc._id.toString(),
 });
 
-// ──────────────────────────────────────────────────────────────
-// Source query builders
-// ──────────────────────────────────────────────────────────────
-
-/**
- * Builds a date-range filter object for a given date field name.
- */
 const buildDateFilter = (fieldName, startDate, endDate) => {
   const filter = {};
   if (startDate || endDate) {
@@ -148,9 +119,6 @@ const buildDateFilter = (fieldName, startDate, endDate) => {
   return filter;
 };
 
-/**
- * Fetches study sessions for the timeline.
- */
 const fetchStudySessions = async (userId, startDate, endDate, fetchLimit) => {
   const query = {
     userId: new mongoose.Types.ObjectId(userId),
@@ -165,9 +133,6 @@ const fetchStudySessions = async (userId, startDate, endDate, fetchLimit) => {
   return docs.map(normalizeStudySession);
 };
 
-/**
- * Fetches mock tests for the timeline.
- */
 const fetchMockTests = async (userId, startDate, endDate, fetchLimit) => {
   const query = {
     userId: new mongoose.Types.ObjectId(userId),
@@ -180,9 +145,6 @@ const fetchMockTests = async (userId, startDate, endDate, fetchLimit) => {
   return docs.map(normalizeMockTest);
 };
 
-/**
- * Fetches PYQ attempts for the timeline.
- */
 const fetchPYQAttempts = async (userId, startDate, endDate, fetchLimit) => {
   const query = {
     userId: new mongoose.Types.ObjectId(userId),
@@ -203,17 +165,13 @@ const fetchPYQAttempts = async (userId, startDate, endDate, fetchLimit) => {
   return docs.map(normalizePYQAttempt);
 };
 
-/**
- * Fetches revisions that have been actively revised (lastRevisedDate != null)
- * for the timeline.
- */
 const fetchRevisions = async (userId, startDate, endDate, fetchLimit) => {
   const query = {
     userId: new mongoose.Types.ObjectId(userId),
     lastRevisedDate: { $ne: null },
     ...buildDateFilter('lastRevisedDate', startDate, endDate),
   };
-  // If both lastRevisedDate $ne and date filter exist, merge them
+
   if (startDate || endDate) {
     const dateFilter = buildDateFilter('lastRevisedDate', startDate, endDate);
     query.lastRevisedDate = { ...query.lastRevisedDate, ...dateFilter.lastRevisedDate };
@@ -227,12 +185,8 @@ const fetchRevisions = async (userId, startDate, endDate, fetchLimit) => {
   return docs.map(normalizeRevision);
 };
 
-/**
- * Fetches completed planner items for the timeline.
- * Only items with status 'completed' or 'partially_completed' are included.
- */
 const fetchPlannerItems = async (userId, startDate, endDate, fetchLimit) => {
-  // First find study plans belonging to this user
+
   const studyPlans = await StudyPlan.find({
     userId: new mongoose.Types.ObjectId(userId),
   })
@@ -258,10 +212,6 @@ const fetchPlannerItems = async (userId, startDate, endDate, fetchLimit) => {
   return docs.map(normalizePlannerItem);
 };
 
-// ──────────────────────────────────────────────────────────────
-// Source registry — maps type names to fetcher functions
-// ──────────────────────────────────────────────────────────────
-
 const SOURCE_FETCHERS = {
   study_session: fetchStudySessions,
   mock_test: fetchMockTests,
@@ -270,23 +220,6 @@ const SOURCE_FETCHERS = {
   planner_item: fetchPlannerItems,
 };
 
-// ──────────────────────────────────────────────────────────────
-// Main entry point
-// ──────────────────────────────────────────────────────────────
-
-/**
- * Returns a paginated, filtered, unified activity timeline.
- *
- * @param {string}   userId              - Authenticated user's ID
- * @param {Object}   options
- * @param {string}   [options.startDate] - ISO date string, lower bound
- * @param {string}   [options.endDate]   - ISO date string, upper bound
- * @param {string[]} [options.types]     - Subset of ACTIVITY_TYPES to include
- * @param {number}   [options.page=1]    - 1-indexed page number
- * @param {number}   [options.limit=20]  - Items per page (max 50)
- *
- * @returns {{ activities: Object[], pagination: { page, limit, total, hasMore } }}
- */
 export const getActivityTimeline = async (userId, options = {}) => {
   const {
     startDate,
@@ -299,7 +232,6 @@ export const getActivityTimeline = async (userId, options = {}) => {
   const clampedLimit = Math.min(50, Math.max(1, Number(limit) || 20));
   const pageNum = Math.max(1, Number(page) || 1);
 
-  // Determine which sources to query
   const requestedTypes = types && types.length > 0
     ? types.filter((t) => ACTIVITY_TYPES.includes(t))
     : [...ACTIVITY_TYPES];
@@ -308,11 +240,8 @@ export const getActivityTimeline = async (userId, options = {}) => {
     return { activities: [], pagination: { page: pageNum, limit: clampedLimit, total: 0, hasMore: false } };
   }
 
-  // Each source fetches enough to fill the requested page even if it were
-  // the sole contributor. We add 1 to detect hasMore.
   const perSourceLimit = clampedLimit * pageNum + 1;
 
-  // Fan out parallel queries only for requested types
   const fetchPromises = requestedTypes.map((type) => {
     const fetcher = SOURCE_FETCHERS[type];
     return fetcher
@@ -322,12 +251,10 @@ export const getActivityTimeline = async (userId, options = {}) => {
 
   const results = await Promise.all(fetchPromises);
 
-  // Merge all results and sort by date descending
   const allActivities = results
     .flat()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-  // Paginate
   const startIdx = (pageNum - 1) * clampedLimit;
   const pageItems = allActivities.slice(startIdx, startIdx + clampedLimit);
   const hasMore = allActivities.length > startIdx + clampedLimit;

@@ -28,10 +28,8 @@ const userTopicProgressSchema = new mongoose.Schema(
   }
 );
 
-// A user can only have one progress record per topic
 userTopicProgressSchema.index({ userId: 1, topicId: 1 }, { unique: true });
 
-// For querying all progress of a user for a specific exam
 userTopicProgressSchema.index({ userId: 1, examId: 1 });
 
 const UserTopicProgress = mongoose.model('UserTopicProgress', userTopicProgressSchema);

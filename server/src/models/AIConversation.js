@@ -16,7 +16,7 @@ const aiConversationSchema = new mongoose.Schema(
       ref: 'Topic',
     },
     context: {
-      type: Map, // Optional context passed to the LLM (e.g., current exam, current goal)
+      type: Map,
       of: mongoose.Schema.Types.Mixed,
     },
   },

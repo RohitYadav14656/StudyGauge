@@ -10,7 +10,7 @@ const integrationSchema = new mongoose.Schema(
     provider: {
       type: String,
       required: true,
-      enum: ['google-calendar', 'todoist', 'notion'], // Example providers
+      enum: ['google-calendar', 'todoist', 'notion', 'github', 'anki'],
     },
     accessToken: {
       type: String,
@@ -21,6 +21,19 @@ const integrationSchema = new mongoose.Schema(
     },
     expiresAt: {
       type: Date,
+    },
+    status: {
+      type: String,
+      enum: ['connected', 'disconnected', 'error'],
+      default: 'connected',
+    },
+    accountName: {
+      type: String,
+      default: '',
+    },
+    lastSyncAt: {
+      type: Date,
+      default: Date.now,
     },
     settings: {
       type: Map,

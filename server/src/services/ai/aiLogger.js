@@ -1,8 +1,5 @@
 import AILog from '../../models/AILog.js';
 
-/**
- * Provider Model Cost Estimates per 1,000 Tokens (in USD)
- */
 const COST_PER_1K_TOKENS = {
   gemini: {
     'gemini-1.5-flash': { prompt: 0.000075, completion: 0.0003 },
@@ -19,15 +16,6 @@ const COST_PER_1K_TOKENS = {
   },
 };
 
-/**
- * Calculates estimated USD cost for a given request.
- * 
- * @param {string} provider 
- * @param {string} model 
- * @param {number} promptTokens 
- * @param {number} completionTokens 
- * @returns {number} Estimated USD cost
- */
 export function calculateCost(provider = 'mock', model = '', promptTokens = 0, completionTokens = 0) {
   const providerRates = COST_PER_1K_TOKENS[provider] || COST_PER_1K_TOKENS.mock;
   const rates = providerRates[model] || providerRates.default || { prompt: 0, completion: 0 };
@@ -38,22 +26,6 @@ export function calculateCost(provider = 'mock', model = '', promptTokens = 0, c
   return Number((promptCost + completionCost).toFixed(6));
 }
 
-/**
- * Log AI Usage Telemetry to Database without sensitive data.
- * 
- * @param {object} params
- * @param {string} params.userId
- * @param {string} params.provider
- * @param {string} params.model
- * @param {string} params.taskType
- * @param {number} params.promptTokens
- * @param {number} params.completionTokens
- * @param {number} params.totalTokens
- * @param {number} params.latencyMs
- * @param {string} params.status - 'SUCCESS', 'FAILED', 'FALLBACK'
- * @param {string} params.errorType
- * @param {boolean} params.isFallbackUsed
- */
 export async function logAIUsage(params) {
   const {
     userId = null,
@@ -72,7 +44,7 @@ export async function logAIUsage(params) {
   const costEstimate = calculateCost(provider, model, promptTokens, completionTokens);
 
   try {
-    // Save to MongoDB via AILog model
+
     await AILog.create({
       userId,
       provider,
@@ -88,7 +60,7 @@ export async function logAIUsage(params) {
       isFallbackUsed,
     });
   } catch (err) {
-    // Silent fail for logging errors to prevent breaking user workflow
+
     console.error('Failed to log AI telemetry usage record:', err.message);
   }
 }

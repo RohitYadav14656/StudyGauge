@@ -32,7 +32,6 @@ const userExamSchema = new mongoose.Schema(
   }
 );
 
-// Prevent duplicate User-Exam pairings
 userExamSchema.index({ userId: 1, examId: 1 }, { unique: true });
 
 const UserExam = mongoose.model('UserExam', userExamSchema);

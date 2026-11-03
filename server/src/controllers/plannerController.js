@@ -1,14 +1,10 @@
 import StudyPlanItem from '../models/StudyPlanItem.js';
 import StudyPlan from '../models/StudyPlan.js';
 
-// @desc    Get all study plan items across all plans for the user (for planner views)
-// @route   GET /api/planner
-// @access  Private
 export const getPlannerItems = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
-    // First, find all study plans belonging to this user
     const userPlans = await StudyPlan.find({ userId: req.user._id }).select('_id');
     const planIds = userPlans.map((plan) => plan._id);
 
@@ -34,14 +30,10 @@ export const getPlannerItems = async (req, res) => {
   }
 };
 
-// @desc    Update a specific planner item status/duration
-// @route   PUT /api/planner/:itemId
-// @access  Private
 export const updatePlannerItemStatus = async (req, res) => {
     try {
         const { status, actualDuration, completion } = req.body;
-        
-        // Ensure user owns this item by checking the plan
+
         const item = await StudyPlanItem.findById(req.params.itemId).populate('studyPlanId', 'userId');
         
         if (!item) {

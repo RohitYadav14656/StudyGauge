@@ -1,56 +1,25 @@
-/**
- * embeddingService.js
- *
- * Generates dense vector embeddings for text using the Gemini Embeddings API
- * (text-embedding-004, 768 dimensions).
- *
- * Falls back to a deterministic mock embedding (all-zeros with a small hash perturbation)
- * when the API key is unavailable, so the rest of the pipeline can be tested locally
- * without live credentials.
- *
- * Usage:
- *   const { embedding, model } = await embedText('Newton\'s laws of motion...');
- *   const batchResults = await embedBatch(['chunk1', 'chunk2', ...]);
- */
+
 
 const GEMINI_EMBEDDING_MODEL =
   process.env.GEMINI_EMBEDDING_MODEL || 'text-embedding-004';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
 const EMBEDDING_DIMENSIONS = 768;
 
-// Gemini Embeddings REST endpoint
 const EMBED_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_EMBEDDING_MODEL}:embedContent?key=${GEMINI_API_KEY}`;
 
-// Max texts per batchEmbedContents request (Gemini supports up to 100)
 const BATCH_SIZE = 50;
 
-// ─── Fallback Mock Embedding ──────────────────────────────────────────────────
-
-/**
- * Generates a deterministic but non-zero mock embedding from text.
- * Uses a simple hash to seed values so similar texts get similar (not identical) vectors.
- * This is ONLY for dev/test; never use for production RAG quality.
- */
 function mockEmbedding(text) {
   const vec = new Array(EMBEDDING_DIMENSIONS).fill(0);
   for (let i = 0; i < text.length; i++) {
     const idx = (text.charCodeAt(i) * (i + 1)) % EMBEDDING_DIMENSIONS;
     vec[idx] += text.charCodeAt(i) / 1000;
   }
-  // Normalize to unit vector
+
   const magnitude = Math.sqrt(vec.reduce((s, v) => s + v * v, 0)) || 1;
   return vec.map((v) => v / magnitude);
 }
 
-// ─── Single Embedding ─────────────────────────────────────────────────────────
-
-/**
- * Embeds a single text string.
- *
- * @param {string} text
- * @param {string} [taskType] - Gemini task type hint ('RETRIEVAL_DOCUMENT' | 'RETRIEVAL_QUERY')
- * @returns {Promise<{ embedding: number[], model: string, isMock: boolean }>}
- */
 export async function embedText(text, taskType = 'RETRIEVAL_DOCUMENT') {
   if (!GEMINI_API_KEY) {
     return {
@@ -99,16 +68,6 @@ export async function embedText(text, taskType = 'RETRIEVAL_DOCUMENT') {
   };
 }
 
-// ─── Batch Embedding ──────────────────────────────────────────────────────────
-
-/**
- * Embeds multiple text strings in batches.
- * Uses Gemini's batchEmbedContents endpoint for efficiency.
- *
- * @param {string[]} texts
- * @param {string} [taskType]
- * @returns {Promise<Array<{ embedding: number[], model: string, isMock: boolean }>>}
- */
 export async function embedBatch(texts, taskType = 'RETRIEVAL_DOCUMENT') {
   if (!texts || texts.length === 0) return [];
 
@@ -119,7 +78,6 @@ export async function embedBatch(texts, taskType = 'RETRIEVAL_DOCUMENT') {
   const batchUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_EMBEDDING_MODEL}:batchEmbedContents?key=${GEMINI_API_KEY}`;
   const results = [];
 
-  // Process in batches of BATCH_SIZE
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const slice = texts.slice(i, i + BATCH_SIZE);
 
@@ -167,13 +125,6 @@ export async function embedBatch(texts, taskType = 'RETRIEVAL_DOCUMENT') {
   return results;
 }
 
-/**
- * Embeds a user query with RETRIEVAL_QUERY task type for ANN search.
- * Gemini differentiates between document and query embeddings for better recall.
- *
- * @param {string} query
- * @returns {Promise<{ embedding: number[], model: string, isMock: boolean }>}
- */
 export async function embedQuery(query) {
   return embedText(query, 'RETRIEVAL_QUERY');
 }

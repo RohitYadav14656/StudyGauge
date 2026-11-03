@@ -2,27 +2,18 @@ import Subject from '../models/Subject.js';
 import Topic from '../models/Topic.js';
 import UserTopicProgress from '../models/UserTopicProgress.js';
 
-/**
- * Calculates detailed syllabus progress analytics for a user and a specific exam.
- * @param {string} userId - The user ID
- * @param {string} examId - The exam ID
- * @returns {Object} - The computed analytics
- */
 export const calculateExamAnalytics = async (userId, examId) => {
-  // 1. Fetch syllabus structure (subjects and topics)
+
   const subjects = await Subject.find({ examId, active: true }).lean();
   const topics = await Topic.find({ examId, active: true }).lean();
-  
-  // 2. Fetch user's progress records
+
   const progressRecords = await UserTopicProgress.find({ userId, examId }).lean();
-  
-  // Map for O(1) lookups: { topicId: status }
+
   const progressMap = {};
   progressRecords.forEach(record => {
     progressMap[record.topicId.toString()] = record.status;
   });
 
-  // 3. Initialize overall metrics
   let totalTopics = 0;
   let completedTopics = 0;
   let pendingTopics = 0;
@@ -30,7 +21,6 @@ export const calculateExamAnalytics = async (userId, examId) => {
   let notStartedTopics = 0;
   let inProgressTopics = 0;
 
-  // 4. Initialize subject-level metrics
   const subjectAnalyticsMap = {};
   subjects.forEach(subject => {
     subjectAnalyticsMap[subject._id.toString()] = {
@@ -42,18 +32,15 @@ export const calculateExamAnalytics = async (userId, examId) => {
     };
   });
 
-  // 5. Calculate metrics by iterating through all active topics
   topics.forEach(topic => {
     totalTopics++;
     const subjectId = topic.subjectId.toString();
     const status = progressMap[topic._id.toString()] || 'Not Started';
 
-    // Subject-level counts
     if (subjectAnalyticsMap[subjectId]) {
       subjectAnalyticsMap[subjectId].totalTopics++;
     }
 
-    // Categorize status
     if (status === 'Completed' || status === 'Revised') {
       completedTopics++;
       if (subjectAnalyticsMap[subjectId]) {
@@ -67,7 +54,6 @@ export const calculateExamAnalytics = async (userId, examId) => {
     }
   });
 
-  // 6. Calculate percentages
   const overallCompletionPercentage = totalTopics === 0 ? 0 : Math.round((completedTopics / totalTopics) * 100);
 
   const subjectAnalytics = Object.values(subjectAnalyticsMap).map(subject => {

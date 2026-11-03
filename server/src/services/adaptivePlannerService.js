@@ -8,9 +8,6 @@ import Subject from '../models/Subject.js';
 import { getTopicRecommendations } from './recommendationService.js';
 import { getTopicAnalyticsWithWeaknessEngine } from './analyticsService.js';
 
-/**
- * Compare PLANNED ACTIVITY vs ACTUAL ACTIVITY and detect execution & performance gaps.
- */
 export const analyzePlanProgress = async (studyPlanId, options = {}) => {
   const studyPlan = await StudyPlan.findById(studyPlanId).populate('examId');
   if (!studyPlan) {
@@ -21,13 +18,11 @@ export const analyzePlanProgress = async (studyPlanId, options = {}) => {
   const examId = studyPlan.examId._id || studyPlan.examId;
   const refDate = options.currentDate ? new Date(options.currentDate) : new Date();
 
-  // Fetch all items for this plan
   const items = await StudyPlanItem.find({ studyPlanId })
     .populate('topicId', 'name')
     .populate('subjectId', 'name')
     .sort({ date: 1 });
 
-  // 1. Fetch topic analytics baseline & topic recommendations
   const topicAnalyticsRes = await getTopicAnalyticsWithWeaknessEngine(userId.toString(), { examId: examId.toString() });
   const topicList = topicAnalyticsRes.topics || [];
   const recommendationRes = await getTopicRecommendations(userId.toString(), { limit: 50 });
@@ -43,7 +38,6 @@ export const analyzePlanProgress = async (studyPlanId, options = {}) => {
     topicAnalyticsMap.set(t.topicId.toString(), t);
   });
 
-  // 2. Fetch overdue revisions for user's exam topics
   const overdueRevisionsRaw = await Revision.find({
     userId,
     status: { $in: ['OVERDUE', 'DUE'] },
@@ -66,7 +60,6 @@ export const analyzePlanProgress = async (studyPlanId, options = {}) => {
     };
   });
 
-  // Categorize Plan Items
   const missedTasks = [];
   const partiallyCompletedTasks = [];
   const completedTasks = [];
@@ -130,7 +123,6 @@ export const analyzePlanProgress = async (studyPlanId, options = {}) => {
     }
   });
 
-  // Detect declining performance topics
   const decliningPerformanceTopics = topicList
     .filter((t) => {
       const rec = recMap.get(t.topicId.toString());
@@ -182,9 +174,6 @@ export const analyzePlanProgress = async (studyPlanId, options = {}) => {
   };
 };
 
-/**
- * Adapt Study Plan items based on gap detection and workload constraints.
- */
 export const adaptStudyPlan = async (studyPlanId, options = {}) => {
   const studyPlan = await StudyPlan.findById(studyPlanId).populate('examId');
   if (!studyPlan) {
@@ -195,11 +184,9 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
   const examId = studyPlan.examId._id || studyPlan.examId;
   const refDate = options.currentDate ? new Date(options.currentDate) : new Date();
 
-  // Strip time for clean day-by-day scheduling starting from reference date
   const startDate = new Date(refDate);
   startDate.setUTCHours(0, 0, 0, 0);
 
-  // Determine target end date (exam target date or plan end date)
   let targetEndDate = studyPlan.endDate ? new Date(studyPlan.endDate) : new Date(startDate.getTime() + 30 * 86400000);
   const userExam = await UserExam.findOne({ userId, examId, status: 'active' });
   if (userExam && userExam.targetDate) {
@@ -212,18 +199,14 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
   const dailyStudyHours = Math.max(1, Math.min(16, parseFloat(options.dailyStudyHours) || 4));
   const maxDailyMinutes = Math.round(dailyStudyHours * 60);
 
-  // Protection for revision: default 25% of daily capacity reserved for revision tasks
   const protectRevisionRatio = Math.max(0.1, Math.min(0.5, parseFloat(options.protectRevisionRatio) || 0.25));
   const maxRevisionMinutesPerDay = Math.round(maxDailyMinutes * protectRevisionRatio);
 
-  // 1. Run analysis to gather current gaps
   const analysis = await analyzePlanProgress(studyPlanId, { currentDate: refDate });
   const { missedTasks, partiallyCompletedTasks, decliningPerformanceTopics, overdueRevisions, atRiskPostponedTasks } = analysis.gapsDetected;
 
-  // 2. Fetch all current items
   const existingItems = await StudyPlanItem.find({ studyPlanId }).sort({ date: 1 });
 
-  // 3. Fetch current topic recommendation priority scores
   const recRes = await getTopicRecommendations(userId.toString(), { limit: 100 });
   const recs = recRes.recommendations || [];
   const topicPriorityMap = new Map();
@@ -231,7 +214,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     topicPriorityMap.set(r.topic.id.toString(), r.priority.score);
   });
 
-  // Identify past vs future items
   const pastCompletedItemIds = new Set();
   const candidatePool = [];
 
@@ -243,12 +225,11 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
       if (item.status === 'completed' || item.completion === 100) {
         pastCompletedItemIds.add(item._id.toString());
       } else {
-        // Mark missed past items
+
         item.status = 'missed';
         item.rescheduleCount = (item.rescheduleCount || 0) + 1;
         item.save();
 
-        // Create candidate from missed item
         candidatePool.push({
           existingItemId: item._id,
           examId,
@@ -268,7 +249,7 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
         });
       }
     } else {
-      // Future or today's items
+
       if (item.status === 'partially_completed' || (item.completion > 0 && item.completion < 100)) {
         const remainingMinutes = Math.max(30, Math.round((item.plannedDuration || 60) * (1 - item.completion / 100)));
         candidatePool.push({
@@ -306,7 +287,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     }
   });
 
-  // Inject overdue revision candidate tasks
   overdueRevisions.forEach((rev) => {
     const topicIdStr = rev.topicId.toString();
     const alreadyInPool = candidatePool.some((c) => c.topicId?.toString() === topicIdStr && c.activityType === 'revision');
@@ -328,7 +308,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     }
   });
 
-  // Inject remedial tasks for declining performance topics
   decliningPerformanceTopics.forEach((dp) => {
     const topicIdStr = dp.topicId.toString();
     const alreadyInPool = candidatePool.some((c) => c.topicId?.toString() === topicIdStr && c.activityType === 'practice');
@@ -350,18 +329,15 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     }
   });
 
-  // Sort candidates by priority score descending, placing high-postpone tasks at top
   candidatePool.sort((a, b) => {
     if (a.rescheduleCount >= 2 && b.rescheduleCount < 2) return -1;
     if (b.rescheduleCount >= 2 && a.rescheduleCount < 2) return 1;
     return b.priorityScore - a.priorityScore;
   });
 
-  // Calculate total schedule days available
   const timeDiffMs = targetEndDate.getTime() - startDate.getTime();
   const availableDays = Math.max(1, Math.ceil(timeDiffMs / (1000 * 60 * 60 * 24)) + 1);
 
-  // Day-by-day scheduler algorithm
   const daySchedules = [];
   for (let i = 0; i < availableDays; i++) {
     const d = new Date(startDate);
@@ -379,7 +355,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
   candidatePool.forEach((cand) => {
     let assigned = false;
 
-    // Rule 5 Check: If task has rescheduleCount >= 2, lock into priority and immediate slot
     if (cand.rescheduleCount >= 2) {
       cand.priority = 'high';
       cand.adaptationReason = 'Locked into immediate next slot to prevent repeated postponement';
@@ -389,7 +364,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
       const day = daySchedules[dIdx];
       const taskDuration = cand.plannedDuration;
 
-      // Check daily capacity rule
       if (day.totalMinutes + taskDuration <= maxDailyMinutes) {
         day.items.push({ ...cand, date: day.date });
         day.totalMinutes += taskDuration;
@@ -406,7 +380,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     }
   });
 
-  // If previewOnly is requested, return the projected schedule without DB writes
   if (options.previewOnly) {
     return {
       preview: true,
@@ -422,7 +395,6 @@ export const adaptStudyPlan = async (studyPlanId, options = {}) => {
     };
   }
 
-  // Execute DB updates: Delete uncompleted future items and insert recalculated items
   const futureCutoffDate = new Date(startDate);
   await StudyPlanItem.deleteMany({
     studyPlanId,

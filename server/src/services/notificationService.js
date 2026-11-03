@@ -7,9 +7,6 @@ import UserExam from '../models/UserExam.js';
 import Recommendation from '../models/Recommendation.js';
 import StudySession from '../models/StudySession.js';
 
-/**
- * Creates a notification if it doesn't already exist (deduplication check).
- */
 export const createNotification = async (userId, notificationData) => {
   const {
     title,
@@ -23,7 +20,6 @@ export const createNotification = async (userId, notificationData) => {
     channels = { inApp: true, email: false, push: false },
   } = notificationData;
 
-  // Deduplication check
   if (dedupKey) {
     const existing = await Notification.findOne({ userId, dedupKey });
     if (existing) {
@@ -48,7 +44,7 @@ export const createNotification = async (userId, notificationData) => {
     await notification.save();
     return { notification, created: true };
   } catch (error) {
-    // Handle concurrent duplicate insertion (E11000)
+
     if (error.code === 11000 && dedupKey) {
       const existing = await Notification.findOne({ userId, dedupKey });
       if (existing) {
@@ -59,15 +55,11 @@ export const createNotification = async (userId, notificationData) => {
   }
 };
 
-/**
- * Get paginated user notifications with filtering and unread count.
- */
 export const getUserNotifications = async (userId, options = {}) => {
   const page = parseInt(options.page, 10) || 1;
   const limit = parseInt(options.limit, 10) || 20;
   const skip = (page - 1) * limit;
 
-  // Sync auto-generated notifications first
   try {
     await generateAutoNotifications(userId);
   } catch (err) {
@@ -103,9 +95,6 @@ export const getUserNotifications = async (userId, options = {}) => {
   };
 };
 
-/**
- * Get quick unread count for user badge.
- */
 export const getUnreadCount = async (userId) => {
   try {
     await generateAutoNotifications(userId);
@@ -117,9 +106,6 @@ export const getUnreadCount = async (userId) => {
   return { unreadCount };
 };
 
-/**
- * Mark single notification as read.
- */
 export const markAsRead = async (userId, notificationId) => {
   const notification = await Notification.findOneAndUpdate(
     { _id: notificationId, userId },
@@ -134,9 +120,6 @@ export const markAsRead = async (userId, notificationId) => {
   return notification;
 };
 
-/**
- * Mark all notifications for user as read.
- */
 export const markAllAsRead = async (userId) => {
   const result = await Notification.updateMany(
     { userId, isRead: false },
@@ -146,9 +129,6 @@ export const markAllAsRead = async (userId) => {
   return { modifiedCount: result.modifiedCount };
 };
 
-/**
- * Delete a notification.
- */
 export const deleteNotification = async (userId, notificationId) => {
   const notification = await Notification.findOneAndDelete({ _id: notificationId, userId });
 
@@ -159,15 +139,10 @@ export const deleteNotification = async (userId, notificationId) => {
   return { success: true };
 };
 
-/**
- * Generator engine for 6 core in-app notification types.
- * Prevents spam and duplicate generation via `dedupKey`.
- */
 export const generateAutoNotifications = async (userId) => {
   const now = new Date();
   const todayStr = now.toISOString().split('T')[0];
 
-  // 1. REVISION DUE
   try {
     const dueRevisions = await Revision.find({
       userId,
@@ -196,7 +171,6 @@ export const generateAutoNotifications = async (userId) => {
     console.error('Error generating revision_due notifications:', err);
   }
 
-  // 2. MISSED STUDY PLAN
   try {
     const startOfToday = new Date(now.setHours(0, 0, 0, 0));
     const userPlans = await StudyPlan.find({ userId }).select('_id').lean();
@@ -232,7 +206,6 @@ export const generateAutoNotifications = async (userId) => {
     console.error('Error generating missed_study_plan notifications:', err);
   }
 
-  // 3. GOAL PROGRESS
   try {
     const activeGoals = await Goal.find({ userId, status: 'in-progress' }).lean();
 
@@ -250,7 +223,7 @@ export const generateAutoNotifications = async (userId) => {
 
       if (goal.targetValue > 0) {
         const percent = Math.min(100, Math.floor((currentValue / goal.targetValue) * 100));
-        // Check milestone thresholds: 50%, 75%, 100%
+
         const milestones = [100, 75, 50];
         for (const milestone of milestones) {
           if (percent >= milestone) {
@@ -270,7 +243,7 @@ export const generateAutoNotifications = async (userId) => {
               entityType: 'Goal',
               metadata: { milestone, currentValue, targetValue: goal.targetValue },
             });
-            break; // Stop at highest milestone reached
+            break;
           }
         }
       }
@@ -279,7 +252,6 @@ export const generateAutoNotifications = async (userId) => {
     console.error('Error generating goal_progress notifications:', err);
   }
 
-  // 4. RECOMMENDATION
   try {
     const pendingRecs = await Recommendation.find({ userId, status: 'pending' })
       .limit(5)
@@ -301,7 +273,6 @@ export const generateAutoNotifications = async (userId) => {
     console.error('Error generating recommendation notifications:', err);
   }
 
-  // 5. UPCOMING EXAM
   try {
     const userExams = await UserExam.find({ userId, status: 'active' })
       .populate('examId', 'name examDate')
@@ -315,7 +286,6 @@ export const generateAutoNotifications = async (userId) => {
       const targetTime = new Date(examDate).getTime();
       const diffDays = Math.ceil((targetTime - Date.now()) / (1000 * 60 * 60 * 24));
 
-      // Trigger alerts at threshold days
       const targetMilestones = [30, 14, 7, 3, 1];
       for (const milestoneDays of targetMilestones) {
         if (diffDays > 0 && diffDays <= milestoneDays) {
@@ -330,7 +300,7 @@ export const generateAutoNotifications = async (userId) => {
             entityType: 'UserExam',
             metadata: { diffDays },
           });
-          break; // Trigger highest applicable threshold
+          break;
         }
       }
     }
@@ -338,7 +308,6 @@ export const generateAutoNotifications = async (userId) => {
     console.error('Error generating upcoming_exam notifications:', err);
   }
 
-  // 6. PLANNER CHANGES
   try {
     const userPlans = await StudyPlan.find({ userId }).select('_id').lean();
     const userPlanIds = userPlans.map((p) => p._id);

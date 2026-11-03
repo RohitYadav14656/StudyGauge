@@ -7,9 +7,6 @@ import {
   getDueRevisionsQuerySchema,
 } from '../validations/revisionValidation.js';
 
-// @desc    Get revisions due today or overdue
-// @route   GET /api/revisions/due
-// @access  Private
 export const getDueRevisionsController = async (req, res, next) => {
   try {
     const { error, value } = getDueRevisionsQuerySchema.validate(req.query);
@@ -30,9 +27,6 @@ export const getDueRevisionsController = async (req, res, next) => {
   }
 };
 
-// @desc    Schedule or log completion of a topic revision
-// @route   POST /api/revisions
-// @access  Private
 export const createOrUpdateRevisionController = async (req, res, next) => {
   try {
     const { error, value } = createOrUpdateRevisionSchema.validate(req.body);

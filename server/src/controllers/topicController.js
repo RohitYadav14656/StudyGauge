@@ -2,9 +2,6 @@ import Topic from '../models/Topic.js';
 import Subject from '../models/Subject.js';
 import Exam from '../models/Exam.js';
 
-// @desc    Get all topics (optionally filtered by exam and subject)
-// @route   GET /api/topics
-// @access  Public (or Student)
 export const getTopics = async (req, res, next) => {
   try {
     const { examId, subjectId, active } = req.query;
@@ -25,9 +22,6 @@ export const getTopics = async (req, res, next) => {
   }
 };
 
-// @desc    Get single topic
-// @route   GET /api/topics/:id
-// @access  Public (or Student)
 export const getTopicById = async (req, res, next) => {
   try {
     const topic = await Topic.findById(req.params.id)
@@ -44,21 +38,16 @@ export const getTopicById = async (req, res, next) => {
   }
 };
 
-// @desc    Create a topic
-// @route   POST /api/topics
-// @access  Private/Admin
 export const createTopic = async (req, res, next) => {
   try {
     const { examId, subjectId, name, description, order, active, subtopics } = req.body;
 
-    // Verify exam exists
     const exam = await Exam.findById(examId);
     if (!exam) {
       res.status(404);
       throw new Error('Exam not found');
     }
 
-    // Verify subject exists and belongs to exam
     const subject = await Subject.findById(subjectId);
     if (!subject) {
       res.status(404);
@@ -69,7 +58,6 @@ export const createTopic = async (req, res, next) => {
       throw new Error('Data integrity error: Subject does not belong to the specified Exam');
     }
 
-    // Check for duplicate name under the same subject
     const existing = await Topic.findOne({ subjectId, name: { $regex: new RegExp(`^${name}$`, 'i') } });
     if (existing) {
       res.status(400);
@@ -92,9 +80,6 @@ export const createTopic = async (req, res, next) => {
   }
 };
 
-// @desc    Update a topic
-// @route   PUT /api/topics/:id
-// @access  Private/Admin
 export const updateTopic = async (req, res, next) => {
   try {
     const { examId, subjectId, name, description, order, active, subtopics } = req.body;
@@ -109,7 +94,6 @@ export const updateTopic = async (req, res, next) => {
     const targetSubjectId = subjectId || topic.subjectId;
     const targetName = name || topic.name;
 
-    // Verify data integrity if subject or exam changed
     if (subjectId || examId) {
       const subject = await Subject.findById(targetSubjectId);
       if (!subject) {
@@ -122,7 +106,6 @@ export const updateTopic = async (req, res, next) => {
       }
     }
 
-    // Check duplicate
     if (name || subjectId) {
       const existing = await Topic.findOne({
         _id: { $ne: topic._id },
@@ -141,7 +124,7 @@ export const updateTopic = async (req, res, next) => {
     if (description !== undefined) topic.description = description;
     if (order !== undefined) topic.order = order;
     if (active !== undefined) topic.active = active;
-    if (subtopics !== undefined) topic.subtopics = subtopics; // Replace subtopics array
+    if (subtopics !== undefined) topic.subtopics = subtopics;
 
     const updatedTopic = await topic.save();
     res.json(updatedTopic);
@@ -150,9 +133,6 @@ export const updateTopic = async (req, res, next) => {
   }
 };
 
-// @desc    Update topic status
-// @route   PATCH /api/topics/:id/status
-// @access  Private/Admin
 export const updateTopicStatus = async (req, res, next) => {
   try {
     const { active } = req.body;

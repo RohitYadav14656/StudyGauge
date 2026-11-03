@@ -1,31 +1,14 @@
-/**
- * ragRetrievalService.js
- *
- * Semantic retrieval layer for the RAG knowledge base.
- *
- * Primary strategy: MongoDB Atlas Vector Search ($vectorSearch aggregation)
- * Fallback strategy: Cosine similarity computed in-application over a filtered subset
- *                    (used when not on Atlas or vector index not yet created)
- *
- * The retriever supports:
- *  - Metadata pre-filtering (exam, subject, topic, difficulty)
- *  - Configurable top-K results
- *  - Score threshold filtering
- *  - Context formatting for LLM prompt injection (with injection sanitization)
- */
+
 
 import KnowledgeChunk from '../../models/KnowledgeChunk.js';
 import { embedQuery } from './embeddingService.js';
 import { sanitizeChunkForPrompt } from './contentSanitizer.js';
 
-// ─── Configuration ────────────────────────────────────────────────────────────
 const ATLAS_VECTOR_INDEX_NAME =
   process.env.RAG_VECTOR_INDEX_NAME || 'knowledgechunks_vector_index';
 const DEFAULT_TOP_K = 5;
-const DEFAULT_SCORE_THRESHOLD = 0.65; // cosine similarity minimum
-const MAX_TOP_K = 20; // hard cap to prevent context overflow
-
-// ─── Cosine Similarity (fallback) ────────────────────────────────────────────
+const DEFAULT_SCORE_THRESHOLD = 0.65;
+const MAX_TOP_K = 20;
 
 function cosineSimilarity(a, b) {
   if (!a || !b || a.length !== b.length) return 0;
@@ -39,20 +22,8 @@ function cosineSimilarity(a, b) {
   return denom === 0 ? 0 : dot / denom;
 }
 
-// ─── Atlas Vector Search ──────────────────────────────────────────────────────
-
-/**
- * Performs semantic search via MongoDB Atlas Vector Search.
- * Requires a vector index named `knowledgechunks_vector_index` on the
- * `knowledgechunks` collection (see KnowledgeChunk model comments for setup).
- *
- * @param {number[]} queryEmbedding
- * @param {object}   filter           - Pre-filter metadata fields
- * @param {number}   topK
- * @returns {Promise<Array<{ chunk: object, score: number }>>}
- */
 async function searchViaAtlasVectorSearch(queryEmbedding, filter, topK) {
-  // Build pre-filter compound query from metadata filter
+
   const preFilter = {};
   if (filter.exam) preFilter['metadata.exam'] = filter.exam;
   if (filter.subject) preFilter['metadata.subject'] = filter.subject;
@@ -64,7 +35,7 @@ async function searchViaAtlasVectorSearch(queryEmbedding, filter, topK) {
       index: ATLAS_VECTOR_INDEX_NAME,
       path: 'embedding',
       queryVector: queryEmbedding,
-      numCandidates: Math.min(topK * 15, 500), // overrequest for better recall
+      numCandidates: Math.min(topK * 15, 500),
       limit: topK,
       ...(Object.keys(preFilter).length > 0 ? { filter: preFilter } : {}),
     },
@@ -88,18 +59,6 @@ async function searchViaAtlasVectorSearch(queryEmbedding, filter, topK) {
   return results.map((r) => ({ chunk: r, score: r.score }));
 }
 
-// ─── Fallback In-App Cosine Search ───────────────────────────────────────────
-
-/**
- * Fallback similarity search via in-application cosine computation.
- * Fetches a filtered subset and ranks by cosine similarity.
- * Less scalable than Atlas Vector Search but works on any MongoDB tier.
- *
- * @param {number[]} queryEmbedding
- * @param {object}   filter
- * @param {number}   topK
- * @returns {Promise<Array<{ chunk: object, score: number }>>}
- */
 async function searchViaFallbackCosine(queryEmbedding, filter, topK) {
   const mongoFilter = { embedding: { $exists: true } };
 
@@ -108,7 +67,6 @@ async function searchViaFallbackCosine(queryEmbedding, filter, topK) {
   if (filter.topic) mongoFilter['metadata.topic'] = filter.topic;
   if (filter.difficulty) mongoFilter['metadata.difficulty'] = filter.difficulty;
 
-  // Fetch up to 2000 candidates (practical limit for in-memory ranking)
   const candidates = await KnowledgeChunk.find(mongoFilter)
     .select('content chunkIndex documentId metadata embeddingModel embedding')
     .limit(2000)
@@ -125,23 +83,6 @@ async function searchViaFallbackCosine(queryEmbedding, filter, topK) {
   return scored;
 }
 
-// ─── Core Retrieval Function ──────────────────────────────────────────────────
-
-/**
- * Retrieves the most semantically relevant knowledge chunks for a query.
- *
- * @param {object} params
- * @param {string}  params.query                - Natural language query
- * @param {object}  [params.filter]             - Metadata pre-filters
- * @param {string}  [params.filter.exam]
- * @param {string}  [params.filter.subject]
- * @param {string}  [params.filter.topic]
- * @param {string}  [params.filter.difficulty]
- * @param {number}  [params.topK]               - Max results (default 5, max 20)
- * @param {number}  [params.scoreThreshold]     - Minimum similarity score
- * @param {boolean} [params.forceAtlas]         - Force Atlas search even if it fails
- * @returns {Promise<{ chunks: object[], contextText: string, meta: object }>}
- */
 export async function retrieveRelevantChunks(params) {
   const {
     query,
@@ -157,10 +98,8 @@ export async function retrieveRelevantChunks(params) {
 
   const clampedTopK = Math.min(Math.max(1, topK), MAX_TOP_K);
 
-  // ── 1. Embed the query ────────────────────────────────────────────────────
   const { embedding: queryEmbedding, model: embModel, isMock } = await embedQuery(query);
 
-  // ── 2. Search (Atlas first, fallback to cosine) ───────────────────────────
   let searchResults = [];
   let usedAtlas = false;
 
@@ -169,7 +108,7 @@ export async function retrieveRelevantChunks(params) {
     usedAtlas = true;
   } catch (atlasErr) {
     if (forceAtlas) throw atlasErr;
-    // Atlas Vector Search index not set up yet — use fallback
+
     console.warn(
       `[RAG Retrieval] Atlas Vector Search failed (${atlasErr.message}). Using fallback cosine search.`
     );
@@ -177,17 +116,14 @@ export async function retrieveRelevantChunks(params) {
     usedAtlas = false;
   }
 
-  // ── 3. Apply score threshold ──────────────────────────────────────────────
   const filtered = searchResults.filter((r) => r.score >= scoreThreshold);
 
-  // ── 4. Sanitize chunks before prompt injection ────────────────────────────
   const safeChunks = filtered.map((r) => ({
     ...r.chunk,
     content: sanitizeChunkForPrompt(r.chunk.content),
     score: r.score,
   }));
 
-  // ── 5. Format as LLM context string ──────────────────────────────────────
   const contextText = safeChunks
     .map((chunk, i) => {
       const meta = chunk.metadata || {};
@@ -221,16 +157,6 @@ export async function retrieveRelevantChunks(params) {
   };
 }
 
-/**
- * RAG-augmented answer generation convenience wrapper.
- * Retrieves relevant chunks and returns a structured context payload
- * ready for injection into the AIService RAG_QUERY prompt template.
- *
- * @param {string} userQuery
- * @param {object} filterOptions   - { exam, subject, topic, difficulty }
- * @param {number} [topK]
- * @returns {Promise<{ contextChunks: string, retrievalMeta: object }>}
- */
 export async function buildRagContext(userQuery, filterOptions = {}, topK = DEFAULT_TOP_K) {
   const { chunks, contextText, meta } = await retrieveRelevantChunks({
     query: userQuery,

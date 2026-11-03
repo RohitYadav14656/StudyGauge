@@ -6,7 +6,7 @@ export const createStudySessionSchema = Joi.object({
   topicId: Joi.string().hex().length(24).optional(),
   studyPlanItemId: Joi.string().hex().length(24).optional(),
   date: Joi.date().required(),
-  startTime: Joi.date().optional(), // Made optional since timer can provide it
+  startTime: Joi.date().optional(),
   endTime: Joi.date().optional(),
   durationMinutes: Joi.number().min(0).optional(),
   studyType: Joi.string().valid('Lecture', 'Reading', 'Practice', 'PYQ', 'Mock Test', 'Revision').required(),

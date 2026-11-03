@@ -52,7 +52,6 @@ const studySessionSchema = new mongoose.Schema(
   }
 );
 
-// Indexes for common query patterns and filtering
 studySessionSchema.index({ userId: 1, date: -1 });
 studySessionSchema.index({ userId: 1, subjectId: 1 });
 studySessionSchema.index({ userId: 1, topicId: 1 });

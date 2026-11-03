@@ -12,6 +12,6 @@ export const createOrUpdateRevisionSchema = Joi.object({
 export const getDueRevisionsQuerySchema = Joi.object({
   examId: Joi.string().hex().length(24).optional(),
   subjectId: Joi.string().hex().length(24).optional(),
-  timezoneOffset: Joi.number().optional().default(0), // offset in minutes, e.g. -330 for UTC+5:30
+  timezoneOffset: Joi.number().optional().default(0),
   targetDate: Joi.date().optional(),
 });

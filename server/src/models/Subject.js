@@ -29,7 +29,7 @@ const subjectSchema = new mongoose.Schema(
       default: true,
     },
     weightage: {
-      // E.g., typical percentage of marks in the exam
+
       type: Number,
       min: 0,
       max: 100,
@@ -40,7 +40,6 @@ const subjectSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
 subjectSchema.index({ examId: 1 });
 
 const Subject = mongoose.model('Subject', subjectSchema);

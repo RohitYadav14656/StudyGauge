@@ -1,6 +1,4 @@
-/**
- * Custom AI Error Hierarchy for StudyGauge AI Subsystem
- */
+
 
 export class AIError extends Error {
   constructor(message, options = {}) {

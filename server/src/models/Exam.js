@@ -17,7 +17,7 @@ const examSchema = new mongoose.Schema(
       trim: true,
     },
     metadata: {
-      // For any exam-specific extensible properties
+
       type: Map,
       of: String,
     },

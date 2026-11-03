@@ -1,16 +1,9 @@
 import mongoose from 'mongoose';
 import crypto from 'crypto';
 
-/**
- * KnowledgeDocument Schema
- *
- * Represents a top-level document ingested into the RAG knowledge base.
- * Tracks ingestion state, metadata, security hash (dedup + integrity),
- * and rich educational metadata for filtered semantic retrieval.
- */
 const knowledgeDocumentSchema = new mongoose.Schema(
   {
-    // ─── Content Identity ────────────────────────────────────────────────────
+
     title: {
       type: String,
       required: true,
@@ -37,7 +30,6 @@ const knowledgeDocumentSchema = new mongoose.Schema(
       default: null,
     },
 
-    // ─── Educational Metadata ────────────────────────────────────────────────
     metadata: {
       exam: {
         type: String,
@@ -82,7 +74,6 @@ const knowledgeDocumentSchema = new mongoose.Schema(
       },
     },
 
-    // ─── Ingestion State ─────────────────────────────────────────────────────
     isProcessed: {
       type: Boolean,
       default: false,
@@ -106,7 +97,6 @@ const knowledgeDocumentSchema = new mongoose.Schema(
       default: 0,
     },
 
-    // ─── Security & Safety ───────────────────────────────────────────────────
     safetyFlags: {
       hasSuspiciousContent: { type: Boolean, default: false },
       hasPromptInjectionRisk: { type: Boolean, default: false },
@@ -118,7 +108,6 @@ const knowledgeDocumentSchema = new mongoose.Schema(
       index: true,
     },
 
-    // ─── Authorship ──────────────────────────────────────────────────────────
     uploadedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -130,12 +119,10 @@ const knowledgeDocumentSchema = new mongoose.Schema(
   }
 );
 
-// ─── Compound Indexes for filtered vector retrieval ───────────────────────────
 knowledgeDocumentSchema.index({ 'metadata.exam': 1, 'metadata.subject': 1, isActive: 1 });
 knowledgeDocumentSchema.index({ 'metadata.exam': 1, 'metadata.topic': 1, isActive: 1 });
 knowledgeDocumentSchema.index({ processingStatus: 1, isActive: 1 });
 
-// ─── Pre-validate: compute deterministic SHA-256 content hash ────────────────
 knowledgeDocumentSchema.pre('validate', function (next) {
   if (this.rawContent && !this.contentHash) {
     this.contentHash = crypto

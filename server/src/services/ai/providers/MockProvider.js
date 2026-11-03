@@ -8,11 +8,11 @@ export class MockProvider extends BaseProvider {
   }
 
   isAvailable() {
-    return true; // Mock provider is always available
+    return true;
   }
 
   async generateText({ systemDirective = '', userPrompt = '', maxTokens = 1000, temperature = 0.7, signal = null }) {
-    // Check signal for cancellation/timeout simulation if requested
+
     if (signal?.aborted) {
       const err = new Error('Aborted');
       err.name = 'AbortError';
@@ -22,7 +22,7 @@ export class MockProvider extends BaseProvider {
     let outputText = '';
 
     if (userPrompt.includes('REQUIRED JSON SCHEMA') || userPrompt.includes('"questions"')) {
-      // Structured Question Generation Mock Response
+
       outputText = JSON.stringify(
         {
           topic: 'Sample Topic',

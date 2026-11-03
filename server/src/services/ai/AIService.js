@@ -18,18 +18,10 @@ export class AIService {
     this.registerProvider(new MockProvider());
   }
 
-  /**
-   * Registers an LLM Provider implementation.
-   * @param {BaseProvider} provider 
-   */
   registerProvider(provider) {
     this.providers.set(provider.name, provider);
   }
 
-  /**
-   * Determines active primary provider based on config and availability.
-   * @returns {BaseProvider}
-   */
   getActiveProvider() {
     const preferred = (process.env.AI_PROVIDER || 'gemini').toLowerCase();
     const candidate = this.providers.get(preferred);
@@ -38,25 +30,15 @@ export class AIService {
       return candidate;
     }
 
-    // Fall back to any available live provider
     for (const [_, p] of this.providers) {
       if (p.name !== 'mock' && p.isAvailable()) {
         return p;
       }
     }
 
-    // Final safety fallback: MockProvider
     return this.providers.get('mock');
   }
 
-  /**
-   * Core orchestrator method: Executes AI task with token limits, retries, timeouts, telemetry, and fallback.
-   * 
-   * @param {string} taskType - Registered prompt template key
-   * @param {object} variables - Template variables
-   * @param {object} options - Call options (userId, timeoutMs, maxRetries, etc.)
-   * @returns {Promise<object>} { text, metadata }
-   */
   async executeTask(taskType, variables = {}, options = {}) {
     const startTime = Date.now();
     const {
@@ -67,13 +49,10 @@ export class AIService {
       forceProvider = null,
     } = options;
 
-    // 1. Build & sanitize prompt
     const { systemDirective, userPrompt } = buildPrompt(taskType, variables);
 
-    // 2. Enforce token limits
     const { estimatedPromptTokens, maxOutputTokens } = enforceTokenLimits(userPrompt, taskType);
 
-    // 3. Select Provider
     let provider = forceProvider ? this.providers.get(forceProvider) : this.getActiveProvider();
     if (!provider || !provider.isAvailable()) {
       provider = this.providers.get('mock');
@@ -85,7 +64,7 @@ export class AIService {
     let errorType = null;
 
     try {
-      // 4. Execute call with retry strategy
+
       result = await executeWithRetry(
         (signal) =>
           provider.generateText({
@@ -102,7 +81,7 @@ export class AIService {
         }
       );
     } catch (primaryError) {
-      // 5. Automatic Fallback Execution if Primary Provider Failed
+
       console.warn(`Primary AI provider '${provider.name}' failed. Initiating Mock Fallback. Reason: ${primaryError.message}`);
       
       const fallbackProvider = this.providers.get('mock');
@@ -141,7 +120,6 @@ export class AIService {
 
     const latencyMs = Date.now() - startTime;
 
-    // 6. Log Anonymized Telemetry (NO prompt/response text!)
     await logAIUsage({
       userId,
       provider: provider.name,
@@ -170,15 +148,6 @@ export class AIService {
     };
   }
 
-  /**
-   * Executes AI task and returns validated structured JSON object.
-   * 
-   * @param {string} taskType 
-   * @param {object} variables 
-   * @param {object} schemaOptions - { requiredFields, validator }
-   * @param {object} options 
-   * @returns {Promise<object>} { data, metadata }
-   */
   async executeStructuredTask(taskType, variables = {}, schemaOptions = {}, options = {}) {
     const rawResult = await this.executeTask(taskType, variables, options);
 
@@ -192,8 +161,6 @@ export class AIService {
       metadata: rawResult.metadata,
     };
   }
-
-  // --- Domain-Specific Convenience Service API ---
 
   async explainWeakTopic({ topicName, subjectName, examName, weaknessLevel = 'WEAK', accuracy = 40, commonErrors = 'Conceptual confusion', userId }) {
     return this.executeTask(
@@ -237,6 +204,5 @@ export class AIService {
   }
 }
 
-// Singleton instance export
 const aiService = new AIService();
 export default aiService;

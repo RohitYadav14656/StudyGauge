@@ -7,11 +7,6 @@ import {
   askQuestionSchema,
 } from '../validations/aiValidation.js';
 
-/**
- * @desc    Generate personalized concept explanation for a weak topic
- * @route   POST /api/ai/explain
- * @access  Private
- */
 export const explainTopic = async (req, res, next) => {
   try {
     const { error, value } = explainTopicSchema.validate(req.body);
@@ -37,11 +32,6 @@ export const explainTopic = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Generate structured practice quiz questions
- * @route   POST /api/ai/questions
- * @access  Private
- */
 export const generateQuestions = async (req, res, next) => {
   try {
     const { error, value } = generateQuestionsSchema.validate(req.body);
@@ -69,11 +59,6 @@ export const generateQuestions = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Generate personalized adaptive study advice
- * @route   POST /api/ai/study-advice
- * @access  Private
- */
 export const getStudyAdvice = async (req, res, next) => {
   try {
     const { error, value } = studyAdviceSchema.validate(req.body);
@@ -104,11 +89,6 @@ export const getStudyAdvice = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Ask general academic / study question to AI tutor
- * @route   POST /api/ai/ask
- * @access  Private
- */
 export const askQuestion = async (req, res, next) => {
   try {
     const { error, value } = askQuestionSchema.validate(req.body);
@@ -134,11 +114,6 @@ export const askQuestion = async (req, res, next) => {
   }
 };
 
-/**
- * @desc    Get aggregated anonymized AI usage telemetry for current user
- * @route   GET /api/ai/usage-stats
- * @access  Private
- */
 export const getUsageStats = async (req, res, next) => {
   try {
     const userId = req.user?._id || req.user?.id;

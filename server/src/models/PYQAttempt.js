@@ -36,15 +36,14 @@ const pyqAttemptSchema = new mongoose.Schema(
   }
 );
 
-// Primary lookup: find a user's attempt for a specific PYQ
 pyqAttemptSchema.index({ userId: 1, pyqId: 1 });
-// Attempt history sorted by recency
+
 pyqAttemptSchema.index({ userId: 1, createdAt: -1 });
-// Bookmark listing
+
 pyqAttemptSchema.index({ userId: 1, bookmarked: 1 });
-// Revision listing
+
 pyqAttemptSchema.index({ userId: 1, markedForRevision: 1 });
-// Accuracy aggregations (group by isCorrect)
+
 pyqAttemptSchema.index({ userId: 1, isCorrect: 1 });
 
 const PYQAttempt = mongoose.model('PYQAttempt', pyqAttemptSchema);

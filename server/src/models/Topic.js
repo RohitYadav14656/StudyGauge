@@ -52,7 +52,6 @@ const topicSchema = new mongoose.Schema(
   }
 );
 
-// Indexes
 topicSchema.index({ subjectId: 1 });
 topicSchema.index({ examId: 1 });
 

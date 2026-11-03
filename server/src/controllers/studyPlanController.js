@@ -4,15 +4,12 @@ import Exam from '../models/Exam.js';
 import Topic from '../models/Topic.js';
 import UserTopicProgress from '../models/UserTopicProgress.js';
 import { analyzePlanProgress, adaptStudyPlan } from '../services/adaptivePlannerService.js';
-// @desc    Create a new study plan
-// @route   POST /api/study-plans
-// @access  Private
+
 export const createStudyPlan = async (req, res) => {
   try {
     const { examId, title, startDate, endDate, notes } = req.body;
     const userId = req.user._id;
 
-    // Verify exam exists
     const exam = await Exam.findById(examId);
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
@@ -34,9 +31,6 @@ export const createStudyPlan = async (req, res) => {
   }
 };
 
-// @desc    Get all study plans for a user
-// @route   GET /api/study-plans
-// @access  Private
 export const getStudyPlans = async (req, res) => {
   try {
     const studyPlans = await StudyPlan.find({ userId: req.user._id })
@@ -49,9 +43,6 @@ export const getStudyPlans = async (req, res) => {
   }
 };
 
-// @desc    Get study plan by ID
-// @route   GET /api/study-plans/:id
-// @access  Private
 export const getStudyPlanById = async (req, res) => {
   try {
     const planId = req.params.id;
@@ -69,9 +60,6 @@ export const getStudyPlanById = async (req, res) => {
   }
 };
 
-// @desc    Create a study plan item
-// @route   POST /api/study-plans/:planId/items
-// @access  Private
 export const createStudyPlanItem = async (req, res) => {
   try {
     const { planId } = req.params;
@@ -87,7 +75,6 @@ export const createStudyPlanItem = async (req, res) => {
       notes,
     } = req.body;
 
-    // Verify study plan belongs to user
     const studyPlan = await StudyPlan.findOne({ _id: planId, userId: req.user._id });
     if (!studyPlan) {
       return res.status(404).json({ message: 'Study plan not found or not authorized' });
@@ -116,9 +103,6 @@ export const createStudyPlanItem = async (req, res) => {
   }
 };
 
-// @desc    Get study plan items
-// @route   GET /api/study-plans/:planId/items
-// @access  Private
 export const getStudyPlanItems = async (req, res) => {
   try {
     const { planId } = req.params;
@@ -149,9 +133,6 @@ export const getStudyPlanItems = async (req, res) => {
   }
 };
 
-// @desc    Update a study plan item
-// @route   PUT /api/study-plans/items/:itemId
-// @access  Private
 export const updateStudyPlanItem = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -162,7 +143,6 @@ export const updateStudyPlanItem = async (req, res) => {
       return res.status(404).json({ message: 'Study plan item not found' });
     }
 
-    // Verify owner
     if (item.studyPlanId.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized' });
     }
@@ -179,9 +159,6 @@ export const updateStudyPlanItem = async (req, res) => {
   }
 };
 
-// @desc    Delete a study plan item
-// @route   DELETE /api/study-plans/items/:itemId
-// @access  Private
 export const deleteStudyPlanItem = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -191,7 +168,6 @@ export const deleteStudyPlanItem = async (req, res) => {
       return res.status(404).json({ message: 'Study plan item not found' });
     }
 
-    // Verify owner
     if (item.studyPlanId.userId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized' });
     }
@@ -204,41 +180,32 @@ export const deleteStudyPlanItem = async (req, res) => {
   }
 };
 
-// @desc    Generate a deterministic study plan
-// @route   POST /api/study-plans/generate
-// @access  Private
 export const generateStudyPlan = async (req, res) => {
   try {
     const { examId, title, startDate, endDate, dailyStudyHours, preparationLevel } = req.body;
     const userId = req.user._id;
 
-    // Verify exam exists
     const exam = await Exam.findById(examId);
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
     }
 
-    // 1. Fetch all topics for the exam
     const allTopics = await Topic.find({ examId, active: true }).sort({ subjectId: 1, order: 1 });
-    
-    // 2. Fetch user's topic progress
+
     const userProgress = await UserTopicProgress.find({ userId, examId });
-    
-    // Map of completed topics
+
     const completedTopicIds = new Set(
       userProgress
         .filter(p => p.status === 'Completed' || p.status === 'Revised')
         .map(p => p.topicId.toString())
     );
 
-    // 3. Filter pending topics
     const pendingTopics = allTopics.filter(topic => !completedTopicIds.has(topic._id.toString()));
 
     if (pendingTopics.length === 0) {
       return res.status(400).json({ message: 'No pending topics found to schedule.' });
     }
 
-    // 4. Create the main StudyPlan
     const studyPlan = new StudyPlan({
       userId,
       examId,
@@ -250,12 +217,9 @@ export const generateStudyPlan = async (req, res) => {
     
     const createdPlan = await studyPlan.save();
 
-    // 5. Deterministic scheduling logic
-    // Calculate total days
     const start = new Date(startDate);
     const end = new Date(endDate);
-    
-    // Difference in days (inclusive)
+
     const diffTime = Math.abs(end - start);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
     
@@ -264,9 +228,8 @@ export const generateStudyPlan = async (req, res) => {
     }
 
     const itemsToCreate = [];
-    
-    // Configurable time per topic based on prep level
-    let timePerTopicMinutes = 120; // default 2 hours
+
+    let timePerTopicMinutes = 120;
     if (preparationLevel === 'advanced') timePerTopicMinutes = 60;
     if (preparationLevel === 'intermediate') timePerTopicMinutes = 90;
 
@@ -276,14 +239,12 @@ export const generateStudyPlan = async (req, res) => {
 
     for (let i = 0; i < pendingTopics.length; i++) {
       const topic = pendingTopics[i];
-      
-      // If adding this topic exceeds the day's limit and we aren't at the start of the day
+
       if (currentDayMinutesUsed + timePerTopicMinutes > maxMinutesPerDay && currentDayMinutesUsed > 0) {
         currentDayIndex++;
         currentDayMinutesUsed = 0;
       }
-      
-      // If we run out of days, just cram remaining into the last day (simplistic approach for now)
+
       if (currentDayIndex >= diffDays) {
         currentDayIndex = diffDays - 1;
       }
@@ -309,7 +270,6 @@ export const generateStudyPlan = async (req, res) => {
       currentDayMinutesUsed += timePerTopicMinutes;
     }
 
-    // Bulk insert items
     await StudyPlanItem.insertMany(itemsToCreate);
 
     res.status(201).json({
@@ -323,9 +283,6 @@ export const generateStudyPlan = async (req, res) => {
   }
 };
 
-// @desc    Analyze study plan progress comparing planned vs actual activity
-// @route   GET /api/study-plans/:planId/adapt/analysis
-// @access  Private
 export const analyzeStudyPlanProgress = async (req, res) => {
   try {
     const { planId } = req.params;
@@ -343,9 +300,6 @@ export const analyzeStudyPlanProgress = async (req, res) => {
   }
 };
 
-// @desc    Adapt study plan items based on progress analysis and constraints
-// @route   POST /api/study-plans/:planId/adapt
-// @access  Private
 export const adaptStudyPlanController = async (req, res) => {
   try {
     const { planId } = req.params;

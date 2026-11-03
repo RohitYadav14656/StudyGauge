@@ -4,9 +4,6 @@ import UserTopicProgress from '../models/UserTopicProgress.js';
 import PYQAttempt from '../models/PYQAttempt.js';
 import MockTestResult from '../models/MockTestResult.js';
 
-// @desc    Create a new goal
-// @route   POST /api/goals
-// @access  Private
 export const createGoal = async (req, res, next) => {
   try {
     const goalData = {
@@ -21,14 +18,10 @@ export const createGoal = async (req, res, next) => {
   }
 };
 
-// @desc    Get user's goals with dynamic progress calculation
-// @route   GET /api/goals
-// @access  Private
 export const getGoals = async (req, res, next) => {
   try {
     const goals = await Goal.find({ userId: req.user._id }).sort({ endDate: 1 });
-    
-    // Calculate current progress for each goal dynamically
+
     const goalsWithProgress = await Promise.all(
       goals.map(async (goal) => {
         let currentValue = 0;
@@ -39,7 +32,7 @@ export const getGoals = async (req, res, next) => {
         
         switch (goal.metric) {
           case 'study_hours':
-            // StudySession uses 'date' or 'createdAt'. We'll use 'date' for study sessions
+
             const sessions = await StudySession.find({
               userId: req.user._id,
               date: { $gte: goal.startDate, $lte: goal.endDate }
@@ -49,7 +42,7 @@ export const getGoals = async (req, res, next) => {
             break;
             
           case 'topics_completed':
-            // UserTopicProgress uses 'updatedAt' for status changes
+
             currentValue = await UserTopicProgress.countDocuments({
               userId: req.user._id,
               status: 'Completed',
@@ -66,12 +59,10 @@ export const getGoals = async (req, res, next) => {
             break;
         }
 
-        // Auto-update status if achieved
         let status = goal.status;
         if (status === 'in-progress' && currentValue >= goal.targetValue) {
           status = 'achieved';
-          // Optional: we could update the DB here, but returning the computed status is fine
-          // await Goal.findByIdAndUpdate(goal._id, { status: 'achieved' });
+
         } else if (status === 'in-progress' && new Date() > goal.endDate) {
            status = 'failed';
         }
@@ -90,9 +81,6 @@ export const getGoals = async (req, res, next) => {
   }
 };
 
-// @desc    Update a goal
-// @route   PUT /api/goals/:id
-// @access  Private
 export const updateGoal = async (req, res, next) => {
   try {
     const goal = await Goal.findOne({

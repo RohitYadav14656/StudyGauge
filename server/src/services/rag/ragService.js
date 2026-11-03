@@ -1,15 +1,4 @@
-/**
- * ragService.js
- *
- * Public RAG service facade — thin coordination layer that wires
- * ragIngestionService + ragRetrievalService + AIService together.
- *
- * Exposes:
- *   ragService.ingest(params)         → ingest a document
- *   ragService.query(query, options)  → retrieve context + generate LLM answer
- *   ragService.listDocuments(filter)  → list ingested documents
- *   ragService.deleteDocument(id)     → soft-delete a document + its chunks
- */
+
 
 import { ingestDocument, ingestDocumentBatch } from './ragIngestionService.js';
 import { buildRagContext } from './ragRetrievalService.js';
@@ -18,48 +7,24 @@ import KnowledgeDocument from '../../models/KnowledgeDocument.js';
 import KnowledgeChunk from '../../models/KnowledgeChunk.js';
 
 export class RAGService {
-  // ─── Ingestion ─────────────────────────────────────────────────────────────
 
-  /**
-   * Ingest a single document into the knowledge base.
-   */
   async ingest(params) {
     return ingestDocument(params);
   }
 
-  /**
-   * Ingest a batch of documents.
-   */
   async ingestBatch(documents, options) {
     return ingestDocumentBatch(documents, options);
   }
 
-  // ─── Query ─────────────────────────────────────────────────────────────────
-
-  /**
-   * Semantic RAG query: retrieve context then generate an LLM answer.
-   *
-   * @param {string}  query
-   * @param {object}  options
-   * @param {string}  [options.exam]
-   * @param {string}  [options.subject]
-   * @param {string}  [options.topic]
-   * @param {string}  [options.difficulty]
-   * @param {number}  [options.topK]
-   * @param {string}  [options.userId]
-   * @returns {Promise<{ answer: string, retrievalMeta: object, aiMeta: object }>}
-   */
   async query(query, options = {}) {
     const { exam, subject, topic, difficulty, topK = 5, userId = null } = options;
 
-    // 1. Retrieve relevant context chunks
     const { contextChunks, retrievalMeta } = await buildRagContext(
       query,
       { exam, subject, topic, difficulty },
       topK
     );
 
-    // 2. Generate answer via AIService RAG_QUERY template
     const aiResult = await aiService.executeTask(
       'RAG_QUERY',
       { userQuery: query, contextChunks },
@@ -73,11 +38,6 @@ export class RAGService {
     };
   }
 
-  // ─── Document Management ───────────────────────────────────────────────────
-
-  /**
-   * List all active knowledge documents, with optional metadata filter.
-   */
   async listDocuments(filter = {}, page = 1, limit = 20) {
     const mongoFilter = { isActive: true };
     if (filter.exam) mongoFilter['metadata.exam'] = filter.exam;
@@ -89,7 +49,7 @@ export class RAGService {
     const skip = (page - 1) * limit;
     const [docs, total] = await Promise.all([
       KnowledgeDocument.find(mongoFilter)
-        .select('-rawContent') // don't return raw content in list
+        .select('-rawContent')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
@@ -100,16 +60,10 @@ export class RAGService {
     return { docs, total, page, pages: Math.ceil(total / limit) };
   }
 
-  /**
-   * Get a single document by ID (without raw content).
-   */
   async getDocument(id) {
     return KnowledgeDocument.findById(id).select('-rawContent').lean();
   }
 
-  /**
-   * Soft-delete a document and all its chunks.
-   */
   async deleteDocument(id) {
     const doc = await KnowledgeDocument.findByIdAndUpdate(
       id,
@@ -118,7 +72,6 @@ export class RAGService {
     );
     if (!doc) return { success: false, message: 'Document not found.' };
 
-    // Remove all associated chunks
     const { deletedCount } = await KnowledgeChunk.deleteMany({ documentId: id });
 
     return {
@@ -127,9 +80,6 @@ export class RAGService {
     };
   }
 
-  /**
-   * Hard-delete a document and all its chunks (admin only).
-   */
   async hardDeleteDocument(id) {
     const doc = await KnowledgeDocument.findByIdAndDelete(id);
     if (!doc) return { success: false, message: 'Document not found.' };
@@ -137,9 +87,6 @@ export class RAGService {
     return { success: true, message: `Document and ${deletedCount} chunks permanently deleted.` };
   }
 
-  /**
-   * Returns knowledge base stats.
-   */
   async getStats() {
     const [docStats, chunkCount] = await Promise.all([
       KnowledgeDocument.aggregate([
@@ -166,6 +113,5 @@ export class RAGService {
   }
 }
 
-// Singleton
 const ragService = new RAGService();
 export default ragService;

@@ -13,12 +13,10 @@ import { registerSchema, loginSchema, updateProfileSchema } from '../validations
 
 const router = express.Router();
 
-// Public routes with rate limiting
 router.post('/register', authLimiter, validate(registerSchema), registerUser);
 router.post('/login', authLimiter, validate(loginSchema), loginUser);
 router.post('/logout', logoutUser);
 
-// Protected routes
 router.get('/me', protect, getCurrentUser);
 router.put('/me', protect, validate(updateProfileSchema), updateUserProfile);
 

@@ -1,16 +1,4 @@
-/**
- * ragRoutes.js
- *
- * Express router for the RAG Knowledge Base API.
- *
- * POST   /api/rag/ingest              → Ingest document          [admin]
- * POST   /api/rag/query               → Semantic RAG query       [authenticated user]
- * GET    /api/rag/documents           → List documents           [admin]
- * GET    /api/rag/documents/:id       → Get document             [admin]
- * DELETE /api/rag/documents/:id       → Soft-delete document     [admin]
- * DELETE /api/rag/documents/:id/hard  → Hard-delete document     [admin]
- * GET    /api/rag/stats               → Knowledge base stats     [admin]
- */
+
 
 import express from 'express';
 import {
@@ -26,10 +14,8 @@ import { protect, requireAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// ─── Authenticated student routes ─────────────────────────────────────────────
 router.post('/query', protect, ragQuery);
 
-// ─── Admin-only routes ────────────────────────────────────────────────────────
 router.use(protect, requireAdmin);
 
 router.post('/ingest', ingestDocument);
