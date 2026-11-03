@@ -176,7 +176,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      <section className="exam-ticker-section">
+      <section className="exam-ticker-section" id="exams">
         <div className="exam-ticker-label">Supported Competitive Exams</div>
         <div className="exam-ticker-list">
           {supportedExams.map((exam) => (
@@ -187,7 +187,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      <section className="comparison-section">
+      <section className="comparison-section" id="analytics">
         <div className="section-header">
           <span className="section-eyebrow">The Problem</span>
           <h2 className="section-title">Why Static Timetables Fail</h2>
@@ -266,7 +266,7 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      <section className="features-grid-section">
+      <section className="features-grid-section" id="features">
         <div className="section-header">
           <span className="section-eyebrow">Platform Features</span>
           <h2 className="section-title">Everything Needed for Rigorous Preparation</h2>
