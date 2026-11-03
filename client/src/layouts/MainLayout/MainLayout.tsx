@@ -318,12 +318,12 @@ const MainLayout: React.FC = () => {
           </div>
 
           <div className="sg-topbar-right">
-            <Link to="/my-exams" className="sg-active-exam-pill">
+            <Link to="/my-exams" className="sg-active-exam-pill" title="My Exams & Syllabus">
               <span className="text-xs">📚</span>
-              <span>Exams</span>
+              <span className="hidden sm:inline">Exams</span>
             </Link>
 
-            <Link to="/study-tracker" className="sg-timer-quick-btn">
+            <Link to="/study-tracker" className="sg-timer-quick-btn" title="Focus Timer">
               <span>⏱️</span>
               <span className="hidden sm:inline text-xs font-semibold">Timer</span>
             </Link>

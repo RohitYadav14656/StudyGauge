@@ -575,3 +575,48 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .page-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 16px;
+    margin: 20px auto 16px;
+  }
+  .hero-cta-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+  .hero-cta-buttons button {
+    width: 100%;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 16px;
+    gap: 10px;
+  }
+  .stat-card {
+    padding: 12px;
+  }
+  .control-bar {
+    padding: 0 16px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-box {
+    min-width: 100%;
+  }
+  .filters-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+  .status-tabs {
+    width: 100%;
+    display: flex;
+  }
+  .status-tabs .filter-tab {
+    flex: 1;
+    text-align: center;
+  }
+}

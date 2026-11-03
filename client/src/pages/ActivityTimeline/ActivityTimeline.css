@@ -349,3 +349,34 @@
 .skeleton-line.short { width: 30%; }
 .skeleton-line.medium { width: 60%; }
 .skeleton-line.long { width: 90%; }
+
+@media (max-width: 640px) {
+  .activity-timeline-page {
+    padding: 1rem 0.75rem;
+  }
+  .timeline-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .timeline-refresh-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  .timeline-filters {
+    padding: 1rem;
+  }
+  .timeline-filters-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .date-preset-group,
+  .type-filter-group {
+    width: 100%;
+  }
+  .activity-card-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.15rem;
+  }
+}
+
