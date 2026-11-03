@@ -14,7 +14,7 @@
   max-width: 460px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 2.25rem 2rem;
   box-shadow: none;
   position: relative;
@@ -35,7 +35,7 @@
   color: var(--color-primary);
   background: var(--color-primary-light);
   padding: 0.25rem 0.75rem;
-  border-radius: 10px;
+  border-radius: 4px;
   margin-bottom: 0.75rem;
   border: 1px solid rgba(79, 70, 229, 0.15);
 }
@@ -80,7 +80,7 @@
   padding: 0.75rem 1rem;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 4px;
   color: var(--color-text-dark);
   font-size: 0.95rem;
   font-family: var(--font-sans);
@@ -98,7 +98,7 @@
   border: 1px solid var(--color-danger-border);
   color: var(--color-danger);
   padding: 0.75rem 1rem;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 600;
   text-align: center;
@@ -110,7 +110,7 @@
   background: var(--color-primary);
   color: #FFFFFF;
   border: 1px solid var(--color-primary);
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.95rem;
   font-weight: 700;
   cursor: pointer;
@@ -137,7 +137,7 @@
   background: var(--color-card-subtle);
   color: var(--color-text-dark);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -169,6 +169,13 @@
 
 .auth-footer a:hover {
   text-decoration: underline;
+}
+
+@media (min-width: 1024px) {
+  .auth-card {
+    max-width: 550px;
+    padding: 2.75rem 2.5rem;
+  }
 }
 
 @media (max-width: 480px) {

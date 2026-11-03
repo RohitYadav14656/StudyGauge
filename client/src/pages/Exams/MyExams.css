@@ -32,7 +32,7 @@
   color: var(--color-primary);
   background: var(--color-primary-light);
   padding: 0.35rem 0.85rem;
-  border-radius: 12px;
+  border-radius: 5px;
   border: 1px solid rgba(79, 70, 229, 0.2);
 }
 
@@ -56,7 +56,7 @@
 
 .my-exams-message {
   padding: 1rem 1.25rem;
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
@@ -82,7 +82,7 @@
 .exam-card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
+  border-radius: 5px;
   padding: 1.75rem;
   box-shadow: none;
   transition: none;
@@ -124,7 +124,7 @@
   color: var(--color-text);
   border: 1px solid var(--color-border);
   padding: 0.2rem 0.6rem;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .exam-description {
@@ -137,7 +137,7 @@
 .exam-targets-box {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   padding: 1rem;
   margin-bottom: 1.25rem;
   display: flex;
@@ -162,7 +162,7 @@
   padding: 0.5rem 0.75rem;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: 5px;
   font-size: 0.85rem;
   color: var(--color-text-dark);
   outline: none;
@@ -180,7 +180,7 @@
 .select-exam-btn {
   flex: 1;
   padding: 0.6rem 1rem;
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
@@ -197,7 +197,7 @@
 
 .syllabus-link-btn {
   padding: 0.6rem 1rem;
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   font-size: 0.85rem;
   font-weight: 700;
   text-decoration: none;

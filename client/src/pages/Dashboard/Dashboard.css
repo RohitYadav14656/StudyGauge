@@ -21,7 +21,7 @@
   padding: 0.35rem 0.85rem;
   background: var(--color-primary-light);
   color: var(--color-primary);
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.825rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
@@ -30,7 +30,7 @@
 .dash-tag-dot {
   width: 8px;
   height: 8px;
-  border-radius: 10px;
+  border-radius: 4px;
   background: var(--color-primary);
 }
 
@@ -66,7 +66,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .dash-kpi-card.highlight-card {
@@ -96,7 +96,7 @@
 .dash-kpi-icon {
   width: 2.25rem;
   height: 2.25rem;
-  border-radius: 10px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,14 +132,14 @@
 .dash-progress-track {
   height: 6px;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
   margin-bottom: 0.5rem;
 }
 
 .dash-progress-fill {
   height: 100%;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 .dash-content-grid {
@@ -162,7 +162,7 @@
 
 .dash-section-card {
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .dash-card-header {
@@ -223,13 +223,13 @@
 .dash-pillar-track {
   height: 8px;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .dash-pillar-bar {
   height: 100%;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 .dash-chart-container {
@@ -284,18 +284,18 @@
 .dash-subj-track {
   height: 7px;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
 }
 
 .dash-subj-fill {
   height: 100%;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 .dash-rec-spotlight {
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 5px;
   border: 1px solid var(--color-border);
   background: var(--color-card);
 }
@@ -324,7 +324,7 @@
 .dash-rec-reason-box {
   background: var(--color-card-subtle);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 0.85rem 1rem;
   margin-bottom: 1.25rem;
 }
@@ -363,7 +363,7 @@
   align-items: center;
   padding: 0.85rem 1rem;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   border: 1px solid var(--color-border);
 }
 
@@ -396,7 +396,7 @@
   color: var(--color-danger);
   border: 1px solid var(--color-danger-border);
   padding: 0.35rem 0.75rem;
-  border-radius: 10px;
+  border-radius: 4px;
   text-decoration: none;
 }
 .dash-action-btn-sm:hover {
@@ -415,7 +415,7 @@
   align-items: center;
   padding: 0.85rem 1rem;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   border: 1px solid var(--color-border);
 }
 
@@ -445,7 +445,7 @@
   display: flex;
   align-items: stretch;
   background: var(--color-card-subtle);
-  border-radius: 10px;
+  border-radius: 4px;
   overflow: hidden;
   border: 1px solid var(--color-border);
 }
@@ -486,7 +486,7 @@
   height: 36px;
   border: 3px solid var(--color-border);
   border-top-color: var(--color-primary);
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
 .dash-loading-text {
@@ -506,7 +506,7 @@
 .dash-error-card {
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 2.25rem;
   text-align: center;
   max-width: 450px;

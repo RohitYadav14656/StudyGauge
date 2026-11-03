@@ -14,7 +14,7 @@
   max-width: 680px;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
+  border-radius: 5px;
   padding: 2.5rem;
   box-shadow: none;
   animation: none;
@@ -34,7 +34,7 @@
   color: var(--color-primary);
   background: var(--color-primary-light);
   padding: 0.25rem 0.75rem;
-  border-radius: 12px;
+  border-radius: 5px;
   margin-bottom: 0.75rem;
 }
 
@@ -95,7 +95,7 @@
   padding: 0.75rem 1rem;
   background: var(--color-card);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
+  border-radius: 5px;
   color: var(--color-text-dark);
   font-size: 0.95rem;
   font-family: var(--font-sans);
@@ -125,7 +125,7 @@
 
 .profile-alert {
   padding: 0.75rem 1rem;
-  border-radius: var(--radius-lg);
+  border-radius: 5px;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 1.25rem;

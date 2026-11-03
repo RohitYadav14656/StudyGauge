@@ -350,37 +350,122 @@ const MainLayout: React.FC = () => {
               </button>
 
               {isDropdownOpen && (
-                <div className="sg-dropdown-menu">
-                  <div className="sg-dropdown-header">
-                    <p className="sg-dropdown-user-name">{user?.name || 'Student'}</p>
-                    <p className="sg-dropdown-user-email">{user?.email || ''}</p>
+                <>
+                  <div
+                    className="sg-dropdown-backdrop"
+                    onClick={() => setIsDropdownOpen(false)}
+                    aria-label="Close dropdown"
+                  />
+                  <div className="sg-dropdown-menu">
+                    <div className="sg-dropdown-header">
+                      <div className="sg-avatar-sm">{getUserInitials(user?.name)}</div>
+                      <div className="sg-dropdown-user-info">
+                        <p className="sg-dropdown-user-name">{user?.name || 'Student'}</p>
+                        <p className="sg-dropdown-user-email">{user?.email || 'Active Account'}</p>
+                      </div>
+                    </div>
+
+                    <div className="sg-dropdown-nav-mobile">
+                      <div className="sg-dropdown-section-label">Navigation</div>
+                      <Link
+                        to="/dashboard"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📊</span>
+                        <span>Dashboard</span>
+                      </Link>
+                      <Link
+                        to="/my-exams"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📚</span>
+                        <span>Exams & Syllabus</span>
+                      </Link>
+                      <Link
+                        to="/study-tracker"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">⏱️</span>
+                        <span>Study Tracker</span>
+                      </Link>
+                      <Link
+                        to="/planner"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📅</span>
+                        <span>Study Planner</span>
+                      </Link>
+                      <Link
+                        to="/mock-tests"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📝</span>
+                        <span>Mock Tests</span>
+                      </Link>
+                      <Link
+                        to="/pyqs"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📑</span>
+                        <span>Question Bank</span>
+                      </Link>
+                      <Link
+                        to="/revision"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">🔄</span>
+                        <span>Spaced Revision</span>
+                      </Link>
+                      <Link
+                        to="/analytics"
+                        className="sg-dropdown-item"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        <span className="sg-dropdown-item-icon">📈</span>
+                        <span>Analytics</span>
+                      </Link>
+                    </div>
+
+                    <div className="sg-dropdown-section-label">Account</div>
+                    <Link
+                      to="/profile"
+                      className="sg-dropdown-item"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <span className="sg-dropdown-item-icon">👤</span>
+                      <span>Profile & Targets</span>
+                    </Link>
+                    <Link
+                      to="/activity-timeline"
+                      className="sg-dropdown-item"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <span className="sg-dropdown-item-icon">📜</span>
+                      <span>Activity Log</span>
+                    </Link>
+                    <Link
+                      to="/integrations"
+                      className="sg-dropdown-item"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <span className="sg-dropdown-item-icon">🔗</span>
+                      <span>Connected Apps</span>
+                    </Link>
+
+                    <div className="sg-dropdown-divider" />
+                    <button onClick={handleLogout} className="sg-dropdown-item text-red">
+                      <span className="sg-dropdown-item-icon">🚪</span>
+                      <span>Sign Out</span>
+                    </button>
                   </div>
-                  <Link
-                    to="/profile"
-                    className="sg-dropdown-item"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Profile & Targets
-                  </Link>
-                  <Link
-                    to="/activity-timeline"
-                    className="sg-dropdown-item"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Activity Log
-                  </Link>
-                  <Link
-                    to="/integrations"
-                    className="sg-dropdown-item"
-                    onClick={() => setIsDropdownOpen(false)}
-                  >
-                    Connected Apps
-                  </Link>
-                  <div className="sg-dropdown-divider" />
-                  <button onClick={handleLogout} className="sg-dropdown-item text-red">
-                    Sign Out
-                  </button>
-                </div>
+                </>
               )}
             </div>
           </div>

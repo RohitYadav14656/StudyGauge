@@ -8,7 +8,7 @@
   position: relative;
   background: transparent;
   border: 1px solid rgba(229, 231, 235, 0.8);
-  border-radius: 12px;
+  border-radius: 5px;
   width: 40px;
   height: 40px;
   display: flex;
@@ -40,7 +40,7 @@
   font-size: 0.72rem;
   font-weight: 700;
   padding: 2px 6px;
-  border-radius: 12px;
+  border-radius: 5px;
   box-shadow: none;
   line-height: 1;
   animation: none;
@@ -53,7 +53,7 @@
   width: 380px;
   max-width: 90vw;
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 5px;
   box-shadow: none;
   display: flex;
   flex-direction: column;
@@ -89,7 +89,7 @@
   font-size: 0.75rem;
   font-weight: 600;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 
 .header-actions {
@@ -103,7 +103,7 @@
   border: none;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 0.9rem;
   transition: none;
 }
@@ -143,7 +143,7 @@
 .popover-tabs {
   display: flex;
   background: #f3f4f6;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 2px;
 }
 
@@ -154,7 +154,7 @@
   font-size: 0.78rem;
   font-weight: 600;
   color: #4b5563;
-  border-radius: 6px;
+  border-radius: 4px;
   cursor: pointer;
   transition: none;
 }
@@ -169,7 +169,7 @@
   padding: 4px 8px;
   font-size: 0.78rem;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 4px;
   background: #ffffff;
   color: #374151;
   outline: none;
@@ -236,7 +236,7 @@
 .item-icon-wrapper {
   width: 34px;
   height: 34px;
-  border-radius: 10px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -303,7 +303,7 @@
   width: 8px;
   height: 8px;
   background: #2563eb;
-  border-radius: 12px;
+  border-radius: 5px;
   display: block;
 }
 
@@ -338,7 +338,7 @@
   width: 100%;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 8px 12px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -350,4 +350,18 @@
 .view-all-btn:hover {
   background: #eff6ff;
   border-color: #bfdbfe;
+}
+
+@media (max-width: 640px) {
+  .notification-popover {
+    position: fixed;
+    top: 60px;
+    right: 12px;
+    left: 12px;
+    width: auto;
+    max-width: 380px;
+    margin-left: auto;
+    border-radius: 5px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15) !important;
+  }
 }

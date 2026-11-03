@@ -13,18 +13,15 @@ const Login: React.FC = () => {
     localStorage.removeItem('token');
   }, []);
 
-  const handleSubmit = async (e?: React.FormEvent, customCreds?: { email: string; pass: string }) => {
-    if (e) e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
     setLoading(true);
 
-    const loginEmail = customCreds ? customCreds.email : email;
-    const loginPass = customCreds ? customCreds.pass : password;
-
     try {
       const res = await axios.post('/api/auth/login', {
-        email: loginEmail,
-        password: loginPass,
+        email,
+        password,
       });
       if (res.data?.token) {
         localStorage.setItem('token', res.data.token);
@@ -37,18 +34,6 @@ const Login: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDemoStudentLogin = () => {
-    setEmail('student@example.com');
-    setPassword('password123');
-    handleSubmit(undefined, { email: 'student@example.com', pass: 'password123' });
-  };
-
-  const handleDemoAdminLogin = () => {
-    setEmail('admin@study-gauge.com');
-    setPassword('admin123456');
-    handleSubmit(undefined, { email: 'admin@study-gauge.com', pass: 'admin123456' });
   };
 
   return (
@@ -70,7 +55,7 @@ const Login: React.FC = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="student@example.com"
+              placeholder="name@example.com"
               required
             />
           </div>
@@ -91,29 +76,6 @@ const Login: React.FC = () => {
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
-
-        <div style={{ margin: '1.25rem 0', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div style={{ flex: 1, height: '1px', background: 'var(--color-border)' }} />
-          <span style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)' }}>OR QUICK DEMO</span>
-          <div style={{ flex: 1, height: '1px', background: 'var(--color-border)' }} />
-        </div>
-
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-          <button
-            type="button"
-            onClick={handleDemoStudentLogin}
-            className="auth-demo-btn"
-          >
-            Demo Student Account
-          </button>
-          <button
-            type="button"
-            onClick={handleDemoAdminLogin}
-            className="auth-demo-btn"
-          >
-            Demo Admin Account
-          </button>
-        </div>
 
         <div className="auth-footer">
           Don't have an account? <Link to="/register">Register</Link>

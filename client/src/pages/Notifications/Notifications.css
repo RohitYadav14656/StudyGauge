@@ -93,7 +93,7 @@
   color: #ffffff;
   border: none;
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -111,7 +111,7 @@
   color: #334155;
   border: 1px solid #cbd5e1;
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-weight: 600;
   font-size: 0.9rem;
   cursor: pointer;
@@ -135,7 +135,7 @@
 .stat-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 14px;
+  border-radius: 5px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
@@ -148,7 +148,7 @@
   width: 48px;
   height: 48px;
   background: #f1f5f9;
-  border-radius: 12px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -208,7 +208,7 @@
   width: 100%;
   padding: 10px 14px 10px 38px;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.9rem;
   outline: none;
   background: #ffffff;
@@ -230,7 +230,7 @@
 .status-tabs {
   display: flex;
   background: #e2e8f0;
-  border-radius: 10px;
+  border-radius: 4px;
   padding: 3px;
 }
 
@@ -241,7 +241,7 @@
   font-size: 0.85rem;
   font-weight: 600;
   color: #64748b;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   transition: none;
 }
@@ -256,7 +256,7 @@
   padding: 8px 12px;
   font-size: 0.85rem;
   border: 1px solid #cbd5e1;
-  border-radius: 10px;
+  border-radius: 4px;
   background: #ffffff;
   color: #334155;
   outline: none;
@@ -268,7 +268,7 @@
   color: #2563eb;
   border: 1px solid #bfdbfe;
   padding: 8px 14px;
-  border-radius: 10px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
@@ -289,7 +289,7 @@
 .empty-state {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 60px 20px;
   text-align: center;
   color: #64748b;
@@ -309,7 +309,7 @@
 .notification-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
+  border-radius: 5px;
   padding: 18px 24px;
   display: flex;
   align-items: flex-start;
@@ -331,7 +331,7 @@
 .card-type-icon {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -354,7 +354,7 @@
   font-size: 0.75rem;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
 }
 
 .card-timestamp {
@@ -409,7 +409,7 @@
   color: #ffffff;
   border: none;
   padding: 6px 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
@@ -420,7 +420,7 @@
   border: 1px solid #cbd5e1;
   color: #334155;
   padding: 5px 10px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-size: 0.78rem;
   font-weight: 600;
   cursor: pointer;
@@ -460,7 +460,7 @@
   background: #ffffff;
   border: 1px solid #cbd5e1;
   padding: 6px 14px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 0.85rem;
   font-weight: 600;
   color: #334155;
@@ -494,7 +494,7 @@
 
 .modal-card {
   background: #ffffff;
-  border-radius: 16px;
+  border-radius: 5px;
   width: 460px;
   max-width: 90vw;
   padding: 24px;
@@ -545,7 +545,7 @@
 .form-group select {
   padding: 8px 12px;
   border: 1px solid #cbd5e1;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 0.9rem;
   outline: none;
 }
@@ -561,7 +561,7 @@
   background: #f1f5f9;
   border: none;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -571,7 +571,7 @@
   color: #ffffff;
   border: none;
   padding: 8px 16px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 600;
   cursor: pointer;
 }

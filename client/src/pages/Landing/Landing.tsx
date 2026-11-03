@@ -32,7 +32,7 @@ const Landing: React.FC = () => {
               Create Free Account
             </Link>
             <Link to="/login" className="sg-btn-secondary hero-btn">
-              Try Instant Demo
+              Sign In
             </Link>
           </div>
 

@@ -117,13 +117,7 @@ const Dashboard: React.FC = () => {
         name: item.week || `Test ${idx + 1}`,
         score: item.avgPercentage || item.avgScore || 0,
       }))
-    : [
-        { name: 'Test 1', score: 48 },
-        { name: 'Test 2', score: 55 },
-        { name: 'Test 3', score: 62 },
-        { name: 'Test 4', score: 69 },
-        { name: 'Test 5', score: 71 },
-      ];
+    : [];
 
   const topRec = recommendations?.recommendations?.[0];
 
@@ -226,67 +220,115 @@ const Dashboard: React.FC = () => {
                 <h3 className="dash-card-title">Readiness Factors</h3>
                 <p className="dash-card-desc">Weighted breakdown of your preparation indicators</p>
               </div>
-              <span className="sg-badge sg-badge-teal">Overall: {readiness?.overallScore ?? 74}/100</span>
+              <span className="sg-badge sg-badge-teal">Overall: {Math.round(readiness?.overallScore || 0)}/100</span>
             </div>
 
             <div className="dash-pillars-list">
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Syllabus Completion</span>
-                  <span className="dash-pillar-val">82%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? (syllabusProgress?.completionPercentage ?? 0))}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '82%', background: '#4F46E5' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? (syllabusProgress?.completionPercentage ?? 0)))}%`,
+                      background: '#4F46E5',
+                    }}
+                  ></div>
                 </div>
               </div>
 
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Topic Mastery</span>
-                  <span className="dash-pillar-val">74%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.topicMastery?.score ?? 0)}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '74%', background: '#0D9488' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.topicMastery?.score ?? 0))}%`,
+                      background: '#0D9488',
+                    }}
+                  ></div>
                 </div>
               </div>
 
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Mock Test Scores</span>
-                  <span className="dash-pillar-val">68%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.mockPerformance?.score ?? (mockPerformance?.avgScorePercentage ?? 0))}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '68%', background: '#4F46E5' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? (mockPerformance?.avgScorePercentage ?? 0)))}%`,
+                      background: '#4F46E5',
+                    }}
+                  ></div>
                 </div>
               </div>
 
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Question Accuracy</span>
-                  <span className="dash-pillar-val">79%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.accuracy?.score ?? 0)}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '79%', background: '#0D9488' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.accuracy?.score ?? 0))}%`,
+                      background: '#0D9488',
+                    }}
+                  ></div>
                 </div>
               </div>
 
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Revision Coverage</span>
-                  <span className="dash-pillar-val">61%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.revisionConsistency?.score ?? 0)}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '61%', background: '#F59E0B' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.revisionConsistency?.score ?? 0))}%`,
+                      background: '#F59E0B',
+                    }}
+                  ></div>
                 </div>
               </div>
 
               <div className="dash-pillar-item">
                 <div className="dash-pillar-meta">
                   <span>Study Consistency</span>
-                  <span className="dash-pillar-val">85%</span>
+                  <span className="dash-pillar-val">
+                    {Math.round(readiness?.componentScores?.studyConsistency?.score ?? (data.consistency?.consistencyPercentage ?? 0))}%
+                  </span>
                 </div>
                 <div className="dash-pillar-track">
-                  <div className="dash-pillar-bar" style={{ width: '85%', background: '#0D9488' }}></div>
+                  <div
+                    className="dash-pillar-bar"
+                    style={{
+                      width: `${Math.min(100, Math.round(readiness?.componentScores?.studyConsistency?.score ?? (data.consistency?.consistencyPercentage ?? 0)))}%`,
+                      background: '#0D9488',
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -303,44 +345,57 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
 
-            <div className="dash-chart-container" style={{ width: '100%', height: 210 }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
-                  <XAxis dataKey="name" stroke="#64748B" fontSize={11} tickLine={false} />
-                  <YAxis domain={[0, 100]} stroke="#64748B" fontSize={11} tickLine={false} />
-                  <Tooltip
-                    contentStyle={{
-                      background: '#111827',
-                      border: 'none',
-                      borderRadius: '8px',
-                      color: '#FFFFFF',
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="score"
-                    stroke="#4F46E5"
-                    strokeWidth={2.5}
-                    dot={{ fill: '#4F46E5', r: 4 }}
-                    activeDot={{ r: 6 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
+            {chartData.length > 0 ? (
+              <div className="dash-chart-container" style={{ width: '100%', height: 210 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" vertical={false} />
+                    <XAxis dataKey="name" stroke="#64748B" fontSize={11} tickLine={false} />
+                    <YAxis domain={[0, 100]} stroke="#64748B" fontSize={11} tickLine={false} />
+                    <Tooltip
+                      contentStyle={{
+                        background: '#111827',
+                        border: 'none',
+                        borderRadius: '8px',
+                        color: '#FFFFFF',
+                        fontSize: '12px',
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="score"
+                      stroke="#4F46E5"
+                      strokeWidth={2.5}
+                      dot={{ fill: '#4F46E5', r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-slate-400">
+                <div className="text-3xl mb-1.5">📝</div>
+                <p className="text-xs font-semibold text-slate-600">No Mock Tests Logged Yet</p>
+                <p className="text-[11px] text-slate-400 mt-0.5 max-w-xs mx-auto">
+                  Attempt your first test to track your score progression.
+                </p>
+                <Link to="/mock-tests" className="sg-btn-secondary text-xs mt-3 inline-flex">
+                  + Record Test Attempt
+                </Link>
+              </div>
+            )}
 
             <div className="dash-mock-stats-row">
               <div className="dash-substat">
-                <span className="dash-substat-num text-teal">{mockPerformance?.bestScorePercentage ?? 71}%</span>
+                <span className="dash-substat-num text-teal">{mockPerformance?.bestScorePercentage ?? 0}%</span>
                 <span className="dash-substat-label">Best Score</span>
               </div>
               <div className="dash-substat">
-                <span className="dash-substat-num text-indigo">{mockPerformance?.avgScorePercentage ?? 61}%</span>
+                <span className="dash-substat-num text-indigo">{mockPerformance?.avgScorePercentage ?? 0}%</span>
                 <span className="dash-substat-label">Average</span>
               </div>
               <div className="dash-substat">
-                <span className="dash-substat-num text-navy">{mockPerformance?.totalTests ?? 5}</span>
+                <span className="dash-substat-num text-navy">{mockPerformance?.totalTests ?? 0}</span>
                 <span className="dash-substat-label">Tests Taken</span>
               </div>
             </div>
@@ -357,64 +412,62 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
 
-            <div className="dash-subject-bars">
-              {((subjectPerformance?.subjects && subjectPerformance.subjects.length > 0)
-                ? subjectPerformance.subjects.slice(0, 5).map((s) => ({
-                    name: s.subjectName,
-                    pct: s.accuracy || 75,
-                    color: s.accuracy >= 75 ? '#0D9488' : s.accuracy >= 60 ? '#4F46E5' : '#F59E0B',
-                  }))
-                : [
-                    { name: 'Mathematics & Discrete Maths', pct: 82, color: '#4F46E5' },
-                    { name: 'Database Management Systems (DBMS)', pct: 64, color: '#0D9488' },
-                    { name: 'Operating Systems (OS)', pct: 58, color: '#F59E0B' },
-                    { name: 'Computer Networks (CN)', pct: 81, color: '#4F46E5' },
-                    { name: 'Algorithms & Data Structures', pct: 75, color: '#0D9488' },
-                  ]
-              ).map((subj) => (
-                <div key={subj.name} className="dash-subj-row">
-                  <div className="dash-subj-info">
-                    <span className="dash-subj-name">{subj.name}</span>
-                    <span className="dash-subj-pct font-bold">{subj.pct}%</span>
-                  </div>
-                  <div className="dash-subj-track">
-                    <div className="dash-subj-fill" style={{ width: `${subj.pct}%`, background: subj.color }}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {subjectPerformance?.subjects && subjectPerformance.subjects.length > 0 ? (
+              <div className="dash-subject-bars">
+                {subjectPerformance.subjects.slice(0, 5).map((subj) => {
+                  const pct = Math.round(subj.accuracy || 0);
+                  const color = pct >= 75 ? '#0D9488' : pct >= 50 ? '#4F46E5' : '#F59E0B';
+                  return (
+                    <div key={subj.subjectName} className="dash-subj-row">
+                      <div className="dash-subj-info">
+                        <span className="dash-subj-name">{subj.subjectName}</span>
+                        <span className="dash-subj-pct font-bold">{pct}%</span>
+                      </div>
+                      <div className="dash-subj-track">
+                        <div className="dash-subj-fill" style={{ width: `${pct}%`, background: color }}></div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-slate-400">
+                <p className="text-xs">No subject performance data yet.</p>
+                <Link to="/pyqs" className="sg-btn-secondary text-xs mt-3 inline-flex">
+                  Practice Questions
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 
         <div className="dash-col-right">
-          {topRec && (
+          {topRec && topRec.topic?.name && (
             <div className="sg-card dash-rec-spotlight">
               <div className="dash-rec-badge-row">
                 <span className="sg-badge sg-badge-indigo">Recommended Next</span>
-                <span className={`sg-badge ${topRec.priority?.level === 'CRITICAL' ? 'sg-badge-red' : 'sg-badge-amber'}`}>
-                  Priority: {topRec.priority?.level || 'HIGH'}
-                </span>
+                {topRec.priority?.level && (
+                  <span className={`sg-badge ${topRec.priority.level === 'CRITICAL' ? 'sg-badge-red' : 'sg-badge-amber'}`}>
+                    Priority: {topRec.priority.level}
+                  </span>
+                )}
               </div>
 
-              <h4 className="dash-rec-topic">{topRec.topic?.name || 'Deadlocks & Concurrency'}</h4>
-              <p className="dash-rec-subject">{topRec.topic?.subjectName || 'Operating Systems'}</p>
+              <h4 className="dash-rec-topic">{topRec.topic.name}</h4>
+              {topRec.topic.subjectName && (
+                <p className="dash-rec-subject">{topRec.topic.subjectName}</p>
+              )}
 
-              <div className="dash-rec-reason-box">
-                <div className="dash-rec-reason-title">Why this topic is prioritized</div>
-                <ul className="dash-rec-reasons-list">
-                  {topRec.reasons && topRec.reasons.length > 0 ? (
-                    topRec.reasons.map((exp: string, idx: number) => (
+              {topRec.reasons && topRec.reasons.length > 0 && (
+                <div className="dash-rec-reason-box">
+                  <div className="dash-rec-reason-title">Why this topic is prioritized</div>
+                  <ul className="dash-rec-reasons-list">
+                    {topRec.reasons.map((exp: string, idx: number) => (
                       <li key={idx}>{exp}</li>
-                    ))
-                  ) : (
-                    <>
-                      <li>Recent test accuracy is below target (48%)</li>
-                      <li>Not reviewed in the past 12 days</li>
-                      <li>High historical weightage in GATE CS</li>
-                    </>
-                  )}
-                </ul>
-              </div>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
               <div className="dash-rec-action-row">
                 <Link to="/study-tracker" className="sg-btn-primary w-full">
@@ -436,33 +489,30 @@ const Dashboard: React.FC = () => {
               <span className="sg-badge sg-badge-red">Attention</span>
             </div>
 
-            <div className="dash-weak-list">
-              {((weakTopics?.topics && weakTopics.topics.length > 0)
-                ? weakTopics.topics.slice(0, 4).map((t) => ({
-                    name: t.topicName,
-                    subject: t.subjectName || 'Core Subject',
-                    score: `${Math.round(t.accuracy || t.masteryScore || 45)}%`,
-                  }))
-                : [
-                    { name: 'Deadlocks & Resource Allocation', subject: 'Operating Systems', score: '48%' },
-                    { name: 'Normalization & BCNF', subject: 'DBMS', score: '54%' },
-                    { name: 'Conditional Probability & Bayes', subject: 'Engineering Maths', score: '58%' },
-                  ]
-              ).map((topic, i) => (
-                <div key={i} className="dash-weak-item">
-                  <div className="dash-weak-left">
-                    <span className="dash-weak-bullet">⚠️</span>
-                    <div>
-                      <h5 className="dash-weak-title">{topic.name}</h5>
-                      <span className="dash-weak-subj">{topic.subject} • Accuracy: {topic.score}</span>
+            {weakTopics?.topics && weakTopics.topics.length > 0 ? (
+              <div className="dash-weak-list">
+                {weakTopics.topics.slice(0, 4).map((t, i) => (
+                  <div key={i} className="dash-weak-item">
+                    <div className="dash-weak-left">
+                      <span className="dash-weak-bullet">⚠️</span>
+                      <div>
+                        <h5 className="dash-weak-title">{t.topicName}</h5>
+                        <span className="dash-weak-subj">
+                          {t.subjectName || 'Core Subject'} • Accuracy: {Math.round(t.accuracy || t.masteryScore || 0)}%
+                        </span>
+                      </div>
                     </div>
+                    <Link to="/pyqs" className="dash-action-btn-sm">
+                      Practice
+                    </Link>
                   </div>
-                  <Link to="/pyqs" className="dash-action-btn-sm">
-                    Practice
-                  </Link>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : (
+              <div className="py-6 text-center text-slate-400">
+                <p className="text-xs">No critical weak areas identified.</p>
+              </div>
+            )}
           </div>
 
           <div className="sg-card dash-section-card">
@@ -476,42 +526,35 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
 
-            <div className="dash-revision-list">
-              {((revisionDue?.revisions && revisionDue.revisions.length > 0)
-                ? revisionDue.revisions.slice(0, 4).map((r) => ({
-                    id: r._id,
-                    topicId: r._id,
-                    name: r.topicName,
-                    subject: r.subjectName || 'Active Module',
-                    stage: `Stage ${(r.revisionCount || 0) + 1}`,
-                  }))
-                : [
-                    { id: 'rev-1', topicId: '1', name: 'Database Normalization', subject: 'DBMS', stage: 'Stage 2 (Day 3)' },
-                    { id: 'rev-2', topicId: '2', name: 'Deadlock Detection & Prevention', subject: 'OS', stage: 'Stage 3 (Day 7)' },
-                    { id: 'rev-3', topicId: '3', name: 'Dijkstra & Routing Algorithms', subject: 'Computer Networks', stage: 'Stage 1 (Day 1)' },
-                  ]
-              ).map((rev) => {
-                const isDone = revisedTopicIds.includes(rev.id);
-                return (
-                  <div key={rev.id} className="dash-rev-row">
-                    <div>
-                      <div className="dash-rev-name">{rev.name}</div>
-                      <div className="dash-rev-meta">{rev.subject} • {rev.stage}</div>
+            {revisionDue?.revisions && revisionDue.revisions.length > 0 ? (
+              <div className="dash-revision-list">
+                {revisionDue.revisions.slice(0, 4).map((r) => {
+                  const isDone = revisedTopicIds.includes(r._id);
+                  return (
+                    <div key={r._id} className="dash-rev-row">
+                      <div>
+                        <div className="dash-rev-name">{r.topicName}</div>
+                        <div className="dash-rev-meta">{r.subjectName || 'Active Module'} • Stage {(r.revisionCount || 0) + 1}</div>
+                      </div>
+                      {isDone ? (
+                        <span className="sg-badge sg-badge-teal">✓ Completed</span>
+                      ) : (
+                        <button
+                          onClick={() => handleMarkRevisionDone(r._id, r._id)}
+                          className="sg-btn-secondary dash-rev-done-btn"
+                        >
+                          ✓ Mark Done
+                        </button>
+                      )}
                     </div>
-                    {isDone ? (
-                      <span className="sg-badge sg-badge-teal">✓ Completed</span>
-                    ) : (
-                      <button
-                        onClick={() => handleMarkRevisionDone(rev.id, rev.topicId)}
-                        className="sg-btn-secondary dash-rev-done-btn"
-                      >
-                        ✓ Mark Done
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-6 text-center text-slate-400">
+                <p className="text-xs">No revisions due today.</p>
+              </div>
+            )}
           </div>
 
           <div className="sg-card dash-section-card">
@@ -525,30 +568,31 @@ const Dashboard: React.FC = () => {
               </Link>
             </div>
 
-            <div className="dash-plan-items">
-              {((todaysPlan && todaysPlan.length > 0)
-                ? todaysPlan.slice(0, 4).map((item) => ({
-                    title: item.title,
-                    time: `${item.plannedDuration} min`,
-                    tag: item.priority === 'high' ? 'High Priority' : 'Core',
-                    color: item.priority === 'high' ? '#EF4444' : '#4F46E5',
-                  }))
-                : [
-                    { title: 'OS — Deadlocks (Concept Revision)', time: '60 min', tag: 'High Priority', color: '#EF4444' },
-                    { title: 'DBMS — Normalization (Practice Questions)', time: '45 min', tag: 'Core', color: '#4F46E5' },
-                    { title: 'Computer Networks — PYQs Sprint', time: '45 min', tag: 'Practice', color: '#0D9488' },
-                    { title: 'Spaced Revision — Bayes Theorem', time: '30 min', tag: 'Review', color: '#F59E0B' },
-                  ]
-              ).map((task, i) => (
-                <div key={i} className="dash-plan-task">
-                  <div className="dash-plan-bar" style={{ background: task.color }}></div>
-                  <div className="dash-plan-content">
-                    <span className="dash-plan-title">{task.title}</span>
-                    <span className="dash-plan-meta">{task.time} • <strong style={{ color: task.color }}>{task.tag}</strong></span>
-                  </div>
-                </div>
-              ))}
-            </div>
+            {todaysPlan && todaysPlan.length > 0 ? (
+              <div className="dash-plan-items">
+                {todaysPlan.slice(0, 4).map((task, i) => {
+                  const color = task.priority === 'high' ? '#EF4444' : '#4F46E5';
+                  return (
+                    <div key={i} className="dash-plan-task">
+                      <div className="dash-plan-bar" style={{ background: color }}></div>
+                      <div className="dash-plan-content">
+                        <span className="dash-plan-title">{task.title}</span>
+                        <span className="dash-plan-meta">
+                          {task.plannedDuration} min • <strong style={{ color }}>{task.priority === 'high' ? 'High Priority' : 'Core'}</strong>
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="py-6 text-center text-slate-400">
+                <p className="text-xs">No study tasks scheduled for today.</p>
+                <Link to="/planner" className="sg-btn-secondary text-xs mt-2 inline-flex">
+                  Open Study Planner
+                </Link>
+              </div>
+            )}
           </div>
 
           {recentActivity && recentActivity.length > 0 && (
