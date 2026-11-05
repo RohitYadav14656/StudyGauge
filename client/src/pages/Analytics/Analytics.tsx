@@ -295,17 +295,29 @@ const Analytics: React.FC = () => {
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Consistency</span>
                     <div className="text-2xl font-extrabold text-blue-600 mt-1">
-                      {overviewData.consistency?.consistencyPercentage || 0}%
+                      {overviewData.consistency && overviewData.consistency.activeDays > 0
+                        ? `${overviewData.consistency.consistencyPercentage || 0}%`
+                        : 'N/A'}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Streak: {overviewData.consistency?.currentStreakDays || 0} days</p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {overviewData.consistency && overviewData.consistency.activeDays > 0
+                        ? `Streak: ${overviewData.consistency?.currentStreakDays || 0} days`
+                        : 'No study streak yet'}
+                    </p>
                   </div>
 
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">PYQ Accuracy</span>
                     <div className="text-2xl font-extrabold text-emerald-600 mt-1">
-                      {overviewData.pyqAccuracy?.accuracy || 0}%
+                      {overviewData.pyqAccuracy && overviewData.pyqAccuracy.totalAttempted > 0
+                        ? `${overviewData.pyqAccuracy.accuracy || 0}%`
+                        : 'N/A'}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">{overviewData.pyqAccuracy?.totalAttempted || 0} attempted</p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {overviewData.pyqAccuracy && overviewData.pyqAccuracy.totalAttempted > 0
+                        ? `${overviewData.pyqAccuracy.totalAttempted} attempted`
+                        : 'No attempts yet'}
+                    </p>
                   </div>
 
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
@@ -321,9 +333,15 @@ const Analytics: React.FC = () => {
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Weak Topics</span>
                     <div className="text-2xl font-extrabold text-rose-600 mt-1">
-                      {overviewData.weakTopicsSummary?.weakTopics || 0}
+                      {overviewData.weakTopicsSummary && overviewData.weakTopicsSummary.totalTopics > 0
+                        ? overviewData.weakTopicsSummary.weakTopics || 0
+                        : 'N/A'}
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Out of {overviewData.weakTopicsSummary?.totalTopics || 0} total</p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {overviewData.weakTopicsSummary && overviewData.weakTopicsSummary.totalTopics > 0
+                        ? `Out of ${overviewData.weakTopicsSummary.totalTopics} total`
+                        : 'No topics tracked yet'}
+                    </p>
                   </div>
                 </div>
 
@@ -337,26 +355,34 @@ const Analytics: React.FC = () => {
                           : 'N/A'}
                       </span>
                     </div>
-                    <div className="w-full bg-slate-100 h-4 rounded-xl overflow-hidden">
-                      <div
-                        className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-xl  "
-                        style={{ width: `${overviewData.syllabusCompletion?.completionPercentage || 0}%` }}
-                      ></div>
-                    </div>
-                    <div className="grid grid-cols-3 text-center pt-2 text-xs border-t border-slate-100">
-                      <div>
-                        <span className="text-slate-400 font-medium">Completed</span>
-                        <p className="font-bold text-slate-900 text-sm">{overviewData.syllabusCompletion?.completed || 0}</p>
+                    {overviewData.syllabusCompletion && overviewData.syllabusCompletion.totalTopics > 0 ? (
+                      <>
+                        <div className="w-full bg-slate-100 h-4 rounded-xl overflow-hidden">
+                          <div
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 h-full rounded-xl"
+                            style={{ width: `${overviewData.syllabusCompletion?.completionPercentage || 0}%` }}
+                          ></div>
+                        </div>
+                        <div className="grid grid-cols-3 text-center pt-2 text-xs border-t border-slate-100">
+                          <div>
+                            <span className="text-slate-400 font-medium">Completed</span>
+                            <p className="font-bold text-slate-900 text-sm">{overviewData.syllabusCompletion?.completed || 0}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-medium">In Progress</span>
+                            <p className="font-bold text-amber-600 text-sm">{overviewData.syllabusCompletion?.inProgress || 0}</p>
+                          </div>
+                          <div>
+                            <span className="text-slate-400 font-medium">Not Started</span>
+                            <p className="font-bold text-slate-500 text-sm">{overviewData.syllabusCompletion?.notStarted || 0}</p>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <div className="py-6 text-center text-slate-400 text-xs">
+                        No syllabus tracked. Select an exam to view syllabus completion.
                       </div>
-                      <div>
-                        <span className="text-slate-400 font-medium">In Progress</span>
-                        <p className="font-bold text-amber-600 text-sm">{overviewData.syllabusCompletion?.inProgress || 0}</p>
-                      </div>
-                      <div>
-                        <span className="text-slate-400 font-medium">Not Started</span>
-                        <p className="font-bold text-slate-500 text-sm">{overviewData.syllabusCompletion?.notStarted || 0}</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="bg-slate-900 text-white p-6 rounded-xl -xs flex flex-col justify-between">

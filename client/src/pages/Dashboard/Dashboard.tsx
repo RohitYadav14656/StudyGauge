@@ -167,6 +167,24 @@ const Dashboard: React.FC = () => {
         </div>
       </header>
 
+      {!examCountdown?.examName && (
+        <div className="sg-card" style={{ padding: '1.25rem 1.5rem', marginBottom: '1.5rem', border: '1.5px dashed var(--color-primary)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+            <div>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-navy)', marginBottom: '0.25rem' }}>
+                👋 Welcome to StudyGauge! Get started by picking your exam
+              </h2>
+              <p style={{ fontSize: '0.85rem', color: 'var(--color-slate-light)', margin: 0 }}>
+                You are currently starting fresh with 0 recorded progress. Select your target exam to load the syllabus, countdown timer, and personalized study analytics.
+              </p>
+            </div>
+            <Link to="/my-exams" className="sg-btn-primary" style={{ textDecoration: 'none', whiteSpace: 'nowrap' }}>
+              🎯 Select Target Exam
+            </Link>
+          </div>
+        </div>
+      )}
+
       <section className="dash-kpi-grid">
         <div className="sg-card dash-kpi-card">
           <div className="dash-kpi-header">
@@ -290,127 +308,140 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
 
-            <div className="dash-pillars-list">
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Syllabus Completion</span>
-                  <span className="dash-pillar-val">
-                    {syllabusProgress && syllabusProgress.totalTopics > 0
-                      ? `${Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)}%`
-                      : 'N/A'}
-                  </span>
-                </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)) : 0}%`,
-                      background: '#4F46E5',
-                    }}
-                  ></div>
-                </div>
+            {(!readiness || readiness.confidenceLevel === 'NONE' || readiness.overallScore === 0) && (!syllabusProgress || syllabusProgress.totalTopics === 0) ? (
+              <div className="py-8 text-center text-slate-400">
+                <div className="text-3xl mb-2">🎯</div>
+                <p className="text-xs font-semibold text-slate-700">No Readiness Data Yet</p>
+                <p className="text-[11px] text-slate-400 mt-1 max-w-xs mx-auto">
+                  Select your target exam and start studying or taking tests to see your weighted readiness breakdown.
+                </p>
+                <Link to="/my-exams" className="sg-btn-secondary text-xs mt-3 inline-flex">
+                  Select Target Exam
+                </Link>
               </div>
+            ) : (
+              <div className="dash-pillars-list">
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Syllabus Completion</span>
+                    <span className="dash-pillar-val">
+                      {syllabusProgress && syllabusProgress.totalTopics > 0
+                        ? `${Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)) : 0}%`,
+                        background: '#4F46E5',
+                      }}
+                    ></div>
+                  </div>
+                </div>
 
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Topic Mastery</span>
-                  <span className="dash-pillar-val">
-                    {readiness?.componentScores?.topicMastery?.score != null && readiness.componentScores.topicMastery.score > 0
-                      ? `${Math.round(readiness.componentScores.topicMastery.score)}%`
-                      : 'N/A'}
-                  </span>
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Topic Mastery</span>
+                    <span className="dash-pillar-val">
+                      {readiness?.componentScores?.topicMastery?.score != null && readiness.componentScores.topicMastery.score > 0
+                        ? `${Math.round(readiness.componentScores.topicMastery.score)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${readiness?.componentScores?.topicMastery?.score ? Math.min(100, Math.round(readiness.componentScores.topicMastery.score)) : 0}%`,
+                        background: '#0D9488',
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${readiness?.componentScores?.topicMastery?.score ? Math.min(100, Math.round(readiness.componentScores.topicMastery.score)) : 0}%`,
-                      background: '#0D9488',
-                    }}
-                  ></div>
-                </div>
-              </div>
 
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Mock Test Scores</span>
-                  <span className="dash-pillar-val">
-                    {mockPerformance && mockPerformance.totalTests > 0
-                      ? `${Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)}%`
-                      : 'N/A'}
-                  </span>
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Mock Test Scores</span>
+                    <span className="dash-pillar-val">
+                      {mockPerformance && mockPerformance.totalTests > 0
+                        ? `${Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${mockPerformance && mockPerformance.totalTests > 0 ? Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)) : 0}%`,
+                        background: '#4F46E5',
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${mockPerformance && mockPerformance.totalTests > 0 ? Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)) : 0}%`,
-                      background: '#4F46E5',
-                    }}
-                  ></div>
-                </div>
-              </div>
 
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Question Accuracy</span>
-                  <span className="dash-pillar-val">
-                    {readiness?.componentScores?.accuracy?.score != null && readiness.componentScores.accuracy.score > 0
-                      ? `${Math.round(readiness.componentScores.accuracy.score)}%`
-                      : 'N/A'}
-                  </span>
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Question Accuracy</span>
+                    <span className="dash-pillar-val">
+                      {readiness?.componentScores?.accuracy?.score != null && readiness.componentScores.accuracy.score > 0
+                        ? `${Math.round(readiness.componentScores.accuracy.score)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${readiness?.componentScores?.accuracy?.score ? Math.min(100, Math.round(readiness.componentScores.accuracy.score)) : 0}%`,
+                        background: '#0D9488',
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${readiness?.componentScores?.accuracy?.score ? Math.min(100, Math.round(readiness.componentScores.accuracy.score)) : 0}%`,
-                      background: '#0D9488',
-                    }}
-                  ></div>
-                </div>
-              </div>
 
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Revision Coverage</span>
-                  <span className="dash-pillar-val">
-                    {readiness?.componentScores?.revisionConsistency?.score != null && readiness.componentScores.revisionConsistency.score > 0
-                      ? `${Math.round(readiness.componentScores.revisionConsistency.score)}%`
-                      : 'N/A'}
-                  </span>
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Revision Coverage</span>
+                    <span className="dash-pillar-val">
+                      {readiness?.componentScores?.revisionConsistency?.score != null && readiness.componentScores.revisionConsistency.score > 0
+                        ? `${Math.round(readiness.componentScores.revisionConsistency.score)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${readiness?.componentScores?.revisionConsistency?.score ? Math.min(100, Math.round(readiness.componentScores.revisionConsistency.score)) : 0}%`,
+                        background: '#F59E0B',
+                      }}
+                    ></div>
+                  </div>
                 </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${readiness?.componentScores?.revisionConsistency?.score ? Math.min(100, Math.round(readiness.componentScores.revisionConsistency.score)) : 0}%`,
-                      background: '#F59E0B',
-                    }}
-                  ></div>
-                </div>
-              </div>
 
-              <div className="dash-pillar-item">
-                <div className="dash-pillar-meta">
-                  <span>Study Consistency</span>
-                  <span className="dash-pillar-val">
-                    {data?.consistency && data.consistency.activeDays > 0
-                      ? `${Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)}%`
-                      : 'N/A'}
-                  </span>
-                </div>
-                <div className="dash-pillar-track">
-                  <div
-                    className="dash-pillar-bar"
-                    style={{
-                      width: `${data?.consistency && data.consistency.activeDays > 0 ? Math.min(100, Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)) : 0}%`,
-                      background: '#0D9488',
-                    }}
-                  ></div>
+                <div className="dash-pillar-item">
+                  <div className="dash-pillar-meta">
+                    <span>Study Consistency</span>
+                    <span className="dash-pillar-val">
+                      {data?.consistency && data.consistency.activeDays > 0
+                        ? `${Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)}%`
+                        : 'N/A'}
+                    </span>
+                  </div>
+                  <div className="dash-pillar-track">
+                    <div
+                      className="dash-pillar-bar"
+                      style={{
+                        width: `${data?.consistency && data.consistency.activeDays > 0 ? Math.min(100, Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)) : 0}%`,
+                        background: '#0D9488',
+                      }}
+                    ></div>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           <div className="sg-card dash-section-card">
@@ -517,7 +548,10 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               <div className="py-8 text-center text-slate-400">
-                <p className="text-xs">No subject performance data yet.</p>
+                <p className="text-xs font-semibold text-slate-600">No subject performance data yet</p>
+                <p className="text-[11px] text-slate-400 mt-0.5 max-w-xs mx-auto">
+                  Attempt questions or tests to generate your subject-level performance curve.
+                </p>
                 <Link to="/pyqs" className="sg-btn-secondary text-xs mt-3 inline-flex">
                   Practice Questions
                 </Link>
@@ -595,7 +629,10 @@ const Dashboard: React.FC = () => {
               </div>
             ) : (
               <div className="py-6 text-center text-slate-400">
-                <p className="text-xs">No critical weak areas identified.</p>
+                <p className="text-xs font-semibold text-slate-600">No weak areas identified</p>
+                <p className="text-[11px] text-slate-400 mt-0.5">
+                  Topics with accuracy below 60% will be flagged here as you practice.
+                </p>
               </div>
             )}
           </div>

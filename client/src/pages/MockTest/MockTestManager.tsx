@@ -206,19 +206,25 @@ const MockTestManager: React.FC = () => {
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Average Score</span>
-          <div className="text-3xl font-extrabold text-indigo-600 mt-2">{aggregateStats.avgScore}%</div>
+          <div className="text-3xl font-extrabold text-indigo-600 mt-2">
+            {aggregateStats.totalTests > 0 ? `${aggregateStats.avgScore}%` : 'N/A'}
+          </div>
           <span className="text-xs text-slate-400 mt-1">Filtered tests average</span>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Accuracy</span>
-          <div className="text-3xl font-extrabold text-teal-600 mt-2">{aggregateStats.avgAccuracy}%</div>
+          <div className="text-3xl font-extrabold text-teal-600 mt-2">
+            {aggregateStats.totalTests > 0 ? `${aggregateStats.avgAccuracy}%` : 'N/A'}
+          </div>
           <span className="text-xs text-slate-400 mt-1">Correct / Attempted ratio</span>
         </div>
 
         <div className="bg-white p-5 rounded-xl border border-slate-200 flex flex-col justify-between">
           <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Highest Score</span>
-          <div className="text-3xl font-extrabold text-amber-500 mt-2">{aggregateStats.highestScore}</div>
+          <div className="text-3xl font-extrabold text-amber-500 mt-2">
+            {aggregateStats.totalTests > 0 ? aggregateStats.highestScore : 'N/A'}
+          </div>
           <span className="text-xs text-slate-400 mt-1">Peak score achieved</span>
         </div>
       </div>

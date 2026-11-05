@@ -115,15 +115,20 @@ const Recommendations: React.FC = () => {
           </button>
         </div>
       ) : filteredRecs.length === 0 ? (
-        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center max-w-lg mx-auto ">
-          <div className="text-4xl mb-3">🎉</div>
-          <h3 className="text-lg font-bold text-slate-900">No Urgent Recommendations</h3>
+        <div className="bg-white border border-slate-200 rounded-xl p-12 text-center max-w-lg mx-auto">
+          <div className="text-4xl mb-3">🎯</div>
+          <h3 className="text-lg font-bold text-slate-900">No Recommendations Yet</h3>
           <p className="text-slate-500 text-sm mt-1">
-            All your studied topics are currently up to date. Keep up the high accuracy or attempt fresh PYQs!
+            Recommendations are generated from your test scores and study history. Select an exam and start practicing to get smart topic suggestions.
           </p>
-          <Link to="/pyqs" className="sg-btn-primary mt-6 inline-block">
-            Practice PYQs
-          </Link>
+          <div className="flex justify-center gap-3 mt-6">
+            <Link to="/my-exams" className="sg-btn-primary text-xs">
+              Select Exam
+            </Link>
+            <Link to="/pyqs" className="sg-btn-secondary text-xs">
+              Practice Questions
+            </Link>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -184,7 +184,9 @@ const PYQPractice = () => {
           </div>
           <div className="text-center p-2 border-l border-slate-100">
             <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Accuracy</span>
-            <p className="text-xl font-extrabold text-indigo-600">{stats.overall.accuracy}%</p>
+            <p className="text-xl font-extrabold text-indigo-600">
+              {stats.overall.totalAttempted > 0 ? `${stats.overall.accuracy}%` : 'N/A'}
+            </p>
           </div>
           <div className="text-center p-2 border-l border-slate-100 col-span-2 sm:col-span-1">
             <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Bookmarks</span>
