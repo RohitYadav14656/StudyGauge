@@ -20,7 +20,9 @@ import PYQPractice from './pages/PYQ/PYQPractice';
 import Analytics from './pages/Analytics/Analytics';
 import ActivityTimeline from './pages/ActivityTimeline/ActivityTimeline';
 import NotificationsPage from './pages/Notifications/Notifications';
-import ComingSoon from './pages/Admin/ComingSoon/ComingSoon';
+import AdminSyllabus from './pages/Admin/Syllabus/AdminSyllabus';
+import AdminPYQs from './pages/Admin/PYQs/AdminPYQs';
+import AdminUsers from './pages/Admin/Users/AdminUsers';
 
 import Dashboard from './pages/Dashboard/Dashboard';
 import Recommendations from './pages/Recommendations/Recommendations';
@@ -75,8 +77,9 @@ function App() {
             <Route path="exams" element={<AdminExams />} />
             <Route path="subjects" element={<AdminSubjects />} />
             <Route path="topics" element={<AdminTopics />} />
-            <Route path="pyqs" element={<ComingSoon title="PYQs Management" />} />
-            <Route path="users" element={<ComingSoon title="Users Management" />} />
+            <Route path="syllabus" element={<AdminSyllabus />} />
+            <Route path="pyqs" element={<AdminPYQs />} />
+            <Route path="users" element={<AdminUsers />} />
           </Route>
         </Route>
       </Routes>

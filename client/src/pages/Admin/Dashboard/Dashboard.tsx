@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getDashboardStats } from '../../../services/adminService';
 import './Dashboard.css';
 
@@ -42,7 +43,7 @@ const Dashboard: React.FC = () => {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <h2>Dashboard Overview</h2>
-        <p>Welcome to the StudyGauge Admin Panel. Here are the current platform statistics.</p>
+        <p>Welcome to the StudyGauge Admin Console. Monitor database entities, manage syllabus structures, and control question banks.</p>
       </div>
 
       <div className="stats-grid">
@@ -104,6 +105,105 @@ const Dashboard: React.FC = () => {
             <h3>Total PYQs</h3>
             <p className="stat-value">{stats?.totalPYQs || 0}</p>
           </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: '1rem' }}>
+        <h3 style={{ color: '#f1f5f9', fontSize: '1.25rem', marginBottom: '1rem' }}>
+          ⚡ Fast Operations & Content Hub
+        </h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
+          <Link
+            to="/admin/syllabus"
+            style={{
+              textDecoration: 'none',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: '5px',
+              padding: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.4rem',
+            }}
+          >
+            <div style={{ fontSize: '1.5rem' }}>📚</div>
+            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Syllabus Architecture</h4>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+              Inspect and configure full hierarchical syllabus (Subjects → Topics → Subtopics) with student view preview.
+            </p>
+            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+              Open Syllabus Manager →
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/pyqs"
+            style={{
+              textDecoration: 'none',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: '5px',
+              padding: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.4rem',
+            }}
+          >
+            <div style={{ fontSize: '1.5rem' }}>📝</div>
+            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Question Bank (PYQs)</h4>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+              Create multiple-choice questions, set correct options, configure difficulty, and write step-by-step solutions.
+            </p>
+            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+              Manage Question Bank →
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/users"
+            style={{
+              textDecoration: 'none',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: '5px',
+              padding: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.4rem',
+            }}
+          >
+            <div style={{ fontSize: '1.5rem' }}>👥</div>
+            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>User Accounts & Roles</h4>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+              Inspect all registered accounts, promote/demote administrator privileges, and monitor student preparation levels.
+            </p>
+            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+              Manage User Accounts →
+            </span>
+          </Link>
+
+          <Link
+            to="/admin/exams"
+            style={{
+              textDecoration: 'none',
+              background: '#1e293b',
+              border: '1px solid #334155',
+              borderRadius: '5px',
+              padding: '1.25rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '0.4rem',
+            }}
+          >
+            <div style={{ fontSize: '1.5rem' }}>🎯</div>
+            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Exams Catalog</h4>
+            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+              Add competitive exams (GATE, CAT, UPSC, JEE, NEET) and configure undergraduate/postgraduate levels.
+            </p>
+            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+              Manage Exams →
+            </span>
+          </Link>
         </div>
       </div>
     </div>

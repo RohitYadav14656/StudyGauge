@@ -642,3 +642,78 @@ export const getAttempts = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const createPYQ = async (req, res, next) => {
+  try {
+    const {
+      examId,
+      subjectId,
+      topicId,
+      year,
+      questionText,
+      options,
+      explanation,
+      difficulty,
+      tags,
+    } = req.body;
+
+    if (!examId || !year || !questionText || !options || options.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: 'Exam, year, question text, and at least 2 options are required.',
+      });
+    }
+
+    const hasCorrect = options.some((opt) => opt.isCorrect);
+    if (!hasCorrect) {
+      return res.status(400).json({
+        success: false,
+        message: 'At least one option must be marked as correct.',
+      });
+    }
+
+    const pyq = await PYQ.create({
+      examId,
+      subjectId: subjectId || undefined,
+      topicId: topicId || undefined,
+      year: Number(year),
+      questionText: questionText.trim(),
+      options,
+      explanation: explanation ? explanation.trim() : '',
+      difficulty: difficulty || 'medium',
+      tags: Array.isArray(tags) ? tags : typeof tags === 'string' ? tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Question added successfully.',
+      data: pyq,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deletePYQ = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const pyq = await PYQ.findByIdAndDelete(id);
+
+    if (!pyq) {
+      return res.status(404).json({
+        success: false,
+        message: 'Question not found.',
+      });
+    }
+
+    await PYQAttempt.deleteMany({ pyqId: id });
+
+    res.json({
+      success: true,
+      message: 'Question deleted successfully.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};

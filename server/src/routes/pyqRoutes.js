@@ -9,8 +9,10 @@ import {
   getBookmarks,
   getRevisionList,
   getAttempts,
+  createPYQ,
+  deletePYQ,
 } from '../controllers/pyqController.js';
-import { protect } from '../middleware/authMiddleware.js';
+import { protect, requireAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -24,5 +26,9 @@ router.get('/:id', protect, getPYQ);
 router.post('/:id/attempt', protect, attemptPYQ);
 router.patch('/:id/bookmark', protect, toggleBookmark);
 router.patch('/:id/revision', protect, toggleRevision);
+
+// Admin operations
+router.post('/', protect, requireAdmin, createPYQ);
+router.delete('/:id', protect, requireAdmin, deletePYQ);
 
 export default router;
