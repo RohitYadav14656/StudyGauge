@@ -25,10 +25,10 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  background: #1e293b;
+  background: var(--color-card);
   padding: 1rem 1.5rem;
   border-radius: 0.75rem;
-  border: 1px solid #334155;
+  border: 1px solid var(--color-border);
 }
 
 .filter-bar label {
@@ -39,8 +39,8 @@
 .filter-bar select {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
-  border: 1px solid #334155;
-  background-color: #0f172a;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-bg);
   color: #f1f5f9;
   outline: none;
   min-width: 200px;

@@ -20,7 +20,7 @@
 }
 
 .count-badge {
-  background: #334155;
+  background: var(--color-border);
   color: #f1f5f9;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
@@ -43,7 +43,7 @@
 .divider {
   border: 0;
   height: 1px;
-  background: #334155;
+  background: var(--color-border);
   margin: 1.5rem 0;
 }
 
@@ -61,8 +61,8 @@
 
 .btn-secondary-sm {
   background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  border: 1px solid #38bdf8;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
   padding: 0.25rem 0.75rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -70,8 +70,8 @@
 }
 
 .btn-secondary-sm:hover {
-  background: #38bdf8;
-  color: #0f172a;
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .no-subtopics {
@@ -97,7 +97,7 @@
   background: rgba(15, 23, 42, 0.5);
   padding: 0.5rem;
   border-radius: 0.5rem;
-  border: 1px solid #334155;
+  border: 1px solid var(--color-border);
 }
 
 .subtopic-order input {

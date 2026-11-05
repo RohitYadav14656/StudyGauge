@@ -117,8 +117,8 @@ const Dashboard: React.FC = () => {
             to="/admin/syllabus"
             style={{
               textDecoration: 'none',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               borderRadius: '5px',
               padding: '1.25rem',
               display: 'flex',
@@ -131,7 +131,7 @@ const Dashboard: React.FC = () => {
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
               Inspect and configure full hierarchical syllabus (Subjects → Topics → Subtopics) with student view preview.
             </p>
-            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+            <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
               Open Syllabus Manager →
             </span>
           </Link>
@@ -140,8 +140,8 @@ const Dashboard: React.FC = () => {
             to="/admin/pyqs"
             style={{
               textDecoration: 'none',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               borderRadius: '5px',
               padding: '1.25rem',
               display: 'flex',
@@ -154,7 +154,7 @@ const Dashboard: React.FC = () => {
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
               Create multiple-choice questions, set correct options, configure difficulty, and write step-by-step solutions.
             </p>
-            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+            <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
               Manage Question Bank →
             </span>
           </Link>
@@ -163,8 +163,8 @@ const Dashboard: React.FC = () => {
             to="/admin/users"
             style={{
               textDecoration: 'none',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               borderRadius: '5px',
               padding: '1.25rem',
               display: 'flex',
@@ -177,7 +177,7 @@ const Dashboard: React.FC = () => {
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
               Inspect all registered accounts, promote/demote administrator privileges, and monitor student preparation levels.
             </p>
-            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+            <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
               Manage User Accounts →
             </span>
           </Link>
@@ -186,8 +186,8 @@ const Dashboard: React.FC = () => {
             to="/admin/exams"
             style={{
               textDecoration: 'none',
-              background: '#1e293b',
-              border: '1px solid #334155',
+              background: 'var(--color-card)',
+              border: '1px solid var(--color-border)',
               borderRadius: '5px',
               padding: '1.25rem',
               display: 'flex',
@@ -200,7 +200,7 @@ const Dashboard: React.FC = () => {
             <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
               Add competitive exams (GATE, CAT, UPSC, JEE, NEET) and configure undergraduate/postgraduate levels.
             </p>
-            <span style={{ color: '#38bdf8', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
+            <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
               Manage Exams →
             </span>
           </Link>

@@ -33,9 +33,9 @@
 }
 
 .syllabus-exam-select {
-  background: #1e293b;
+  background: var(--color-card);
   color: #f1f5f9;
-  border: 1px solid #334155;
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 0.65rem 1rem;
   font-size: 0.9rem;
@@ -46,7 +46,7 @@
 }
 
 .syllabus-exam-select:focus {
-  border-color: #38bdf8;
+  border-color: var(--color-accent);
 }
 
 .syllabus-stats-row {
@@ -56,8 +56,8 @@
 }
 
 .syllabus-stat-card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 1.25rem;
   display: flex;
@@ -86,8 +86,8 @@
 }
 
 .subject-tree-card {
-  background: #1e293b;
-  border: 1px solid #334155;
+  background: var(--color-card);
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -95,7 +95,7 @@
 .subject-tree-header {
   padding: 1.25rem 1.5rem;
   background: rgba(15, 23, 42, 0.4);
-  border-bottom: 1px solid #334155;
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -125,7 +125,7 @@
 
 .weight-badge {
   background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
+  color: var(--color-accent);
   border: 1px solid rgba(56, 189, 248, 0.3);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
@@ -135,7 +135,7 @@
 
 .topics-badge {
   background: rgba(129, 140, 248, 0.15);
-  color: #818cf8;
+  color: #183D35;
   border: 1px solid rgba(129, 140, 248, 0.3);
   padding: 0.2rem 0.6rem;
   border-radius: 4px;
@@ -158,7 +158,7 @@
 
 .topic-tree-row {
   background: rgba(15, 23, 42, 0.5);
-  border: 1px solid #334155;
+  border: 1px solid var(--color-border);
   border-radius: 5px;
   padding: 1rem 1.25rem;
   display: flex;
@@ -181,7 +181,7 @@
 }
 
 .topic-num-badge {
-  background: #334155;
+  background: var(--color-border);
   color: #94a3b8;
   width: 24px;
   height: 24px;
@@ -217,7 +217,7 @@
 
 .btn-add-item {
   background: rgba(56, 189, 248, 0.15);
-  color: #38bdf8;
+  color: var(--color-accent);
   border: 1px solid rgba(56, 189, 248, 0.3);
   padding: 0.4rem 0.9rem;
   border-radius: 4px;
@@ -228,8 +228,8 @@
 }
 
 .btn-add-item:hover {
-  background: #38bdf8;
-  color: #0f172a;
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .btn-preview-portal {

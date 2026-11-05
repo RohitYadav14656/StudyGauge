@@ -277,11 +277,11 @@ const MockTestManager: React.FC = () => {
                   <XAxis dataKey="name" tick={{fill: '#64748B', fontSize: 11}} tickLine={false} axisLine={false} />
                   <YAxis yAxisId="left" tick={{fill: '#64748B', fontSize: 11}} tickLine={false} axisLine={false} domain={[0, 100]} unit="%" />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', color: '#111827', boxShadow: 'none' }}
-                    labelStyle={{ fontWeight: 'bold', color: '#4F46E5', marginBottom: '4px' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', color: '#252B28', boxShadow: 'none' }}
+                    labelStyle={{ fontWeight: 'bold', color: '#183D35', marginBottom: '4px' }}
                   />
                   <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '16px', color: '#64748B' }} iconType="circle" />
-                  <Line yAxisId="left" type="monotone" dataKey="Score" stroke="#4F46E5" strokeWidth={2.5} dot={{r: 4, strokeWidth: 2, fill: '#FFFFFF'}} activeDot={{r: 6}} />
+                  <Line yAxisId="left" type="monotone" dataKey="Score" stroke="#183D35" strokeWidth={2.5} dot={{r: 4, strokeWidth: 2, fill: '#FFFFFF'}} activeDot={{r: 6}} />
                   <Line yAxisId="left" type="monotone" dataKey="Accuracy" stroke="#0D9488" strokeWidth={2.5} dot={{r: 4, strokeWidth: 2, fill: '#FFFFFF'}} activeDot={{r: 6}} />
                 </LineChart>
               </ResponsiveContainer>
@@ -304,11 +304,11 @@ const MockTestManager: React.FC = () => {
                   <YAxis yAxisId="left" orientation="left" tick={{fill: '#64748B', fontSize: 11}} tickLine={false} axisLine={false} />
                   <YAxis yAxisId="right" orientation="right" tick={{fill: '#64748B', fontSize: 11}} tickLine={false} axisLine={false} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', color: '#111827', boxShadow: 'none' }}
-                    labelStyle={{ fontWeight: 'bold', color: '#4F46E5', marginBottom: '4px' }}
+                    contentStyle={{ backgroundColor: '#FFFFFF', borderRadius: '12px', border: '1px solid #E2E8F0', color: '#252B28', boxShadow: 'none' }}
+                    labelStyle={{ fontWeight: 'bold', color: '#183D35', marginBottom: '4px' }}
                   />
                   <Legend wrapperStyle={{ fontSize: '12px', paddingTop: '16px', color: '#64748B' }} iconType="circle" />
-                  <Bar yAxisId="left" dataKey="Attempted" name="Questions Attempted" fill="#4F46E5" radius={[4, 4, 0, 0]} maxBarSize={36} />
+                  <Bar yAxisId="left" dataKey="Attempted" name="Questions Attempted" fill="#183D35" radius={[4, 4, 0, 0]} maxBarSize={36} />
                   <Bar yAxisId="right" dataKey="Time" name="Time Spent (min)" fill="#F59E0B" radius={[4, 4, 0, 0]} maxBarSize={36} />
                 </BarChart>
               </ResponsiveContainer>

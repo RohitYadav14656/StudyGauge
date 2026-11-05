@@ -17,7 +17,7 @@ const ComingSoon: React.FC<{ title: string }> = ({ title }) => {
         marginTop: '2rem',
         padding: '1rem 2rem',
         background: 'rgba(56, 189, 248, 0.1)',
-        color: '#38bdf8',
+        color: 'var(--color-accent)',
         borderRadius: '9999px',
         fontWeight: 'bold',
         textTransform: 'uppercase',

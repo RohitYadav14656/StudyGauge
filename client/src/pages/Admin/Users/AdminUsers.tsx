@@ -113,7 +113,7 @@ const AdminUsers: React.FC = () => {
         </div>
         <div className="user-stat-card">
           <span className="label">Active Students</span>
-          <span className="value" style={{ color: '#38bdf8' }}>
+          <span className="value" style={{ color: 'var(--color-accent)' }}>
             {totalStudents}
           </span>
         </div>

@@ -374,8 +374,8 @@ const AdminPYQs: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.6rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -399,8 +399,8 @@ const AdminPYQs: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.6rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -424,8 +424,8 @@ const AdminPYQs: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.6rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -455,8 +455,8 @@ const AdminPYQs: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.6rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -473,8 +473,8 @@ const AdminPYQs: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.6rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -499,8 +499,8 @@ const AdminPYQs: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}
@@ -522,7 +522,7 @@ const AdminPYQs: React.FC = () => {
                           title="Mark as correct answer"
                           style={{ cursor: 'pointer', width: '18px', height: '18px' }}
                         />
-                        <span style={{ fontWeight: 700, color: '#38bdf8', fontSize: '0.85rem' }}>
+                        <span style={{ fontWeight: 700, color: 'var(--color-accent)', fontSize: '0.85rem' }}>
                           {String.fromCharCode(65 + idx)}.
                         </span>
                         <input
@@ -562,8 +562,8 @@ const AdminPYQs: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}

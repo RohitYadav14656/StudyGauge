@@ -28,7 +28,7 @@
   padding: 0.35rem 0.85rem;
   background: var(--color-primary-light);
   color: var(--color-primary);
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  border: 1px solid rgba(24, 61, 53, 0.2);
   border-radius: 4px;
   font-size: 0.825rem;
   font-weight: 700;
@@ -403,7 +403,7 @@
 
 .col-good {
   background: var(--color-card);
-  border-color: rgba(79, 70, 229, 0.4);
+  border-color: rgba(24, 61, 53, 0.4);
 }
 
 .comparison-col-title {

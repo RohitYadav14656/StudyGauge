@@ -119,7 +119,7 @@ const AdminExams: React.FC = () => {
                     <button 
                       className="btn-edit" 
                       onClick={() => navigate(`/admin/subjects?examId=${exam._id}`)}
-                      style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)' }}
+                      style={{ background: 'rgba(217, 164, 65, 0.15)', color: 'var(--color-accent)', border: '1px solid rgba(56, 189, 248, 0.3)' }}
                     >
                       Manage Subjects
                     </button>

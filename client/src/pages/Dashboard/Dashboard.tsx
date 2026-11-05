@@ -189,7 +189,7 @@ const Dashboard: React.FC = () => {
         <div className="sg-card dash-kpi-card">
           <div className="dash-kpi-header">
             <span className="dash-kpi-label">Days to Exam</span>
-            <span className="dash-kpi-icon" style={{ background: '#EEF2FF', color: '#4F46E5' }}>⏳</span>
+            <span className="dash-kpi-icon" style={{ background: '#DCE9E1', color: '#183D35' }}>⏳</span>
           </div>
           <div className="dash-kpi-value text-indigo">
             {examCountdown && examCountdown.daysLeft !== null && examCountdown.daysLeft !== undefined ? (
@@ -260,7 +260,7 @@ const Dashboard: React.FC = () => {
           <div className="dash-progress-track">
             <div
               className="dash-progress-fill"
-              style={{ width: `${todayProgressPercent}%`, background: '#4F46E5' }}
+              style={{ width: `${todayProgressPercent}%`, background: '#183D35' }}
             ></div>
           </div>
           <p className="dash-kpi-footer">Goal: {targetHours} hrs ({todayProgressPercent}% completed)</p>
@@ -269,7 +269,7 @@ const Dashboard: React.FC = () => {
         <div className="sg-card dash-kpi-card">
           <div className="dash-kpi-header">
             <span className="dash-kpi-label">Syllabus Covered</span>
-            <span className="dash-kpi-icon" style={{ background: '#EEF2FF', color: '#4F46E5' }}>📚</span>
+            <span className="dash-kpi-icon" style={{ background: '#DCE9E1', color: '#183D35' }}>📚</span>
           </div>
           <div className="dash-kpi-value text-indigo">
             {syllabusProgress && syllabusProgress.totalTopics > 0 ? (
@@ -283,7 +283,7 @@ const Dashboard: React.FC = () => {
               className="dash-progress-fill"
               style={{
                 width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(syllabusProgress.completionPercentage)) : 0}%`,
-                background: '#4F46E5',
+                background: '#183D35',
               }}
             ></div>
           </div>
@@ -335,7 +335,7 @@ const Dashboard: React.FC = () => {
                       className="dash-pillar-bar"
                       style={{
                         width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)) : 0}%`,
-                        background: '#4F46E5',
+                        background: '#183D35',
                       }}
                     ></div>
                   </div>
@@ -375,7 +375,7 @@ const Dashboard: React.FC = () => {
                       className="dash-pillar-bar"
                       style={{
                         width: `${mockPerformance && mockPerformance.totalTests > 0 ? Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)) : 0}%`,
-                        background: '#4F46E5',
+                        background: '#183D35',
                       }}
                     ></div>
                   </div>
@@ -464,7 +464,7 @@ const Dashboard: React.FC = () => {
                     <YAxis domain={[0, 100]} stroke="#64748B" fontSize={11} tickLine={false} />
                     <Tooltip
                       contentStyle={{
-                        background: '#111827',
+                        background: '#252B28',
                         border: 'none',
                         borderRadius: '8px',
                         color: '#FFFFFF',
@@ -474,9 +474,9 @@ const Dashboard: React.FC = () => {
                     <Line
                       type="monotone"
                       dataKey="score"
-                      stroke="#4F46E5"
+                      stroke="#183D35"
                       strokeWidth={2.5}
-                      dot={{ fill: '#4F46E5', r: 4 }}
+                      dot={{ fill: '#183D35', r: 4 }}
                       activeDot={{ r: 6 }}
                     />
                   </LineChart>
@@ -532,7 +532,7 @@ const Dashboard: React.FC = () => {
               <div className="dash-subject-bars">
                 {subjectPerformance.subjects.slice(0, 5).map((subj) => {
                   const pct = Math.round(subj.accuracy || 0);
-                  const color = pct >= 75 ? '#0D9488' : pct >= 50 ? '#4F46E5' : '#F59E0B';
+                  const color = pct >= 75 ? '#0D9488' : pct >= 50 ? '#183D35' : '#F59E0B';
                   return (
                     <div key={subj.subjectName} className="dash-subj-row">
                       <div className="dash-subj-info">
@@ -693,7 +693,7 @@ const Dashboard: React.FC = () => {
             {todaysPlan && todaysPlan.length > 0 ? (
               <div className="dash-plan-items">
                 {todaysPlan.slice(0, 4).map((task, i) => {
-                  const color = task.priority === 'high' ? '#EF4444' : '#4F46E5';
+                  const color = task.priority === 'high' ? '#EF4444' : '#183D35';
                   return (
                     <div key={i} className="dash-plan-task">
                       <div className="dash-plan-bar" style={{ background: color }}></div>

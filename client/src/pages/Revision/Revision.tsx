@@ -85,10 +85,10 @@ const Revision: React.FC = () => {
         </h4>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
-            { stage: 'Stage 1', interval: '1 Day', label: 'Immediate Recall', bg: '#EEF2FF', text: '#4F46E5' },
+            { stage: 'Stage 1', interval: '1 Day', label: 'Immediate Recall', bg: '#DCE9E1', text: '#183D35' },
             { stage: 'Stage 2', interval: '3 Days', label: 'Early Reinforcement', bg: '#F0FDFA', text: '#0D9488' },
             { stage: 'Stage 3', interval: '7 Days', label: 'Medium-Term Memory', bg: '#FFFBEB', text: '#F59E0B' },
-            { stage: 'Stage 4', interval: '14 Days', label: 'Consolidation', bg: '#EEF2FF', text: '#4F46E5' },
+            { stage: 'Stage 4', interval: '14 Days', label: 'Consolidation', bg: '#DCE9E1', text: '#183D35' },
             { stage: 'Stage 5', interval: '30 Days', label: 'Permanent Mastery', bg: '#F0FDFA', text: '#0D9488' },
           ].map((item, idx) => (
             <div

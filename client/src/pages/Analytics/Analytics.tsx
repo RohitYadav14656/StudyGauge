@@ -20,16 +20,16 @@ import { getExams } from '../../services/examService';
 import { getSubjects } from '../../services/syllabusService';
 
 const COLORS = {
-  primary: '#4F46E5',
-  secondary: '#111827',
-  emerald: '#0D9488',
-  amber: '#F59E0B',
-  rose: '#EF4444',
-  slate: '#64748B',
-  indigo: '#4F46E5',
+  primary: '#183D35',
+  secondary: '#252B28',
+  emerald: '#1A6B4A',
+  amber: '#D9A441',
+  rose: '#C0392B',
+  slate: '#8E9E98',
+  indigo: '#183D35',
 };
 
-const PIE_COLORS = ['#4F46E5', '#0D9488', '#F59E0B', '#111827', '#64748B', '#818CF8'];
+const PIE_COLORS = ['#183D35', '#D9A441', '#1A6B4A', '#2A6155', '#8E9E98', '#DCE9E1'];
 
 const Analytics: React.FC = () => {
   const [loading, setLoading] = useState(true);
@@ -423,7 +423,7 @@ const Analytics: React.FC = () => {
                           <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
                           <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} />
                           <Tooltip
-                            contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }}
+                            contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }}
                           />
                           <Line type="monotone" dataKey="Score" stroke={COLORS.primary} strokeWidth={3} dot={{ r: 4 }} />
                         </LineChart>
@@ -613,7 +613,7 @@ const Analytics: React.FC = () => {
                             <XAxis dataKey="date" stroke="#64748b" fontSize={11} />
                             <YAxis stroke="#64748b" fontSize={11} />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }}
+                              contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }}
                             />
                             <Area
                               type="monotone"
@@ -713,7 +713,7 @@ const Analytics: React.FC = () => {
                             <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
                             <YAxis domain={[0, 100]} stroke="#64748b" fontSize={11} />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }}
+                              contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }}
                             />
                             <Line type="monotone" dataKey="Score" stroke={COLORS.primary} strokeWidth={3} dot={{ r: 4 }} />
                           </LineChart>
@@ -736,7 +736,7 @@ const Analytics: React.FC = () => {
                             <XAxis dataKey="name" stroke="#64748b" fontSize={11} />
                             <YAxis domain={[0, 100]} stroke="#64748b" fontSize={11} />
                             <Tooltip
-                              contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }}
+                              contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }}
                             />
                             <Line type="monotone" dataKey="Accuracy" stroke={COLORS.emerald} strokeWidth={3} dot={{ r: 4 }} />
                           </LineChart>
@@ -755,7 +755,7 @@ const Analytics: React.FC = () => {
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                           <XAxis dataKey="name" stroke="#64748b" fontSize={12} />
                           <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} />
-                          <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }} />
+                          <Tooltip contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }} />
                           <Bar dataKey="Accuracy" fill={COLORS.indigo} radius={[8, 8, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>
@@ -781,7 +781,7 @@ const Analytics: React.FC = () => {
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                           <XAxis dataKey="subjectName" stroke="#64748b" fontSize={12} />
                           <YAxis domain={[0, 100]} stroke="#64748b" fontSize={12} />
-                          <Tooltip contentStyle={{ backgroundColor: '#1e293b', borderRadius: '12px', color: '#fff', border: 'none' }} />
+                          <Tooltip contentStyle={{ backgroundColor: 'var(--color-card)', borderRadius: '12px', color: '#fff', border: 'none' }} />
                           <Bar dataKey="accuracy" fill={COLORS.primary} radius={[8, 8, 0, 0]} />
                         </BarChart>
                       </ResponsiveContainer>

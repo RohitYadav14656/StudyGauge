@@ -123,7 +123,7 @@ const MyExams: React.FC = () => {
 
         {loading ? (
           <div style={{ textAlign: 'center', padding: '5rem 0', color: '#94a3b8' }}>
-            <div style={{ width: '32px', height: '32px', border: '3px solid #38bdf8', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 1rem', animation: 'spin 1s linear infinite' }}></div>
+            <div style={{ width: '32px', height: '32px', border: '3px solid var(--color-accent)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 1rem', animation: 'spin 1s linear infinite' }}></div>
             Loading available exams...
           </div>
         ) : (

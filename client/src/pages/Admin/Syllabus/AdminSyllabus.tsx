@@ -237,7 +237,7 @@ const AdminSyllabus: React.FC = () => {
         <div className="syllabus-stats-row">
           <div className="syllabus-stat-card">
             <span className="label">Target Exam</span>
-            <span className="value" style={{ color: '#38bdf8' }}>
+            <span className="value" style={{ color: 'var(--color-accent)' }}>
               {examInfo.name}
             </span>
           </div>
@@ -402,8 +402,8 @@ const AdminSyllabus: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}
@@ -423,8 +423,8 @@ const AdminSyllabus: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.65rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -443,8 +443,8 @@ const AdminSyllabus: React.FC = () => {
                       style={{
                         width: '100%',
                         padding: '0.65rem',
-                        background: '#0f172a',
-                        border: '1px solid #334155',
+                        background: 'var(--color-bg)',
+                        border: '1px solid var(--color-border)',
                         borderRadius: '4px',
                         color: '#f8fafc',
                       }}
@@ -464,8 +464,8 @@ const AdminSyllabus: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}
@@ -510,8 +510,8 @@ const AdminSyllabus: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}
@@ -530,8 +530,8 @@ const AdminSyllabus: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}
@@ -550,8 +550,8 @@ const AdminSyllabus: React.FC = () => {
                     style={{
                       width: '100%',
                       padding: '0.65rem',
-                      background: '#0f172a',
-                      border: '1px solid #334155',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
                       borderRadius: '4px',
                       color: '#f8fafc',
                     }}

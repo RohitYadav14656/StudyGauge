@@ -30,7 +30,7 @@ const AdminRoute: React.FC = () => {
   }, []);
 
   if (isAdmin === null) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#0f172a', color: '#38bdf8' }}>Verifying access...</div>;
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--color-bg)', color: 'var(--color-accent)' }}>Verifying access...</div>;
   }
 
   return isAdmin ? <Outlet /> : <Navigate to="/" />;
