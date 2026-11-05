@@ -78,7 +78,22 @@ const calculateGoalProgress = async (goal, userId) => {
   };
 };
 
+const userDashboardCache = new Map();
+const DASHBOARD_CACHE_TTL_MS = 20 * 1000; // 20 seconds
+
+export const clearDashboardCache = (userId) => {
+  if (userId) {
+    userDashboardCache.delete(userId.toString());
+  }
+};
+
 export const getDashboardData = async (userId) => {
+  const cacheKey = userId.toString();
+  const cached = userDashboardCache.get(cacheKey);
+  if (cached && Date.now() - cached.timestamp < DASHBOARD_CACHE_TTL_MS) {
+    return cached.data;
+  }
+
   const userObjId = new mongoose.Types.ObjectId(userId);
   const now = new Date();
 
@@ -239,7 +254,7 @@ export const getDashboardData = async (userId) => {
       }
     : { dueTodayCount: 0, overdueCount: 0, totalDue: 0, revisions: [] };
 
-  return {
+  const dashboardResult = {
     examCountdown: {
       examName,
       targetDate,
@@ -291,4 +306,11 @@ export const getDashboardData = async (userId) => {
       bestScorePercentage: 0,
     },
   };
+
+  userDashboardCache.set(cacheKey, {
+    timestamp: Date.now(),
+    data: dashboardResult,
+  });
+
+  return dashboardResult;
 };

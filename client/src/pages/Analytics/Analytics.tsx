@@ -311,7 +311,9 @@ const Analytics: React.FC = () => {
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Mock Score Avg</span>
                     <div className="text-2xl font-extrabold text-amber-500 mt-1">
-                      {overviewData.mockTestPerformance?.avgScorePercentage || 0}%
+                      {overviewData.mockTestPerformance && overviewData.mockTestPerformance.totalCompleted > 0
+                        ? `${overviewData.mockTestPerformance.avgScorePercentage || 0}%`
+                        : 'N/A'}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">{overviewData.mockTestPerformance?.totalCompleted || 0} tests taken</p>
                   </div>
@@ -330,7 +332,9 @@ const Analytics: React.FC = () => {
                     <div className="flex justify-between items-center">
                       <h3 className="text-base font-bold text-slate-900">Syllabus Progress</h3>
                       <span className="font-extrabold text-blue-600 text-lg">
-                        {overviewData.syllabusCompletion?.completionPercentage || 0}%
+                        {overviewData.syllabusCompletion && overviewData.syllabusCompletion.totalTopics > 0
+                          ? `${overviewData.syllabusCompletion.completionPercentage || 0}%`
+                          : 'N/A'}
                       </span>
                     </div>
                     <div className="w-full bg-slate-100 h-4 rounded-xl overflow-hidden">
@@ -644,19 +648,25 @@ const Analytics: React.FC = () => {
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Average Mock Score</span>
                     <div className="text-2xl font-extrabold text-blue-600 mt-1">
-                      {testsData.performance?.avgScorePercentage || testsData.mockTest?.summary?.avgPercentage || 0}%
+                      {(testsData.performance?.totalCompleted || testsData.mockTest?.summary?.totalTests) > 0
+                        ? `${testsData.performance?.avgScorePercentage || testsData.mockTest?.summary?.avgPercentage || 0}%`
+                        : 'N/A'}
                     </div>
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">Best Mock Score</span>
                     <div className="text-2xl font-extrabold text-emerald-600 mt-1">
-                      {testsData.performance?.bestScorePercentage || testsData.mockTest?.summary?.bestScore || 0}%
+                      {(testsData.performance?.totalCompleted || testsData.mockTest?.summary?.totalTests) > 0
+                        ? `${testsData.performance?.bestScorePercentage || testsData.mockTest?.summary?.bestScore || 0}%`
+                        : 'N/A'}
                     </div>
                   </div>
                   <div className="bg-white p-5 rounded-xl border border-slate-200 -xs">
                     <span className="text-xs font-bold uppercase text-slate-400">PYQ Accuracy</span>
                     <div className="text-2xl font-extrabold text-indigo-600 mt-1">
-                      {testsData.pyqAccuracy?.accuracy || 0}%
+                      {testsData.pyqAccuracy && testsData.pyqAccuracy.totalAttempts > 0
+                        ? `${testsData.pyqAccuracy.accuracy || 0}%`
+                        : 'N/A'}
                     </div>
                   </div>
                 </div>

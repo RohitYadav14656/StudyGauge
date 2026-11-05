@@ -176,13 +176,57 @@ const getHeaders = () => {
   return { headers: { Authorization: `Bearer ${token}` } };
 };
 
+let memoryCache: { data: DashboardData; timestamp: number } | null = null;
+const CACHE_TTL_MS = 60 * 1000; // 60 seconds client cache
+
 export const dashboardService = {
-  getDashboard: async (): Promise<DashboardResponse> => {
+  getCachedDashboard: (): DashboardData | null => {
+    if (memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
+      return memoryCache.data;
+    }
+    try {
+      const stored = sessionStorage.getItem('sg_dash_cache');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Date.now() - parsed.timestamp < 3 * 60 * 1000) {
+          memoryCache = parsed;
+          return parsed.data;
+        }
+      }
+    } catch {
+      // ignore parse error
+    }
+    return null;
+  },
+
+  clearCache: () => {
+    memoryCache = null;
+    try {
+      sessionStorage.removeItem('sg_dash_cache');
+    } catch {
+      // ignore
+    }
+  },
+
+  getDashboard: async (forceFresh = false): Promise<DashboardResponse> => {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No authentication token found');
     }
+
+    if (!forceFresh && memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
+      return { success: true, data: memoryCache.data };
+    }
+
     const response = await axios.get('/api/dashboard', getHeaders());
+    if (response.data?.success && response.data?.data) {
+      memoryCache = { data: response.data.data, timestamp: Date.now() };
+      try {
+        sessionStorage.setItem('sg_dash_cache', JSON.stringify(memoryCache));
+      } catch {
+        // ignore
+      }
+    }
     return response.data;
   },
 };

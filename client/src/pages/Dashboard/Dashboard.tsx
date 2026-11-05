@@ -17,19 +17,19 @@ import {
 import './Dashboard.css';
 
 const Dashboard: React.FC = () => {
-  const [data, setData] = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<DashboardData | null>(() => dashboardService.getCachedDashboard());
+  const [loading, setLoading] = useState<boolean>(() => !dashboardService.getCachedDashboard());
   const [error, setError] = useState<string | null>(null);
   const [revisedTopicIds, setRevisedTopicIds] = useState<string[]>([]);
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = async (silent = false) => {
     try {
-      setLoading(true);
+      if (!silent) setLoading(true);
       setError(null);
-      const res = await dashboardService.getDashboard();
+      const res = await dashboardService.getDashboard(silent);
       if (res.success && res.data) {
         setData(res.data);
-      } else {
+      } else if (!data) {
         setError('Failed to load dashboard data.');
       }
     } catch (err: any) {
@@ -38,7 +38,9 @@ const Dashboard: React.FC = () => {
         window.location.href = '/login';
         return;
       }
-      setError(err.response?.data?.message || err.message || 'Error connecting to server.');
+      if (!data) {
+        setError(err.response?.data?.message || err.message || 'Error connecting to server.');
+      }
     } finally {
       setLoading(false);
     }
@@ -50,7 +52,8 @@ const Dashboard: React.FC = () => {
       window.location.href = '/login';
       return;
     }
-    fetchDashboardData();
+    const hasCached = !!dashboardService.getCachedDashboard();
+    fetchDashboardData(hasCached);
   }, []);
 
   const handleMarkRevisionDone = async (revId: string, topicIdStr: string) => {
@@ -65,7 +68,7 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <div className="dash-loading-screen">
         <div className="dash-spinner"></div>
@@ -74,7 +77,7 @@ const Dashboard: React.FC = () => {
     );
   }
 
-  if (error || !data) {
+  if (error && !data) {
     return (
       <div className="dash-error-container">
         <div className="dash-error-card">
@@ -82,7 +85,7 @@ const Dashboard: React.FC = () => {
           <h2 className="dash-error-title">Unable to Load Overview</h2>
           <p className="dash-error-msg">{error || 'Please make sure you have an active exam selected.'}</p>
           <div className="dash-error-actions">
-            <button onClick={fetchDashboardData} className="sg-btn-primary">
+            <button onClick={() => fetchDashboardData(false)} className="sg-btn-primary">
               Retry
             </button>
             <Link to="/my-exams" className="sg-btn-secondary">
@@ -107,7 +110,7 @@ const Dashboard: React.FC = () => {
     recentActivity,
     mockTrend,
     mockPerformance,
-  } = data;
+  } = data || {} as Partial<DashboardData>;
 
   const targetHours = 5;
   const todayProgressPercent = Math.min(100, Math.round(((studyTime?.todayHours || 0) / targetHours) * 100));
@@ -127,7 +130,28 @@ const Dashboard: React.FC = () => {
         <div>
           <div className="dash-exam-tag">
             <span className="dash-tag-dot"></span>
-            <span>Target: <strong>{examCountdown?.examName || 'GATE CS'}</strong></span>
+            <span>
+              Target:{' '}
+              {examCountdown?.examName ? (
+                <strong>{examCountdown.examName}</strong>
+              ) : (
+                <>
+                  <strong style={{ opacity: 0.6 }}>N/A</strong>
+                  <Link
+                    to="/my-exams"
+                    style={{
+                      marginLeft: '0.45rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--color-primary)',
+                      textDecoration: 'underline',
+                      fontWeight: 600,
+                    }}
+                  >
+                    (Select Exam)
+                  </Link>
+                </>
+              )}
+            </span>
           </div>
           <h1 className="dash-heading">Preparation Overview</h1>
           <p className="dash-subheading">Track your consistency, identify weak topics, and follow your adapted study plan.</p>
@@ -150,10 +174,18 @@ const Dashboard: React.FC = () => {
             <span className="dash-kpi-icon" style={{ background: '#EEF2FF', color: '#4F46E5' }}>⏳</span>
           </div>
           <div className="dash-kpi-value text-indigo">
-            {examCountdown?.daysLeft !== null ? examCountdown?.daysLeft : '248'}
-            <span className="dash-kpi-unit">days</span>
+            {examCountdown && examCountdown.daysLeft !== null && examCountdown.daysLeft !== undefined ? (
+              <>
+                {examCountdown.daysLeft}
+                <span className="dash-kpi-unit">days</span>
+              </>
+            ) : (
+              'N/A'
+            )}
           </div>
-          <p className="dash-kpi-footer">Target Date: {examCountdown?.targetDate ? new Date(examCountdown.targetDate).toLocaleDateString() : 'Feb 2027'}</p>
+          <p className="dash-kpi-footer">
+            Target Date: {examCountdown?.targetDate ? new Date(examCountdown.targetDate).toLocaleDateString() : 'N/A'}
+          </p>
         </div>
 
         <div className="sg-card dash-kpi-card highlight-card">
@@ -162,16 +194,29 @@ const Dashboard: React.FC = () => {
             <span className="dash-kpi-icon" style={{ background: '#F0FDFA', color: '#0D9488' }}>🎯</span>
           </div>
           <div className="dash-kpi-value text-teal">
-            {readiness?.overallScore ?? 74}
-            <span className="dash-kpi-unit">/ 100</span>
+            {readiness && readiness.confidenceLevel !== 'NONE' && readiness.overallScore > 0 ? (
+              <>
+                {Math.round(readiness.overallScore)}
+                <span className="dash-kpi-unit">/ 100</span>
+              </>
+            ) : (
+              'N/A'
+            )}
           </div>
           <div className="dash-progress-track">
             <div
               className="dash-progress-fill"
-              style={{ width: `${readiness?.overallScore ?? 74}%`, background: '#0D9488' }}
+              style={{
+                width: `${readiness && readiness.confidenceLevel !== 'NONE' && readiness.overallScore > 0 ? Math.min(100, Math.round(readiness.overallScore)) : 0}%`,
+                background: '#0D9488',
+              }}
             ></div>
           </div>
-          <p className="dash-kpi-footer">Calculated from tests, syllabus, and revision rate</p>
+          <p className="dash-kpi-footer">
+            {readiness && readiness.confidenceLevel !== 'NONE' && readiness.overallScore > 0
+              ? 'Calculated from tests, syllabus, and revision rate'
+              : 'Requires mock tests or syllabus progress'}
+          </p>
         </div>
 
         <div className="sg-card dash-kpi-card">
@@ -180,8 +225,19 @@ const Dashboard: React.FC = () => {
             <span className="dash-kpi-icon" style={{ background: '#FFFBEB', color: '#F59E0B' }}>⏱️</span>
           </div>
           <div className="dash-kpi-value text-navy">
-            {studyTime?.todayHours?.toFixed(1) || '4.5'}
-            <span className="dash-kpi-unit">hrs</span>
+            {studyTime && typeof studyTime.todayHours === 'number' && studyTime.todayHours > 0 ? (
+              <>
+                {studyTime.todayHours.toFixed(1)}
+                <span className="dash-kpi-unit">hrs</span>
+              </>
+            ) : studyTime && typeof studyTime.todayHours === 'number' ? (
+              <>
+                0.0
+                <span className="dash-kpi-unit">hrs</span>
+              </>
+            ) : (
+              'N/A'
+            )}
           </div>
           <div className="dash-progress-track">
             <div
@@ -198,16 +254,25 @@ const Dashboard: React.FC = () => {
             <span className="dash-kpi-icon" style={{ background: '#EEF2FF', color: '#4F46E5' }}>📚</span>
           </div>
           <div className="dash-kpi-value text-indigo">
-            {syllabusProgress?.completionPercentage || 72}%
+            {syllabusProgress && syllabusProgress.totalTopics > 0 ? (
+              `${Math.round(syllabusProgress.completionPercentage)}%`
+            ) : (
+              'N/A'
+            )}
           </div>
           <div className="dash-progress-track">
             <div
               className="dash-progress-fill"
-              style={{ width: `${syllabusProgress?.completionPercentage || 72}%`, background: '#4F46E5' }}
+              style={{
+                width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(syllabusProgress.completionPercentage)) : 0}%`,
+                background: '#4F46E5',
+              }}
             ></div>
           </div>
           <p className="dash-kpi-footer">
-            {syllabusProgress?.completed || 42} / {syllabusProgress?.totalTopics || 60} Topics Completed
+            {syllabusProgress && syllabusProgress.totalTopics > 0
+              ? `${syllabusProgress.completed} / ${syllabusProgress.totalTopics} Topics Completed`
+              : 'N/A — Select an exam to view syllabus'}
           </p>
         </div>
       </section>
@@ -220,7 +285,9 @@ const Dashboard: React.FC = () => {
                 <h3 className="dash-card-title">Readiness Factors</h3>
                 <p className="dash-card-desc">Weighted breakdown of your preparation indicators</p>
               </div>
-              <span className="sg-badge sg-badge-teal">Overall: {Math.round(readiness?.overallScore || 0)}/100</span>
+              <span className="sg-badge sg-badge-teal">
+                Overall: {readiness && readiness.confidenceLevel !== 'NONE' && readiness.overallScore > 0 ? `${Math.round(readiness.overallScore)}/100` : 'N/A'}
+              </span>
             </div>
 
             <div className="dash-pillars-list">
@@ -228,14 +295,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Syllabus Completion</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? (syllabusProgress?.completionPercentage ?? 0))}%
+                    {syllabusProgress && syllabusProgress.totalTopics > 0
+                      ? `${Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? (syllabusProgress?.completionPercentage ?? 0)))}%`,
+                      width: `${syllabusProgress && syllabusProgress.totalTopics > 0 ? Math.min(100, Math.round(readiness?.componentScores?.syllabusCompletion?.score ?? syllabusProgress.completionPercentage)) : 0}%`,
                       background: '#4F46E5',
                     }}
                   ></div>
@@ -246,14 +315,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Topic Mastery</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.topicMastery?.score ?? 0)}%
+                    {readiness?.componentScores?.topicMastery?.score != null && readiness.componentScores.topicMastery.score > 0
+                      ? `${Math.round(readiness.componentScores.topicMastery.score)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.topicMastery?.score ?? 0))}%`,
+                      width: `${readiness?.componentScores?.topicMastery?.score ? Math.min(100, Math.round(readiness.componentScores.topicMastery.score)) : 0}%`,
                       background: '#0D9488',
                     }}
                   ></div>
@@ -264,14 +335,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Mock Test Scores</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.mockPerformance?.score ?? (mockPerformance?.avgScorePercentage ?? 0))}%
+                    {mockPerformance && mockPerformance.totalTests > 0
+                      ? `${Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? (mockPerformance?.avgScorePercentage ?? 0)))}%`,
+                      width: `${mockPerformance && mockPerformance.totalTests > 0 ? Math.min(100, Math.round(readiness?.componentScores?.mockPerformance?.score ?? mockPerformance.avgScorePercentage)) : 0}%`,
                       background: '#4F46E5',
                     }}
                   ></div>
@@ -282,14 +355,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Question Accuracy</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.accuracy?.score ?? 0)}%
+                    {readiness?.componentScores?.accuracy?.score != null && readiness.componentScores.accuracy.score > 0
+                      ? `${Math.round(readiness.componentScores.accuracy.score)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.accuracy?.score ?? 0))}%`,
+                      width: `${readiness?.componentScores?.accuracy?.score ? Math.min(100, Math.round(readiness.componentScores.accuracy.score)) : 0}%`,
                       background: '#0D9488',
                     }}
                   ></div>
@@ -300,14 +375,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Revision Coverage</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.revisionConsistency?.score ?? 0)}%
+                    {readiness?.componentScores?.revisionConsistency?.score != null && readiness.componentScores.revisionConsistency.score > 0
+                      ? `${Math.round(readiness.componentScores.revisionConsistency.score)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.revisionConsistency?.score ?? 0))}%`,
+                      width: `${readiness?.componentScores?.revisionConsistency?.score ? Math.min(100, Math.round(readiness.componentScores.revisionConsistency.score)) : 0}%`,
                       background: '#F59E0B',
                     }}
                   ></div>
@@ -318,14 +395,16 @@ const Dashboard: React.FC = () => {
                 <div className="dash-pillar-meta">
                   <span>Study Consistency</span>
                   <span className="dash-pillar-val">
-                    {Math.round(readiness?.componentScores?.studyConsistency?.score ?? (data.consistency?.consistencyPercentage ?? 0))}%
+                    {data?.consistency && data.consistency.activeDays > 0
+                      ? `${Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)}%`
+                      : 'N/A'}
                   </span>
                 </div>
                 <div className="dash-pillar-track">
                   <div
                     className="dash-pillar-bar"
                     style={{
-                      width: `${Math.min(100, Math.round(readiness?.componentScores?.studyConsistency?.score ?? (data.consistency?.consistencyPercentage ?? 0)))}%`,
+                      width: `${data?.consistency && data.consistency.activeDays > 0 ? Math.min(100, Math.round(readiness?.componentScores?.studyConsistency?.score ?? data.consistency.consistencyPercentage)) : 0}%`,
                       background: '#0D9488',
                     }}
                   ></div>
@@ -387,15 +466,21 @@ const Dashboard: React.FC = () => {
 
             <div className="dash-mock-stats-row">
               <div className="dash-substat">
-                <span className="dash-substat-num text-teal">{mockPerformance?.bestScorePercentage ?? 0}%</span>
+                <span className="dash-substat-num text-teal">
+                  {mockPerformance && mockPerformance.totalTests > 0 ? `${mockPerformance.bestScorePercentage ?? 0}%` : 'N/A'}
+                </span>
                 <span className="dash-substat-label">Best Score</span>
               </div>
               <div className="dash-substat">
-                <span className="dash-substat-num text-indigo">{mockPerformance?.avgScorePercentage ?? 0}%</span>
+                <span className="dash-substat-num text-indigo">
+                  {mockPerformance && mockPerformance.totalTests > 0 ? `${mockPerformance.avgScorePercentage ?? 0}%` : 'N/A'}
+                </span>
                 <span className="dash-substat-label">Average</span>
               </div>
               <div className="dash-substat">
-                <span className="dash-substat-num text-navy">{mockPerformance?.totalTests ?? 0}</span>
+                <span className="dash-substat-num text-navy">
+                  {mockPerformance ? mockPerformance.totalTests : 0}
+                </span>
                 <span className="dash-substat-label">Tests Taken</span>
               </div>
             </div>
