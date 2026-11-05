@@ -94,9 +94,9 @@ const Login: React.FC = () => {
           <div>
             Don't have an account? <Link to="/register">Register</Link>
           </div>
-          <div className="auth-footer-home">
+          {/* <div className="auth-footer-home">
             <Link to="/">Back to Homepage</Link>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
