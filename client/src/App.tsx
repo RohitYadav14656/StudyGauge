@@ -51,8 +51,8 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route path="/" element={<AuthRoute element={<Landing />} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<AuthRoute element={<Login />} />} />
+          <Route path="/register" element={<AuthRoute element={<Register />} />} />
 
           <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
           <Route path="/profile" element={<ProtectedRoute element={<Profile />} />} />

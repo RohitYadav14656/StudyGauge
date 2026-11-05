@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../services/axiosInstance';
 
 const AdminRoute: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);

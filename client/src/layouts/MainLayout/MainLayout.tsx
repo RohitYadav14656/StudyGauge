@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, Outlet, Link, useLocation } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../services/axiosInstance';
 import NotificationBell from '../../components/NotificationBell/NotificationBell';
 import './MainLayout.css';
 
@@ -46,20 +46,34 @@ const MainLayout: React.FC = () => {
       setUser(null);
       return;
     }
+
+    let isMounted = true;
+
     const fetchUserData = async () => {
       try {
         const res = await axios.get('/api/auth/me', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUser(res.data);
-      } catch (err) {
-        localStorage.removeItem('token');
-        setUser(null);
+        if (isMounted && res.data) {
+          setUser(res.data);
+        }
+      } catch (err: any) {
+        if (isMounted) {
+          // ONLY clear token if backend explicitly responds with 401 Unauthorized
+          if (err.response?.status === 401) {
+            localStorage.removeItem('token');
+            setUser(null);
+          }
+        }
       }
     };
 
     fetchUserData();
-  }, [token, location.pathname]);
+
+    return () => {
+      isMounted = false;
+    };
+  }, [token]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
