@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../services/axiosInstance';
 import { Link } from 'react-router-dom';
+import { isValidEmail } from '../../utils/validators';
 import './Auth.css';
 
 const Login: React.FC = () => {
@@ -16,6 +17,12 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address (e.g. name@example.com).');
+      return;
+    }
+
     setLoading(true);
 
     try {

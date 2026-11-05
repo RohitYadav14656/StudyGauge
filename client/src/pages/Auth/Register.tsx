@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from '../../services/axiosInstance';
 import { Link } from 'react-router-dom';
+import { isValidEmail } from '../../utils/validators';
 import './Auth.css';
 
 const Register: React.FC = () => {
@@ -20,6 +21,11 @@ const Register: React.FC = () => {
 
     if (name.trim().length < 2) {
       setError('Name must be at least 2 characters.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address (e.g. you@example.com).');
       return;
     }
 

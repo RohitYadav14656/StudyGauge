@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from '../../services/axiosInstance';
 import { useNavigate } from 'react-router-dom';
+import { isValidEmail } from '../../utils/validators';
 import './Profile.css';
 
 interface UserProfile {
@@ -82,6 +83,12 @@ const Profile: React.FC = () => {
     setSubmitting(true);
     setError(null);
     setSuccess(null);
+
+    if (profile.email && !isValidEmail(profile.email)) {
+      setError('Please provide a valid email address.');
+      setSubmitting(false);
+      return;
+    }
 
     if (profile.availableDailyHours < 0 || profile.availableDailyHours > 24) {
       setError('Available daily hours must be between 0 and 24.');

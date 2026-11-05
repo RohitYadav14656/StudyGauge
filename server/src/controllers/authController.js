@@ -8,11 +8,23 @@ const generateToken = (id) => {
   });
 };
 
+const validateEmail = (email) => {
+  if (typeof email !== 'string') return false;
+  const trimmed = email.trim();
+  return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(trimmed);
+};
+
 export const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    const userExists = await User.findOne({ email });
+    if (!email || !validateEmail(email)) {
+      res.status(400);
+      throw new Error('Please enter a valid email address.');
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const userExists = await User.findOne({ email: cleanEmail });
 
     if (userExists) {
       res.status(400);
@@ -24,7 +36,7 @@ export const registerUser = async (req, res, next) => {
 
     const user = await User.create({
       name,
-      email,
+      email: cleanEmail,
       passwordHash,
     });
 
@@ -49,7 +61,13 @@ export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!email || !validateEmail(email)) {
+      res.status(400);
+      throw new Error('Please enter a valid email address.');
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const user = await User.findOne({ email: cleanEmail });
 
     if (user && (await bcrypt.compare(password, user.passwordHash))) {
       res.json({
@@ -88,6 +106,15 @@ export const updateUserProfile = async (req, res, next) => {
 
     if (user) {
       user.name = req.body.name || user.name;
+      
+      if (req.body.email) {
+        if (!validateEmail(req.body.email)) {
+          res.status(400);
+          throw new Error('Please enter a valid email address.');
+        }
+        user.email = req.body.email.trim().toLowerCase();
+      }
+
       user.preferredStudyTime = req.body.preferredStudyTime || user.preferredStudyTime;
       
       if (req.body.availableDailyHours !== undefined) {

@@ -830,9 +830,16 @@ export const getTopicAnalyticsWithWeaknessEngine = async (userId, filters = {}) 
       masteryScore = Math.min(100, Math.max(0, Math.round(rawScore * 10) / 10));
     }
 
-    let classification = 'WEAK';
-    if (masteryScore >= 75) classification = 'STRONG';
-    else if (masteryScore >= 50) classification = 'MODERATE';
+    let classification = 'INSUFFICIENT_DATA';
+    if (totalAttempts > 0) {
+      if (masteryScore >= 75) classification = 'STRONG';
+      else if (masteryScore >= 50) classification = 'MODERATE';
+      else classification = 'WEAK';
+    } else if (syllabusStatus === 'Revised' || syllabusStatus === 'Completed') {
+      classification = 'MODERATE';
+    } else {
+      classification = 'NOT_ATTEMPTED';
+    }
 
     let confidence = 'LOW';
     let insufficientData = true;

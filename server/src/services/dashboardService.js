@@ -137,8 +137,8 @@ export const getDashboardData = async (userId) => {
     ]),
 
     Promise.all([
-      getSubjectPerformance(userId, filters).catch(() => null),
-      getTopicAnalyticsWithWeaknessEngine(userId, filters).catch(() => null),
+      targetExamId ? getSubjectPerformance(userId, filters).catch(() => null) : null,
+      targetExamId ? getTopicAnalyticsWithWeaknessEngine(userId, filters).catch(() => null) : null,
     ]),
 
     Promise.all([
@@ -147,8 +147,8 @@ export const getDashboardData = async (userId) => {
     ]),
 
     Promise.all([
-      getDueRevisions(userId, { examId: targetExamId }).catch(() => null),
-      getTopicRecommendations(userId, { ...filters, limit: 5 }).catch(() => null),
+      targetExamId ? getDueRevisions(userId, { examId: targetExamId }).catch(() => null) : null,
+      targetExamId ? getTopicRecommendations(userId, { ...filters, limit: 5 }).catch(() => null) : null,
     ]),
 
     (async () => {
