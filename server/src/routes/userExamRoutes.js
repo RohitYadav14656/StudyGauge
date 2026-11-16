@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getUserExams,
   selectExams,
+  activateExam,
   updateUserExam,
   getUserTopicProgress,
   updateUserTopicProgress,
@@ -16,6 +17,9 @@ router.route('/')
 
 router.route('/batch')
   .post(protect, selectExams);
+
+router.route('/activate/:examId')
+  .post(protect, activateExam);
 
 router.route('/:id')
   .put(protect, updateUserExam);

@@ -1,10 +1,18 @@
 import axios from './axiosInstance';
 
 export interface ExamCountdown {
+  examId?: string | null;
   examName: string | null;
   targetDate: string | null;
   daysLeft: number | null;
   hasActiveExam: boolean;
+  userExams?: {
+    examId: string;
+    name: string;
+    targetDate?: string;
+    targetScore?: string;
+    targetRank?: number;
+  }[];
 }
 
 export interface ReadinessData {
@@ -176,25 +184,14 @@ const getHeaders = () => {
   return { headers: { Authorization: `Bearer ${token}` } };
 };
 
-let memoryCache: { data: DashboardData; timestamp: number } | null = null;
-const CACHE_TTL_MS = 60 * 1000; // 60 seconds client cache
+let memoryCache: { key: string; data: DashboardData; timestamp: number } | null = null;
+const CACHE_TTL_MS = 15 * 1000; // 15 seconds client cache
 
 export const dashboardService = {
-  getCachedDashboard: (): DashboardData | null => {
-    if (memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
+  getCachedDashboard: (examId?: string): DashboardData | null => {
+    const expectedKey = `dash_${examId || 'default'}`;
+    if (memoryCache && memoryCache.key === expectedKey && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
       return memoryCache.data;
-    }
-    try {
-      const stored = sessionStorage.getItem('sg_dash_cache');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Date.now() - parsed.timestamp < 3 * 60 * 1000) {
-          memoryCache = parsed;
-          return parsed.data;
-        }
-      }
-    } catch {
-      // ignore parse error
     }
     return null;
   },
@@ -208,24 +205,21 @@ export const dashboardService = {
     }
   },
 
-  getDashboard: async (forceFresh = false): Promise<DashboardResponse> => {
+  getDashboard: async (examId?: string, forceFresh = false): Promise<DashboardResponse> => {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No authentication token found');
     }
 
-    if (!forceFresh && memoryCache && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
+    const cacheKey = `dash_${examId || 'default'}`;
+    if (!forceFresh && memoryCache && memoryCache.key === cacheKey && Date.now() - memoryCache.timestamp < CACHE_TTL_MS) {
       return { success: true, data: memoryCache.data };
     }
 
-    const response = await axios.get('/api/dashboard', getHeaders());
+    const url = examId ? `/api/dashboard?examId=${encodeURIComponent(examId)}` : '/api/dashboard';
+    const response = await axios.get(url, getHeaders());
     if (response.data?.success && response.data?.data) {
-      memoryCache = { data: response.data.data, timestamp: Date.now() };
-      try {
-        sessionStorage.setItem('sg_dash_cache', JSON.stringify(memoryCache));
-      } catch {
-        // ignore
-      }
+      memoryCache = { key: cacheKey, data: response.data.data, timestamp: Date.now() };
     }
     return response.data;
   },

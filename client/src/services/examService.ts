@@ -24,6 +24,14 @@ export const selectBatchExams = async (exams: { examId: string; targetDate?: str
   return response.data;
 };
 
+export const activateExam = async (examId: string) => {
+  const token = localStorage.getItem('token');
+  const response = await axios.post(`/api/users/exams/activate/${examId}`, {}, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  return response.data;
+};
+
 export const createExam = async (examData: { name: string; description: string; level: string; metadata?: any }) => {
   const token = localStorage.getItem('token');
   const response = await axios.post('/api/exams', examData, {

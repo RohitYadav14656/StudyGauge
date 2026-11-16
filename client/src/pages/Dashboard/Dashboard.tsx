@@ -4,6 +4,7 @@ import {
   dashboardService,
   DashboardData,
 } from '../../services/dashboardService';
+import { activateExam } from '../../services/examService';
 import { revisionService } from '../../services/revisionService';
 import {
   LineChart,
@@ -21,14 +22,19 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(() => !dashboardService.getCachedDashboard());
   const [error, setError] = useState<string | null>(null);
   const [revisedTopicIds, setRevisedTopicIds] = useState<string[]>([]);
+  const [selectedExamId, setSelectedExamId] = useState<string | null>(null);
+  const [switchingExam, setSwitchingExam] = useState<boolean>(false);
 
-  const fetchDashboardData = async (silent = false) => {
+  const fetchDashboardData = async (examId?: string, forceFresh = false) => {
     try {
-      if (!silent) setLoading(true);
+      if (!forceFresh) setLoading(true);
       setError(null);
-      const res = await dashboardService.getDashboard(silent);
+      const res = await dashboardService.getDashboard(examId, forceFresh);
       if (res.success && res.data) {
         setData(res.data);
+        if (res.data.examCountdown?.examId) {
+          setSelectedExamId(res.data.examCountdown.examId);
+        }
       } else if (!data) {
         setError('Failed to load dashboard data.');
       }
@@ -43,6 +49,20 @@ const Dashboard: React.FC = () => {
       }
     } finally {
       setLoading(false);
+      setSwitchingExam(false);
+    }
+  };
+
+  const handleSwitchExam = async (newExamId: string) => {
+    setSwitchingExam(true);
+    setSelectedExamId(newExamId);
+    try {
+      await activateExam(newExamId);
+      dashboardService.clearCache();
+      await fetchDashboardData(newExamId, true);
+    } catch (err) {
+      console.error('Error switching exam', err);
+      setSwitchingExam(false);
     }
   };
 
@@ -53,7 +73,7 @@ const Dashboard: React.FC = () => {
       return;
     }
     const hasCached = !!dashboardService.getCachedDashboard();
-    fetchDashboardData(hasCached);
+    fetchDashboardData(undefined, !hasCached);
   }, []);
 
   const handleMarkRevisionDone = async (revId: string, topicIdStr: string) => {
@@ -85,7 +105,7 @@ const Dashboard: React.FC = () => {
           <h2 className="dash-error-title">Unable to Load Overview</h2>
           <p className="dash-error-msg">{error || 'Please make sure you have an active exam selected.'}</p>
           <div className="dash-error-actions">
-            <button onClick={() => fetchDashboardData(false)} className="sg-btn-primary">
+            <button onClick={() => fetchDashboardData(undefined, true)} className="sg-btn-primary">
               Retry
             </button>
             <Link to="/my-exams" className="sg-btn-secondary">
@@ -128,30 +148,65 @@ const Dashboard: React.FC = () => {
     <div className="dash-page-wrapper">
       <header className="dash-header">
         <div>
-          <div className="dash-exam-tag">
+          <div className="dash-exam-tag" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
             <span className="dash-tag-dot"></span>
-            <span>
-              Target:{' '}
-              {examCountdown?.examName ? (
-                <strong>{examCountdown.examName}</strong>
-              ) : (
-                <>
-                  <strong style={{ opacity: 0.6 }}>N/A</strong>
-                  <Link
-                    to="/my-exams"
-                    style={{
-                      marginLeft: '0.45rem',
-                      fontSize: '0.75rem',
-                      color: 'var(--color-primary)',
-                      textDecoration: 'underline',
-                      fontWeight: 600,
-                    }}
-                  >
-                    (Select Exam)
-                  </Link>
-                </>
-              )}
-            </span>
+            <span>Target Exam:</span>
+            {examCountdown?.userExams && examCountdown.userExams.length > 1 ? (
+              <select
+                value={selectedExamId || examCountdown.examId || ''}
+                onChange={(e) => handleSwitchExam(e.target.value)}
+                disabled={switchingExam}
+                style={{
+                  background: 'var(--color-card)',
+                  color: 'var(--color-primary)',
+                  fontWeight: 700,
+                  fontSize: '0.825rem',
+                  border: '1px solid var(--color-border)',
+                  borderRadius: '4px',
+                  padding: '0.2rem 0.5rem',
+                  cursor: 'pointer',
+                  outline: 'none',
+                }}
+                title="Switch active target exam"
+              >
+                {examCountdown.userExams.map((ue) => (
+                  <option key={ue.examId} value={ue.examId}>
+                    {ue.name}
+                  </option>
+                ))}
+              </select>
+            ) : examCountdown?.examName ? (
+              <strong>{examCountdown.examName}</strong>
+            ) : (
+              <>
+                <strong style={{ opacity: 0.6 }}>N/A</strong>
+                <Link
+                  to="/my-exams"
+                  style={{
+                    marginLeft: '0.45rem',
+                    fontSize: '0.75rem',
+                    color: 'var(--color-primary)',
+                    textDecoration: 'underline',
+                    fontWeight: 600,
+                  }}
+                >
+                  (Select Exam)
+                </Link>
+              </>
+            )}
+            <Link
+              to="/my-exams"
+              style={{
+                marginLeft: '0.35rem',
+                fontSize: '0.75rem',
+                color: 'var(--color-accent)',
+                textDecoration: 'none',
+                fontWeight: 600,
+              }}
+              title="Manage targeted exams"
+            >
+              ⚙️ Manage
+            </Link>
           </div>
           <h1 className="dash-heading">Preparation Overview</h1>
           <p className="dash-subheading">Track your consistency, identify weak topics, and follow your adapted study plan.</p>

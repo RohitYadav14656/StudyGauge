@@ -83,12 +83,17 @@ const DASHBOARD_CACHE_TTL_MS = 20 * 1000; // 20 seconds
 
 export const clearDashboardCache = (userId) => {
   if (userId) {
-    userDashboardCache.delete(userId.toString());
+    const prefix = userId.toString();
+    for (const key of userDashboardCache.keys()) {
+      if (key.startsWith(prefix)) {
+        userDashboardCache.delete(key);
+      }
+    }
   }
 };
 
-export const getDashboardData = async (userId) => {
-  const cacheKey = userId.toString();
+export const getDashboardData = async (userId, requestedExamId = null) => {
+  const cacheKey = `${userId.toString()}_${requestedExamId || 'default'}`;
   const cached = userDashboardCache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < DASHBOARD_CACHE_TTL_MS) {
     return cached.data;
@@ -97,9 +102,23 @@ export const getDashboardData = async (userId) => {
   const userObjId = new mongoose.Types.ObjectId(userId);
   const now = new Date();
 
-  const activeUserExam = await UserExam.findOne({ userId: userObjId, status: 'active' })
-    .populate('examId', 'name description')
+  // Find all active exams for this user
+  const allUserExams = await UserExam.find({ userId: userObjId, status: { $ne: 'inactive' } })
+    .populate('examId', 'name description level')
+    .sort({ updatedAt: -1 })
     .lean();
+
+  const validUserExams = allUserExams.filter(ue => ue.examId && ue.examId._id);
+
+  let activeUserExam = null;
+  if (requestedExamId) {
+    activeUserExam = validUserExams.find(ue => ue.examId._id.toString() === requestedExamId) || null;
+  }
+
+  if (!activeUserExam && validUserExams.length > 0) {
+    // Pick the most recently updated active exam
+    activeUserExam = validUserExams[0];
+  }
 
   const targetExamId = activeUserExam?.examId?._id?.toString() || null;
   const examName = activeUserExam?.examId?.name || null;
@@ -256,10 +275,18 @@ export const getDashboardData = async (userId) => {
 
   const dashboardResult = {
     examCountdown: {
+      examId: targetExamId,
       examName,
       targetDate,
       daysLeft,
-      hasActiveExam: !!activeUserExam,
+      hasActiveExam: !!targetExamId,
+      userExams: validUserExams.map(ue => ({
+        examId: ue.examId._id.toString(),
+        name: ue.examId.name,
+        targetDate: ue.targetDate,
+        targetScore: ue.targetScore,
+        targetRank: ue.targetRank,
+      })),
     },
     readiness: readinessResult || {
       overallScore: 0,
