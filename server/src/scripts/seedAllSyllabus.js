@@ -1140,3 +1140,4 @@ if (process.argv[1]?.includes('seedAllSyllabus.js')) {
       process.exit(1);
     });
 }
+
