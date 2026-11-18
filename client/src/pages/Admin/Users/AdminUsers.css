@@ -14,13 +14,13 @@
 
 .admin-users-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   font-size: 1.875rem;
   font-weight: 800;
 }
 
 .admin-users-header p {
-  color: #94a3b8;
+  color: var(--color-text);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -44,7 +44,7 @@
 .user-stat-card .label {
   font-size: 0.75rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--color-text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -52,7 +52,7 @@
 .user-stat-card .value {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #f8fafc;
+  color: var(--color-text-dark);
 }
 
 .role-badge {
@@ -70,15 +70,15 @@
 }
 
 .role-student {
-  background: rgba(56, 189, 248, 0.15);
-  color: var(--color-accent);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-border);
 }
 
 .btn-toggle-role {
   background: transparent;
-  color: #cbd5e1;
-  border: 1px solid #475569;
+  color: var(--color-text-dark);
+  border: 1px solid var(--color-border);
   padding: 0.25rem 0.75rem;
   border-radius: 4px;
   cursor: pointer;
@@ -89,6 +89,6 @@
 
 .btn-toggle-role:hover {
   background: var(--color-border);
-  color: #f8fafc;
+  color: var(--color-text-dark);
 }
 

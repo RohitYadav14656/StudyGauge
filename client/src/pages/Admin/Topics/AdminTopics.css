@@ -11,8 +11,8 @@
 }
 
 .subject-badge {
-  background: rgba(139, 92, 246, 0.1);
-  color: #c4b5fd;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 5px;
   font-size: 0.75rem;
@@ -21,7 +21,7 @@
 
 .count-badge {
   background: var(--color-border);
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -56,13 +56,13 @@
 
 .subtopics-header h4 {
   margin: 0;
-  color: #cbd5e1;
+  color: var(--color-text-dark);
 }
 
 .btn-secondary-sm {
-  background: rgba(56, 189, 248, 0.1);
-  color: var(--color-accent);
-  border: 1px solid var(--color-accent);
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
   padding: 0.25rem 0.75rem;
   border-radius: 0.25rem;
   font-size: 0.75rem;
@@ -70,17 +70,17 @@
 }
 
 .btn-secondary-sm:hover {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: var(--color-primary);
+  color: #fff;
 }
 
 .no-subtopics {
-  color: #64748b;
+  color: var(--color-text);
   font-style: italic;
   font-size: 0.875rem;
   text-align: center;
   padding: 1rem;
-  background: rgba(15, 23, 42, 0.3);
+  background: #FAF8F3;
   border-radius: 0.5rem;
 }
 
@@ -94,7 +94,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(15, 23, 42, 0.5);
+  background: #FAF8F3;
   padding: 0.5rem;
   border-radius: 0.5rem;
   border: 1px solid var(--color-border);

@@ -12,12 +12,12 @@
 
 .admin-header-row h2 {
   margin: 0 0 0.5rem 0;
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   font-size: 2rem;
 }
 
 .admin-header-row p {
-  color: #94a3b8;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .filter-bar label {
-  color: #94a3b8;
+  color: var(--color-text-dark);
   font-weight: 500;
 }
 
@@ -41,7 +41,7 @@
   border-radius: 0.5rem;
   border: 1px solid var(--color-border);
   background-color: var(--color-bg);
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   outline: none;
   min-width: 200px;
 }
@@ -86,7 +86,7 @@
 }
 
 .form-group-checkbox label {
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   cursor: pointer;
   margin-bottom: 0;
 }

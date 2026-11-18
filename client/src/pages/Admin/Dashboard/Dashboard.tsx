@@ -110,7 +110,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       <div style={{ marginTop: '1rem' }}>
-        <h3 style={{ color: '#f1f5f9', fontSize: '1.25rem', marginBottom: '1rem' }}>
+        <h3 style={{ color: 'var(--color-text-dark)', fontSize: '1.25rem', marginBottom: '1rem' }}>
           ⚡ Fast Operations & Content Hub
         </h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
@@ -128,8 +128,8 @@ const Dashboard: React.FC = () => {
             }}
           >
             <div style={{ fontSize: '1.5rem' }}>📚</div>
-            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Syllabus Architecture</h4>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+            <h4 style={{ margin: 0, color: 'var(--color-text-dark)', fontSize: '1.1rem' }}>Syllabus Architecture</h4>
+            <p style={{ margin: 0, color: 'var(--color-text)', fontSize: '0.85rem' }}>
               Inspect and configure full hierarchical syllabus (Subjects → Topics → Subtopics) with student view preview.
             </p>
             <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
@@ -151,8 +151,8 @@ const Dashboard: React.FC = () => {
             }}
           >
             <div style={{ fontSize: '1.5rem' }}>📝</div>
-            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Question Bank (PYQs)</h4>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+            <h4 style={{ margin: 0, color: 'var(--color-text-dark)', fontSize: '1.1rem' }}>Question Bank (PYQs)</h4>
+            <p style={{ margin: 0, color: 'var(--color-text)', fontSize: '0.85rem' }}>
               Create multiple-choice questions, set correct options, configure difficulty, and write step-by-step solutions.
             </p>
             <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
@@ -174,8 +174,8 @@ const Dashboard: React.FC = () => {
             }}
           >
             <div style={{ fontSize: '1.5rem' }}>👥</div>
-            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>User Accounts & Roles</h4>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+            <h4 style={{ margin: 0, color: 'var(--color-text-dark)', fontSize: '1.1rem' }}>User Accounts & Roles</h4>
+            <p style={{ margin: 0, color: 'var(--color-text)', fontSize: '0.85rem' }}>
               Inspect all registered accounts, promote/demote administrator privileges, and monitor student preparation levels.
             </p>
             <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>
@@ -197,8 +197,8 @@ const Dashboard: React.FC = () => {
             }}
           >
             <div style={{ fontSize: '1.5rem' }}>🎯</div>
-            <h4 style={{ margin: 0, color: '#f8fafc', fontSize: '1.1rem' }}>Exams Catalog</h4>
-            <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.85rem' }}>
+            <h4 style={{ margin: 0, color: 'var(--color-text-dark)', fontSize: '1.1rem' }}>Exams Catalog</h4>
+            <p style={{ margin: 0, color: 'var(--color-text)', fontSize: '0.85rem' }}>
               Add competitive exams (GATE, CAT, UPSC, JEE, NEET) and configure undergraduate/postgraduate levels.
             </p>
             <span style={{ color: 'var(--color-accent)', fontSize: '0.8rem', fontWeight: 700, marginTop: '0.5rem' }}>

@@ -269,8 +269,8 @@ const AdminSyllabus: React.FC = () => {
       ) : syllabus.length === 0 ? (
         <div className="admin-table-container" style={{ padding: '3rem', textAlign: 'center' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📚</div>
-          <h3 style={{ color: '#f1f5f9', margin: '0 0 0.5rem 0' }}>No Subjects Configured for this Exam</h3>
-          <p style={{ color: '#94a3b8', margin: '0 0 1.5rem 0' }}>
+          <h3 style={{ color: 'var(--color-text-dark)', margin: '0 0 0.5rem 0' }}>No Subjects Configured for this Exam</h3>
+          <p style={{ color: 'var(--color-text)', margin: '0 0 1.5rem 0' }}>
             Get started by adding the first subject module to establish the syllabus framework.
           </p>
           <button onClick={() => setShowSubjectModal(true)} className="btn-save">
@@ -288,7 +288,7 @@ const AdminSyllabus: React.FC = () => {
                   onClick={() => toggleSubjectExpand(subj._id)}
                 >
                   <div className="subject-tree-title">
-                    <span style={{ fontSize: '1rem', color: '#94a3b8' }}>
+                    <span style={{ fontSize: '1rem', color: 'var(--color-text)' }}>
                       {isExpanded ? '▼' : '▶'}
                     </span>
                     <h3>
@@ -322,7 +322,7 @@ const AdminSyllabus: React.FC = () => {
                 {isExpanded && (
                   <div className="subject-tree-body">
                     {subj.description && (
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: '#94a3b8' }}>
+                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--color-text)' }}>
                         {subj.description}
                       </p>
                     )}
@@ -331,10 +331,11 @@ const AdminSyllabus: React.FC = () => {
                       <div
                         style={{
                           padding: '1.5rem',
-                          background: 'rgba(15, 23, 42, 0.3)',
+                          background: '#FAF8F3',
+                          border: '1px solid var(--color-border)',
                           borderRadius: '4px',
                           textAlign: 'center',
-                          color: '#64748b',
+                          color: 'var(--color-text)',
                           fontSize: '0.85rem',
                         }}
                       >
@@ -350,14 +351,14 @@ const AdminSyllabus: React.FC = () => {
                             </div>
 
                             {top.subtopics && top.subtopics.length > 0 && (
-                              <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                              <span style={{ fontSize: '0.75rem', color: 'var(--color-text)' }}>
                                 {top.subtopics.length} Subtopics
                               </span>
                             )}
                           </div>
 
                           {top.description && (
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: '#94a3b8' }}>
+                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--color-text)' }}>
                               {top.description}
                             </p>
                           )}
@@ -390,7 +391,7 @@ const AdminSyllabus: React.FC = () => {
             <form onSubmit={handleCreateSubject}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Subject Name *
                   </label>
                   <input
@@ -405,14 +406,14 @@ const AdminSyllabus: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Short Code
                     </label>
                     <input
@@ -426,12 +427,12 @@ const AdminSyllabus: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Weightage (%)
                     </label>
                     <input
@@ -446,14 +447,14 @@ const AdminSyllabus: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Description
                   </label>
                   <textarea
@@ -467,7 +468,7 @@ const AdminSyllabus: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>
@@ -498,7 +499,7 @@ const AdminSyllabus: React.FC = () => {
             <form onSubmit={handleCreateTopic}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Topic Name *
                   </label>
                   <input
@@ -513,13 +514,13 @@ const AdminSyllabus: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Description
                   </label>
                   <input
@@ -533,13 +534,13 @@ const AdminSyllabus: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Subtopics (one per line)
                   </label>
                   <textarea
@@ -553,7 +554,7 @@ const AdminSyllabus: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>

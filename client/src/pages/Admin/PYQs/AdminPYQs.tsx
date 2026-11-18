@@ -280,8 +280,8 @@ const AdminPYQs: React.FC = () => {
       ) : pyqs.length === 0 ? (
         <div className="admin-table-container" style={{ padding: '3rem', textAlign: 'center' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📝</div>
-          <h3 style={{ color: '#f1f5f9', margin: '0 0 0.5rem 0' }}>No Questions Found</h3>
-          <p style={{ color: '#94a3b8', margin: '0 0 1.5rem 0' }}>
+          <h3 style={{ color: 'var(--color-text-dark)', margin: '0 0 0.5rem 0' }}>No Questions Found</h3>
+          <p style={{ color: 'var(--color-text)', margin: '0 0 1.5rem 0' }}>
             There are no question records matching the selected filters.
           </p>
           <button
@@ -321,10 +321,10 @@ const AdminPYQs: React.FC = () => {
                 return (
                   <tr key={q._id}>
                     <td>
-                      <div style={{ fontWeight: 600, color: '#f8fafc', marginBottom: '0.25rem' }}>
+                      <div style={{ fontWeight: 600, color: 'var(--color-text-dark)', marginBottom: '0.25rem' }}>
                         {q.questionText}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text)' }}>
                         {q.options?.length || 0} Options configured
                       </div>
                     </td>
@@ -364,7 +364,7 @@ const AdminPYQs: React.FC = () => {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.75rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Target Exam *
                     </label>
                     <select
@@ -377,7 +377,7 @@ const AdminPYQs: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     >
                       <option value="">Select Exam</option>
@@ -390,7 +390,7 @@ const AdminPYQs: React.FC = () => {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Subject
                     </label>
                     <select
@@ -402,7 +402,7 @@ const AdminPYQs: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     >
                       <option value="">Optional Subject</option>
@@ -415,7 +415,7 @@ const AdminPYQs: React.FC = () => {
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Topic
                     </label>
                     <select
@@ -427,7 +427,7 @@ const AdminPYQs: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     >
                       <option value="">Optional Topic</option>
@@ -442,7 +442,7 @@ const AdminPYQs: React.FC = () => {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Exam Year *
                     </label>
                     <input
@@ -458,13 +458,13 @@ const AdminPYQs: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     />
                   </div>
 
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                    <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                       Difficulty Level
                     </label>
                     <select
@@ -476,7 +476,7 @@ const AdminPYQs: React.FC = () => {
                         background: 'var(--color-bg)',
                         border: '1px solid var(--color-border)',
                         borderRadius: '4px',
-                        color: '#f8fafc',
+                        color: 'var(--color-text-dark)',
                       }}
                     >
                       <option value="easy">Easy</option>
@@ -487,7 +487,7 @@ const AdminPYQs: React.FC = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Question Statement *
                   </label>
                   <textarea
@@ -502,13 +502,13 @@ const AdminPYQs: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Options (Select radio button for Correct Answer) *
                   </label>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
@@ -536,7 +536,7 @@ const AdminPYQs: React.FC = () => {
                             background: 'transparent',
                             border: 'none',
                             outline: 'none',
-                            color: '#f8fafc',
+                            color: 'var(--color-text-dark)',
                             fontSize: '0.85rem',
                           }}
                         />
@@ -551,7 +551,7 @@ const AdminPYQs: React.FC = () => {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: '#94a3b8', marginBottom: '0.35rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--color-text-dark)', fontWeight: 600, marginBottom: '0.35rem' }}>
                     Explanation / Solution Details
                   </label>
                   <textarea
@@ -565,7 +565,7 @@ const AdminPYQs: React.FC = () => {
                       background: 'var(--color-bg)',
                       border: '1px solid var(--color-border)',
                       borderRadius: '4px',
-                      color: '#f8fafc',
+                      color: 'var(--color-text-dark)',
                     }}
                   />
                 </div>

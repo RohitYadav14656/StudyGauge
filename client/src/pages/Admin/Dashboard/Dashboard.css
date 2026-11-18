@@ -6,12 +6,12 @@
 
 .dashboard-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   font-size: 2rem;
 }
 
 .dashboard-header p {
-  color: #94a3b8;
+  color: var(--color-text);
   margin: 0;
 }
 
@@ -78,7 +78,7 @@
 .stat-details h3 {
   margin: 0 0 0.25rem 0;
   font-size: 0.875rem;
-  color: #94a3b8;
+  color: var(--color-text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -87,7 +87,7 @@
   margin: 0;
   font-size: 1.75rem;
   font-weight: 700;
-  color: #f1f5f9;
+  color: var(--color-text-dark);
 }
 
 .admin-loading,
@@ -97,7 +97,7 @@
   justify-content: center;
   height: 200px;
   font-size: 1.1rem;
-  color: #94a3b8;
+  color: var(--color-text-dark);
 }
 
 .admin-error {

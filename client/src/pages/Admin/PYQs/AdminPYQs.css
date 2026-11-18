@@ -14,13 +14,13 @@
 
 .admin-pyqs-header h2 {
   margin: 0 0 0.5rem 0;
-  color: #f1f5f9;
+  color: var(--color-text-dark);
   font-size: 1.875rem;
   font-weight: 800;
 }
 
 .admin-pyqs-header p {
-  color: #94a3b8;
+  color: var(--color-text);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -45,19 +45,24 @@
 .pyqs-filter-item label {
   font-size: 0.8rem;
   font-weight: 700;
-  color: #94a3b8;
+  color: var(--color-text-dark);
   text-transform: uppercase;
 }
 
 .pyqs-filter-select,
 .pyqs-search-input {
   background: var(--color-bg);
-  color: #f8fafc;
+  color: var(--color-text-dark);
   border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 0.5rem 0.75rem;
   font-size: 0.85rem;
   outline: none;
+}
+
+.pyqs-filter-select:focus,
+.pyqs-search-input:focus {
+  border-color: var(--color-primary);
 }
 
 .pyqs-search-input {
@@ -80,7 +85,7 @@
 
 .difficulty-medium {
   background: rgba(245, 158, 11, 0.15);
-  color: #f59e0b;
+  color: #855800;
   border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
@@ -114,4 +119,3 @@
   border: 1px solid var(--color-border);
   border-radius: 4px;
 }
-

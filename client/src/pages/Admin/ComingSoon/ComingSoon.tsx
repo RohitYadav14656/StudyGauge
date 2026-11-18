@@ -9,15 +9,15 @@ const ComingSoon: React.FC<{ title: string }> = ({ title }) => {
       justifyContent: 'center',
       height: '60vh',
       textAlign: 'center',
-      color: '#94a3b8'
+      color: 'var(--color-text)'
     }}>
-      <h2 style={{ fontSize: '2.5rem', color: '#f1f5f9', marginBottom: '1rem' }}>{title}</h2>
+      <h2 style={{ fontSize: '2.5rem', color: 'var(--color-text-dark)', marginBottom: '1rem' }}>{title}</h2>
       <p style={{ fontSize: '1.25rem' }}>This feature is currently under development. Check back later!</p>
       <div style={{
         marginTop: '2rem',
         padding: '1rem 2rem',
-        background: 'rgba(56, 189, 248, 0.1)',
-        color: 'var(--color-accent)',
+        background: 'var(--color-primary-light)',
+        color: 'var(--color-primary)',
         borderRadius: '9999px',
         fontWeight: 'bold',
         textTransform: 'uppercase',

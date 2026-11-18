@@ -158,8 +158,8 @@ const AdminUsers: React.FC = () => {
       ) : filteredUsers.length === 0 ? (
         <div className="admin-table-container" style={{ padding: '3rem', textAlign: 'center' }}>
           <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>👥</div>
-          <h3 style={{ color: '#f1f5f9', margin: '0 0 0.5rem 0' }}>No Users Found</h3>
-          <p style={{ color: '#94a3b8', margin: 0 }}>
+          <h3 style={{ color: 'var(--color-text-dark)', margin: '0 0 0.5rem 0' }}>No Users Found</h3>
+          <p style={{ color: 'var(--color-text)', margin: 0 }}>
             No accounts match the current filter criteria.
           </p>
         </div>
@@ -181,8 +181,8 @@ const AdminUsers: React.FC = () => {
                 return (
                   <tr key={u._id}>
                     <td>
-                      <div style={{ fontWeight: 700, color: '#f8fafc' }}>{u.name}</div>
-                      <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{u.email}</div>
+                      <div style={{ fontWeight: 700, color: 'var(--color-text-dark)' }}>{u.name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--color-text)' }}>{u.email}</div>
                     </td>
                     <td>
                       <span
@@ -198,7 +198,7 @@ const AdminUsers: React.FC = () => {
                         {u.preparationLevel || 'Beginner'}
                       </span>
                     </td>
-                    <td style={{ color: '#94a3b8', fontSize: '0.85rem' }}>
+                    <td style={{ color: 'var(--color-text)', fontSize: '0.85rem' }}>
                       {new Date(u.createdAt).toLocaleDateString(undefined, {
                         year: 'numeric',
                         month: 'short',
