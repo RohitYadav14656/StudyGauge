@@ -3,6 +3,8 @@ import {
   connectIntegration,
   disconnectIntegration,
   syncIntegration,
+  connectAllDemo,
+  syncAllIntegrations,
 } from '../services/integrationService.js';
 
 export const listIntegrations = async (req, res, next) => {
@@ -52,7 +54,35 @@ export const handleSyncIntegration = async (req, res, next) => {
     res.json({
       success: true,
       data: result,
-      message: `Successfully synchronized ${provider}`,
+      message: result.message || `Successfully synchronized ${provider}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const handleConnectAllDemo = async (req, res, next) => {
+  try {
+    const results = await connectAllDemo(req.user._id);
+    const integrations = await getIntegrations(req.user._id);
+    res.json({
+      success: true,
+      data: integrations,
+      message: 'All 5 study integrations successfully authorized and connected for presentation.',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const handleSyncAll = async (req, res, next) => {
+  try {
+    const results = await syncAllIntegrations(req.user._id);
+    const integrations = await getIntegrations(req.user._id);
+    res.json({
+      success: true,
+      data: integrations,
+      message: `Synchronized ${results.length} active third-party apps successfully.`,
     });
   } catch (error) {
     next(error);

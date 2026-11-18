@@ -11,12 +11,26 @@ export const getPlannerItems = async (req, res) => {
     let query = { studyPlanId: { $in: planIds } };
 
     if (startDate && endDate) {
+      // Parse local and UTC boundaries safely to avoid timezone misalignment
+      const [sy, sm, sd] = startDate.split('-').map(Number);
+      const [ey, em, ed] = endDate.split('-').map(Number);
+
+      const start = new Date(sy, sm - 1, sd, 0, 0, 0, 0);
+      const startUtc = new Date(Date.UTC(sy, sm - 1, sd, 0, 0, 0, 0));
+      const end = new Date(ey, em - 1, ed, 23, 59, 59, 999);
+      const endUtc = new Date(Date.UTC(ey, em - 1, ed, 23, 59, 59, 999));
+
+      const minStart = new Date(Math.min(start.getTime(), startUtc.getTime()) - 12 * 60 * 60 * 1000);
+      const maxEnd = new Date(Math.max(end.getTime(), endUtc.getTime()) + 12 * 60 * 60 * 1000);
+
       query.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate),
+        $gte: minStart,
+        $lte: maxEnd,
       };
     } else if (startDate) {
-      query.date = { $gte: new Date(startDate) };
+      const [sy, sm, sd] = startDate.split('-').map(Number);
+      const start = new Date(sy, sm - 1, sd, 0, 0, 0, 0);
+      query.date = { $gte: start };
     }
 
     const items = await StudyPlanItem.find(query)

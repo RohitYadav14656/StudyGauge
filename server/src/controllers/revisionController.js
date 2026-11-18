@@ -1,6 +1,8 @@
 import {
   getDueRevisions,
   createOrUpdateRevision,
+  seedDemoRevisions,
+  getAllUserRevisions,
 } from '../services/revisionService.js';
 import {
   createOrUpdateRevisionSchema,
@@ -39,6 +41,35 @@ export const createOrUpdateRevisionController = async (req, res, next) => {
     const result = await createOrUpdateRevision(userId, value);
 
     res.status(201).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const seedDemoRevisionsController = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { examId } = req.body;
+    const result = await seedDemoRevisions(userId, examId);
+    res.status(201).json({
+      success: true,
+      data: result,
+      message: 'Demo spaced revision queue created with active recall intervals!',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllRevisionsController = async (req, res, next) => {
+  try {
+    const userId = req.user._id;
+    const { examId } = req.query;
+    const result = await getAllUserRevisions(userId, { examId });
+    res.json({
       success: true,
       data: result,
     });

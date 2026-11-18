@@ -44,5 +44,15 @@ export const integrationService = {
     const res = await axios.post(`/api/integrations/${provider}/sync`, {}, getHeaders());
     return res.data;
   },
+
+  connectAllDemo: async () => {
+    const res = await axios.post('/api/integrations/demo/connect-all', {}, getHeaders());
+    return res.data;
+  },
+
+  syncAll: async () => {
+    const res = await axios.post('/api/integrations/demo/sync-all', {}, getHeaders());
+    return res.data;
+  },
 };
 

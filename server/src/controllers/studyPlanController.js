@@ -190,7 +190,7 @@ export const generateStudyPlan = async (req, res) => {
       return res.status(404).json({ message: 'Exam not found' });
     }
 
-    const allTopics = await Topic.find({ examId, active: true }).sort({ subjectId: 1, order: 1 });
+    const allTopics = await Topic.find({ examId, active: { $ne: false } }).sort({ subjectId: 1, order: 1 });
 
     const userProgress = await UserTopicProgress.find({ userId, examId });
 
@@ -200,11 +200,22 @@ export const generateStudyPlan = async (req, res) => {
         .map(p => p.topicId.toString())
     );
 
-    const pendingTopics = allTopics.filter(topic => !completedTopicIds.has(topic._id.toString()));
+    let pendingTopics = allTopics.filter(topic => !completedTopicIds.has(topic._id.toString()));
 
     if (pendingTopics.length === 0) {
-      return res.status(400).json({ message: 'No pending topics found to schedule.' });
+      // Fallback to all topics for comprehensive revision if all topics completed or none marked
+      pendingTopics = allTopics;
     }
+
+    if (pendingTopics.length === 0) {
+      return res.status(400).json({ message: 'No topics found for this exam syllabus. Please ensure the syllabus is populated.' });
+    }
+
+    // Deactivate previous active plans for this exam so the new schedule is clean
+    await StudyPlan.updateMany(
+      { userId, examId, status: 'active' },
+      { $set: { status: 'completed' } }
+    );
 
     const studyPlan = new StudyPlan({
       userId,
@@ -212,6 +223,7 @@ export const generateStudyPlan = async (req, res) => {
       title,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
+      status: 'active',
       notes: `Generated plan. Preparation Level: ${preparationLevel}`,
     });
     
@@ -251,6 +263,7 @@ export const generateStudyPlan = async (req, res) => {
 
       const scheduleDate = new Date(start);
       scheduleDate.setDate(scheduleDate.getDate() + currentDayIndex);
+      scheduleDate.setHours(9, 0, 0, 0);
 
       itemsToCreate.push({
         studyPlanId: createdPlan._id,

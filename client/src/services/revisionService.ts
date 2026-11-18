@@ -51,5 +51,18 @@ export const revisionService = {
     const res = await axios.post('/api/revisions', data, getHeaders());
     return res.data.data;
   },
+
+  seedDemoRevisions: async (examId?: string): Promise<RevisionsResponse> => {
+    const res = await axios.post('/api/revisions/seed-demo', { examId }, getHeaders());
+    return res.data.data;
+  },
+
+  getAllRevisions: async (examId?: string) => {
+    const res = await axios.get('/api/revisions/all', {
+      ...getHeaders(),
+      params: { examId },
+    });
+    return res.data.data;
+  },
 };
 
